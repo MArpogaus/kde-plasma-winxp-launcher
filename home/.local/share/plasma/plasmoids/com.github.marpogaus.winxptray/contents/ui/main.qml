@@ -232,12 +232,12 @@ PlasmoidItem {
         }
 
         // As on XP: starts 11 px left of the block's edge (over the
-        // taskbar), 3 px below the taskbar's top, drawn 1:1; turns around to
-        // point right while the hidden icons are shown
+        // taskbar), centred on the taskbar's height, drawn 1:1; turns around
+        // to point right while the hidden icons are shown
         Image {
             visible: anchorItem.showChevron
             x: -11
-            y: Math.round(anchorItem.area.y) + 3
+            y: Math.round(anchorItem.area.y + (anchorItem.area.height - height) / 2)
             width: 18
             height: 19
             source: "../images/chevron-left.svg"
