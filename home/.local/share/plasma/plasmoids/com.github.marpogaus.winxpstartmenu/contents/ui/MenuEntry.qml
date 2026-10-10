@@ -28,6 +28,10 @@ Item {
     // Kept highlighted by the owner, e.g. while its cascade is open.
     property bool forceHighlight: false
     property color highlightColor: xp.highlight
+    // Applications can be dragged (to Quick Launch, the desktop, …): the
+    // .desktop URL and an object with startDrag(url, icon)
+    property url dragUrl
+    property QtObject dragController: null
     readonly property bool hovered: mouseArea.containsMouse
     readonly property bool highlighted: entry.interactive && (hovered || forceHighlight)
 
@@ -101,6 +105,12 @@ Item {
         visible: entry.showArrow
         source: entry.highlighted ? "../images/arrow-white.svg" : "../images/arrow.svg"
         sourceSize: Qt.size(4, 7)
+    }
+
+    DragHandler {
+        target: null
+        enabled: entry.dragController !== null && entry.dragUrl.toString() !== ""
+        onActiveChanged: if (active) entry.dragController.startDrag(entry.dragUrl, entry.iconSource)
     }
 
     MouseArea {

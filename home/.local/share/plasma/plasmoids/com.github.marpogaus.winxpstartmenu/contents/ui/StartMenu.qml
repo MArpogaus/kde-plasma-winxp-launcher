@@ -58,7 +58,7 @@ FocusScope {
             if (!o || controller.isPinned(o.favoriteId)) {
                 continue;
             }
-            items.push({ row: i, display: o.display, decoration: o.decoration, favoriteId: o.favoriteId, actionList: o.actionList });
+            items.push({ row: i, display: o.display, decoration: o.decoration, favoriteId: o.favoriteId, actionList: o.actionList, url: o.url });
         }
         frequentItems = items;
     }
@@ -106,6 +106,7 @@ FocusScope {
             readonly property var decoration: model.decoration
             readonly property string favoriteId: model.favoriteId ?? ""
             readonly property var actionList: model.actionList
+            readonly property url url: model.url ?? ""
         }
         onObjectAdded: rebuildTimer.restart()
         onObjectRemoved: rebuildTimer.restart()
@@ -364,6 +365,8 @@ FocusScope {
                             required property var model
 
                             readonly property string favoriteId: model.favoriteId ?? ""
+                            dragUrl: model.url ?? ""
+                            dragController: menu.controller
                             readonly property string specialTitle: favoriteId === "preferred://browser" ? i18n("Internet")
                                                                  : favoriteId === "preferred://mail" ? i18n("E-mail") : ""
 
@@ -401,6 +404,8 @@ FocusScope {
 
                             required property var modelData
 
+                            dragUrl: modelData.url ?? ""
+                            dragController: menu.controller
                             width: leftTop.width
                             height: menu.xp.programRowHeight
                             xp: menu.xp

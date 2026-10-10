@@ -120,7 +120,7 @@ tooltip and what double-clicking runs.
 
 Quick Launch shows Show Desktop plus up to four launchers as 16 px icons
 (browser, file manager and Konsole by default) and puts the rest behind
-a » menu. Drop applications on it (from Dolphin or the desktop) to add
+a » menu. Drop applications on it (from the start menu, Dolphin or the desktop) to add
 them, drag its icons to reorder them and right-click one to remove it;
 the start menu's right-click menu has *Add to Quick Launch*.
 Right-click → Configure Quick Launch… for the full list and the limit.

@@ -215,6 +215,8 @@ Item {
                     xp: view.xp
                     iconSource: cell.model.decoration
                     title: cell.model.display ?? ""
+                    dragUrl: cell.hasChildren ? "" : cell.model.url ?? ""
+                    dragController: view.controller
                     iconSize: 16
                     leftPadding: 4
                     textSpacing: 3

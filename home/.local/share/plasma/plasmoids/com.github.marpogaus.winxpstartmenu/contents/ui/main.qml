@@ -253,6 +253,18 @@ PlasmoidItem {
                   availableScreenRect.width, availableScreenRect.height)
         : screenGeometry
 
+    // Dragging an application out of the menu (Kicker's helper starts the
+    // drag from this item: cascades may be gone before it ends)
+    Kicker.DragHelper {
+        id: dragHelper
+        dragIconSize: 32
+        onDropped: root.closeMenu()
+    }
+
+    function startDrag(url, icon) {
+        dragHelper.startDrag(root, url, icon);
+    }
+
     function anyWindowActive() {
         if (menuDialog.active || contextMenuOpen) {
             return true;
