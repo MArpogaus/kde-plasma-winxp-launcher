@@ -445,7 +445,6 @@ PlasmoidItem {
 
             PlasmaExtras.MenuItem {
                 text: i18n("Open")
-                icon: "system-run"
                 onClicked: {
                     overflowPopup.visible = false;
                     root.launch(overflowContext.launcherIndex);
@@ -453,7 +452,6 @@ PlasmoidItem {
             }
             PlasmaExtras.MenuItem {
                 text: i18n("Remove from Quick Launch")
-                icon: "list-remove"
                 onClicked: root.removeLauncher(overflowContext.launcherIndex)
             }
         }
@@ -561,12 +559,10 @@ PlasmoidItem {
 
             PlasmaExtras.MenuItem {
                 text: i18n("Remove from Quick Launch")
-                icon: "list-remove"
                 onClicked: root.removeLauncher(button.launcherIndex)
             }
             PlasmaExtras.MenuItem {
                 text: i18n("Configure Quick Launch…")
-                icon: "configure"
                 onClicked: Plasmoid.internalAction("configure").trigger()
             }
         }

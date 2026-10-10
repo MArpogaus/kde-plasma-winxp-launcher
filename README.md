@@ -36,6 +36,14 @@ and wallpaper are XP's.
    re-applying it keeps your choice. (Exposé's login screen is not bundled
    either; *Get New…* under Login Screen.)
 
+With its layout the Global Theme also makes Plasma behave more like XP:
+desktop icons 32 px in columns from the top left, one virtual desktop, no
+hot corner, no snapping windows to the screen edges, no shake-to-find
+cursor, no zoom when windows open or close (minimizing still squashes into
+the taskbar), animations twice as fast, clicking a scroll bar's track
+pages, and the busy cursor instead of a bouncing launch icon. Change any
+of them back in System Settings.
+
 Copying overwrites Dolphin's toolbar (`~/.local/share/kxmlgui5/dolphin/dolphinui.rc`),
 Dolphin's default view and the selected Kvantum theme (`~/.config/Kvantum/kvantum.kvconfig`).
 

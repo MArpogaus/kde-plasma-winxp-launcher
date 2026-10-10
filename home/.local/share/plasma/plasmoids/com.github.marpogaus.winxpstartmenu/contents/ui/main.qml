@@ -482,6 +482,7 @@ PlasmoidItem {
         return null;
     }
 
+    // XP's context menus have no icons
     function showItemContextMenu(model, index, favoriteId, actionList, visualParent, x, y) {
         if (!model) {
             return;
@@ -489,7 +490,7 @@ PlasmoidItem {
         const entries = [];
         const favorites = rootModel.favoritesModel;
 
-        entries.push({ text: i18n("Open"), icon: "system-run", handler: () => {
+        entries.push({ text: i18n("Open"), handler: () => {
             model.trigger(index, "", null);
             closeMenu();
         } });
@@ -497,11 +498,11 @@ PlasmoidItem {
         if (favoriteId && favorites) {
             entries.push({ separator: true });
             if (favorites.isFavorite(favoriteId)) {
-                entries.push({ text: i18n("Unpin from Start menu"), icon: "window-unpin", handler: () => {
+                entries.push({ text: i18n("Unpin from Start menu"), handler: () => {
                     favorites.removeFavorite(favoriteId);
                 } });
             } else {
-                entries.push({ text: i18n("Pin to Start menu"), icon: "window-pin", handler: () => {
+                entries.push({ text: i18n("Pin to Start menu"), handler: () => {
                     favorites.addFavorite(favoriteId, -1);
                 } });
             }
@@ -515,11 +516,11 @@ PlasmoidItem {
             const config = quickLaunchApplet.configuration;
             // Handlers re-read the list: it may change while the menu is open
             if (Array.from(config.launchers).includes(url)) {
-                entries.push({ text: i18n("Remove from Quick Launch"), icon: "list-remove", handler: () => {
+                entries.push({ text: i18n("Remove from Quick Launch"), handler: () => {
                     config.launchers = Array.from(config.launchers).filter(launcher => launcher !== url);
                 } });
             } else {
-                entries.push({ text: i18n("Add to Quick Launch"), icon: "list-add", handler: () => {
+                entries.push({ text: i18n("Add to Quick Launch"), handler: () => {
                     const launchers = Array.from(config.launchers);
                     if (!launchers.includes(url)) {
                         config.launchers = launchers.concat([url]);
@@ -535,7 +536,7 @@ PlasmoidItem {
                 if (action.type === "separator") {
                     entries.push({ separator: true });
                 } else if (action.type !== "title" && !action.subActions) {
-                    entries.push({ text: action.text, icon: action.icon, handler: () => {
+                    entries.push({ text: action.text, handler: () => {
                         if (model.trigger(index, action.actionId, action.actionArgument)) {
                             closeMenu();
                         }
@@ -548,7 +549,6 @@ PlasmoidItem {
         entries.forEach(entry => {
             contextMenuItemComponent.createObject(menu, {
                 text: entry.text ?? "",
-                icon: entry.icon ?? "",
                 separator: entry.separator === true,
                 handler: entry.handler ?? null,
             });

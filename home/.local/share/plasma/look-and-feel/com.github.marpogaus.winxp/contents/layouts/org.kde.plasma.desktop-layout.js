@@ -45,8 +45,31 @@ trayConfig.writeConfig("hiddenItems", [
 ]);
 panel.addWidget("com.github.marpogaus.winxpclock");
 
-// XP's desktop icons are 32 px (Plasma's default is 64 px)
+// XP's desktop icons are 32 px (Plasma's default is 64 px), filled in
+// columns from the top left
 desktops().forEach(function (desktop) {
     desktop.currentConfigGroup = ["General"];
     desktop.writeConfig("iconSize", 1);
+    desktop.writeConfig("arrangement", 1);
 });
+
+// Behave like XP (keys checked against KWin's kwin.kcfg and effect metadata)
+function setConfig(file, group, entries) {
+    var config = ConfigFile(file, group);
+    for (var key in entries) {
+        config.writeEntry(key, entries[key]);
+    }
+}
+// One desktop, as XP had
+setConfig("kwinrc", "Desktops", { Number: 1, Rows: 1 });
+// No hot corner (Overview sits in the top-left one by default; 9 = none)
+setConfig("kwinrc", "Effect-overview", { BorderActivate: 9 });
+// No snapping windows to half or full screen at the edges (Windows 7 came
+// with that), no shake-to-find-cursor, no zoom when windows open or close;
+// minimizing keeps KWin's default squash, like XP's shrink to the taskbar
+setConfig("kwinrc", "Windows", { ElectricBorderMaximize: false, ElectricBorderTiling: false });
+setConfig("kwinrc", "Plugins", { shakecursorEnabled: false, scaleEnabled: false, fadeEnabled: false, squashEnabled: true });
+// XP's animations were quick
+setConfig("kdeglobals", "KDE", { AnimationDurationFactor: 0.5, ScrollbarLeftClickNavigatesByPage: true });
+// Busy cursor (arrow with hourglass) instead of a bouncing icon at app start
+setConfig("klaunchrc", "BusyCursorSettings", { Bouncing: false });
