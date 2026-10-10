@@ -1,9 +1,15 @@
-# Windows XP Start Menu for KDE Plasma 6
+# Windows XP for KDE Plasma 6
 
-A Plasma 6 widget that replaces the application launcher with a replica of the
-Windows XP (Luna, blue) start button and start menu. It is meant to go with XP
-style Plasma themes such as [Exposé](https://www.opencode.net/phob1an/expose),
-where the stock Kickoff/Kicker menus look out of place.
+A one-click transformation pack that turns a Plasma 6 desktop into Windows XP
+(Luna, blue): start button and start menu, taskbar, notification area,
+Turn Off / Log Off dialogs with the grey screen fade, XP icons, cursors, fonts,
+sounds, window borders, Bliss and a Dolphin set up like XP's Explorer.
+
+```sh
+git clone https://github.com/MArpogaus/kde-plasma-winxp-launcher.git
+cd kde-plasma-winxp-launcher
+./install.sh            # undo with ./install.sh --uninstall
+```
 
 | Start menu | All Programs |
 | --- | --- |
@@ -16,7 +22,66 @@ programs; the icons come from a stand-in icon theme instead of Exposé's DamaDam
 Exposé's selection colour (`#326AC4`) matches the Luna highlight the menu uses,
 so the menu fits the theme without changes.
 
-## Features
+## What the pack installs
+
+| Part | Source |
+| --- | --- |
+| Start menu, taskbar, notification area, clock, Turn Off / Log Off dialogs | this repository (`plasmoids/`) |
+| Grey screen fade behind the dialogs (KWin effect) | this repository (`kwin/sessionfade`) |
+| Plasma theme, window borders, Kvantum application style, colours, splash, login screen | [Exposé](https://www.opencode.net/phob1an/expose) by phob1an |
+| XP icons (original bitmaps), XP fonts, XP wallpapers, start flag | [xfce-winxp-tc](https://github.com/rozniak/xfce-winxp-tc) |
+| Fallback icons for KDE-only names (traced XP style), Bliss in 4K | [KDE Plasma Luna](https://github.com/klapeto/KDE-Plasma-Luna) |
+| Cursors (HiDPI) | [modernXP](https://github.com/na0miluv/modernXP-cursor-theme), or xfce-winxp-tc's XP cursors if neither `rsvg-convert` nor Inkscape is installed |
+| Sounds | [Windows XP Sound Theme](https://github.com/wonordel/Windows-XP-Sound-Theme-KDE) |
+
+How `install.sh` works:
+
+1. **Downloads everything first.** If any resource is unavailable it stops and
+   nothing on the system has been changed.
+2. Builds the cursor theme (`tools/xcursor.py`, a byte-compatible replacement
+   for xcursorgen), the icon theme (`tools/build-icon-theme.py`; XP icons
+   first, then Luna, then Breeze) and Dolphin's XP toolbar
+   (`tools/patch-dolphin-ui.py`, for your Dolphin version).
+3. Backs up the configuration files it changes (first run only).
+4. Installs everything into your home directory.
+5. Applies it: colours, Plasma theme, icons, cursors, Kvantum style, window
+   borders and XP button layout, Tahoma / Trebuchet MS fonts, double click,
+   sounds, splash screen, Dolphin, and replaces the bottom panel with a 30 px
+   XP taskbar (`layout/xp-desktop.js`) on Bliss.
+
+Options: `--with-sddm` (login screen, needs sudo), `--no-panel` (keep your
+panels), `--no-dolphin`, `--icons FILE|URL` (any icon theme archive, e.g. one
+downloaded from store.kde.org), `--uninstall`.
+
+Requirements: Plasma 6, git, python3, curl. Recommended: Kvantum (application
+style) and `rsvg-convert` (HiDPI cursors).
+
+Fonts, sounds and bitmaps that come from Windows are (C) Microsoft Corp. The
+installer downloads them from their upstream projects on your machine; this
+repository contains none of them.
+
+### Dolphin as XP Explorer
+
+Toolbar *Back · Forward · Up | Search · Folders | Views* with labels on Back,
+Search and Folders, the address bar on its own row, menu bar and status bar on,
+48 px "tiles" with type and size, folders first, double click. Press F7 (or
+*Folders*) once to show the folder tree; Dolphin remembers it. XP's blue task
+pane on the left has no Dolphin counterpart; the Places panel takes its spot.
+
+## Widgets only
+
+```sh
+./install-widgets.sh
+```
+
+installs the four widgets (*Windows XP Start Menu*, *Windows XP Taskbar*,
+*Windows XP Notification Area*, *Windows XP Clock*) and the fade effect
+without changing anything else. For the XP taskbar look, add them in this
+order to a 30 px bottom panel: Start Menu, Taskbar, Notification Area,
+System Tray, Clock. The Notification Area paints the light blue block under
+everything to its right.
+
+## Start menu features
 
 - Green **start** button with flag, hover and pressed states, sized to the
   panel (99 × 30 px on a 30 px panel). Tooltip: "Click here to begin".
@@ -37,21 +102,6 @@ so the menu fits the theme without changes.
   the program list, Up/Down/Enter to launch, Esc to clear.
 - Meta key opens the menu (it can replace Kickoff via *Show Alternatives*).
 - Log Off and Turn Off Computer open XP style Log Off / Turn Off dialogs.
-
-## Installation
-
-Requires Plasma 6.
-
-```sh
-git clone https://github.com/MArpogaus/kde-plasma-winxp-launcher.git
-cd kde-plasma-winxp-launcher
-./install-widgets.sh
-```
-
-Then right-click the existing application launcher → *Show Alternatives…* →
-*Windows XP Start Menu*, or add it via *Add Widgets…*.
-
-To remove: `kpackagetool6 --type Plasma/Applet --remove com.github.marpogaus.winxpstartmenu`
 
 ### Fonts
 
