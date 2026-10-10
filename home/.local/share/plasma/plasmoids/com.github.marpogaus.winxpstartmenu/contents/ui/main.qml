@@ -178,7 +178,8 @@ PlasmoidItem {
         type: PlasmaCore.Dialog.AppletPopup
         flags: Qt.WindowStaysOnTopHint
         location: Plasmoid.location
-        visualParent: root.fullRepresentationItem
+        // Above the visible taskbar, not the applet area inside its padding
+        visualParent: root.fullRepresentationItem ? root.fullRepresentationItem.faceItem : null
         hideOnWindowDeactivate: false
 
         onActiveChanged: root.checkActivation()

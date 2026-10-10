@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
+  <!-- XP's round "show hidden icons" button, sampled from the XP taskbar -->
+  <defs>
+    <linearGradient id="fill" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#8ed4fb"/>
+      <stop offset="0.45" stop-color="#3aa6ec"/>
+      <stop offset="1" stop-color="#1a8ee6"/>
+    </linearGradient>
+  </defs>
+  <circle cx="11" cy="11" r="7.5" fill="#0d4fa8"/>
+  <circle cx="11" cy="11" r="6.5" fill="url(#fill)" stroke="#c8f4ff" stroke-opacity="0.7" stroke-width="1"/>
+  <polyline points="12.5,7.5 9,11 12.5,14.5" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="square"/>
+</svg>

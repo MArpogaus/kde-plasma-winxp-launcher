@@ -23,6 +23,8 @@ Item {
     property bool fillPanel: false
     readonly property rect area: fillPanel && !vertical ? panelArea.rect : Qt.rect(0, 0, width, height)
     readonly property real leftOverflow: area.x < 0 && area.x > -16 ? -area.x : 0
+    // The button as drawn on the taskbar; the menu opens right above it
+    readonly property alias faceItem: face
 
     PanelArea {
         id: panelArea

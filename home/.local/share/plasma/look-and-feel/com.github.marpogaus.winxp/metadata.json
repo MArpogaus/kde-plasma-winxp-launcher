@@ -7,11 +7,15 @@
             }
         ],
         "Category": "",
-        "Description": "XP taskbar with start menu, XP Alt+Tab and cursors. Apply the Expos\u00e9 Global Theme first; this one only changes the layout, Alt+Tab and cursors.",
+        "Description": "Windows XP: XP taskbar with start menu and Quick Launch, XP Alt+Tab and cursors on phob1an's Exposé look (window borders, Plasma theme, colours, Kvantum, wallpaper).",
         "Id": "com.github.marpogaus.winxp",
         "License": "GPL-2.0+",
         "Name": "Windows XP",
         "Website": "https://github.com/MArpogaus/kde-plasma-winxp-launcher"
     },
-    "X-Plasma-APIVersion": "2"
+    "X-Plasma-APIVersion": "2",
+    "X-KPackage-Dependencies": [
+        "kns://icons.knsrc/api.kde-look.org/2142950",
+        "kns://sddmtheme.knsrc/api.kde-look.org/1908708"
+    ]
 }

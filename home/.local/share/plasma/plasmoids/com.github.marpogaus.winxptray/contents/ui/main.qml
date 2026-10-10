@@ -73,5 +73,45 @@ PlasmoidItem {
                 }
             }
         }
+
+        // The System Tray's "show hidden icons" arrow only takes its icon
+        // from the icon theme. Give it XP's round chevron instead: find it
+        // in the panel (the tray loads after this widget and can reload)
+        // and point its two icons, collapsed and expanded, at our images.
+        property QtObject expander: null
+
+        function findExpander(item) {
+            if ("wasExpanded" in item && "arrowAnimationDuration" in item) {
+                return item;
+            }
+            const children = item.children;
+            for (let i = 0; i < children.length; ++i) {
+                const found = findExpander(children[i]);
+                if (found) {
+                    return found;
+                }
+            }
+            return null;
+        }
+
+        Timer {
+            interval: 1000
+            repeat: true
+            running: !anchorItem.expander && !!anchorItem.Window.window
+            triggeredOnStart: true
+            onTriggered: {
+                const expander = anchorItem.findExpander(anchorItem.Window.contentItem);
+                if (!expander) {
+                    return;
+                }
+                const icons = Array.from(expander.children).filter(c => "source" in c);
+                if (icons.length !== 2) {
+                    return;
+                }
+                icons[0].source = Qt.resolvedUrl("../images/chevron-left.svg");
+                icons[1].source = Qt.resolvedUrl("../images/chevron-right.svg");
+                anchorItem.expander = expander;
+            }
+        }
     }
 }

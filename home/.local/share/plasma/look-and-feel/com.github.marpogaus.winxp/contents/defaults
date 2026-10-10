@@ -1,5 +1,24 @@
 [kcminputrc][Mouse]
 cursorTheme=ModernXP
 
+[kdeglobals][General]
+ColorScheme=Expose
+
+[kdeglobals][Icons]
+Theme=ExposeAir
+
+[kdeglobals][KDE]
+widgetStyle=kvantum
+
 [kwinrc][WindowSwitcher]
 LayoutName=winxp_alttab
+
+[kwinrc][org.kde.kdecoration2]
+library=org.kde.kwin.aurorae
+theme=__aurorae__svg__expose
+
+[plasmarc][Theme]
+name=expose
+
+[Wallpaper]
+Image=Bløff

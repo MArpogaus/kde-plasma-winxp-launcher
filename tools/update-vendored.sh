@@ -20,10 +20,10 @@ H=$ROOT/home
 D=$H/.local/share
 replace() { rm -rf "$2"; mkdir -p "$(dirname "$2")"; cp -r "$1" "$2"; }
 
-# Exposé by phob1an, unmodified (GPL; wallpapers CC BY-SA), at the paths its
-# Plasma 6 Global Theme (org.magpie.expose.desktop) refers to
+# Exposé by phob1an, unmodified (GPL; wallpapers CC BY-SA), at the paths the
+# Windows XP Global Theme's contents/defaults refers to (taken from Exposé's
+# own Plasma 6 Global Theme, org.magpie.expose.desktop)
 E=$SRC/expose
-replace "$E/look-and-feel/org.magpie.expose.desktop" "$D/plasma/look-and-feel/org.magpie.expose.desktop"
 replace "$E/desktoptheme/expose" "$D/plasma/desktoptheme/expose"
 replace "$E/themes/expose" "$D/aurorae/themes/expose"
 replace "$E/Kvantum/Expose" "$H/.config/Kvantum/Expose"
@@ -32,7 +32,6 @@ replace "$E/wallpapers/expose" "$D/wallpapers/expose"
 for dir in "$E"/wallpapers/Bl*; do replace "$dir" "$D/wallpapers/Bløff"; done
 mkdir -p "$D/color-schemes"
 cp "$E/Expose.colors" "$D/color-schemes/Expose.colors"
-cp "$E/LICENSE" "$D/plasma/look-and-feel/org.magpie.expose.desktop/LICENSE"
 printf '[General]\ntheme=Expose\n' > "$H/.config/Kvantum/kvantum.kvconfig"
 
 

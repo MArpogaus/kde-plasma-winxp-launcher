@@ -20,18 +20,16 @@ application style).
    cp -r home/. ~
    ```
 
-2. Apply the **Expose** Global Theme (System Settings → Colors & Themes →
-   Global Theme). It is bundled unmodified from
-   [phob1an/expose](https://www.opencode.net/phob1an/expose) and sets the XP
-   window borders, Plasma theme, colours, Kvantum style and wallpaper.
-   [Kvantum](https://github.com/tsujan/Kvantum) is needed for the
-   application style; Exposé's *ExposeAir* icons and SDDM theme are not
-   bundled (*Get New…* in the Icons / Login Screen settings).
-3. Apply the **Windows XP** Global Theme with *Use desktop layout from
-   theme* ticked. It only changes the panel (a 30 px XP taskbar: Start,
-   Quick Launch, task buttons, notification area, system tray, clock), the
-   Alt+Tab switcher and the cursors, so Exposé's look stays. Log out and
-   back in once.
+2. Apply the **Windows XP** Global Theme (System Settings → Colors & Themes
+   → Global Theme) with *Use desktop layout from theme* ticked, then log out
+   and back in once. It sets up a 30 px XP taskbar (Start, Quick Launch,
+   task buttons, notification area, clock), XP Alt+Tab and the cursors, on
+   the look of [Exposé](https://www.opencode.net/phob1an/expose) by phob1an
+   (bundled unmodified): window borders, Plasma theme, colours, Kvantum
+   style and wallpaper. [Kvantum](https://github.com/tsujan/Kvantum) is
+   needed for the application style. Exposé's *ExposeAir* icons and login
+   screen are not bundled; get them with *Get New…* in the Icons and Login
+   Screen settings (or use the XP icons below).
 
 Copying overwrites Dolphin's toolbar (`~/.local/share/kxmlgui5/dolphin/dolphinui.rc`),
 Dolphin's default view and the selected Kvantum theme (`~/.config/Kvantum/kvantum.kvconfig`).
@@ -71,8 +69,8 @@ Files from `get-microsoft-files.sh` are in `~/.local/share/{fonts,sounds,wallpap
 | Start menu, Quick Launch, taskbar, notification area, clock widgets | `.local/share/plasma/plasmoids/com.github.marpogaus.*` | this repository, GPL-2.0+ |
 | Grey fade behind Turn Off / Log Off (KWin effect) | `.local/share/kwin/effects/winxp_sessionfade` | this repository, GPL-2.0+ |
 | XP Alt+Tab (KWin window switcher) | `.local/share/kwin/tabbox/winxp_alttab` | this repository, GPL-2.0+ |
-| Windows XP Global Theme (taskbar layout, Alt+Tab, cursors) | `.local/share/plasma/look-and-feel/com.github.marpogaus.winxp` | this repository, GPL-2.0+ |
-| Exposé (Global Theme, window borders, Plasma theme, colours, Kvantum, wallpapers) | `.local/share/plasma/look-and-feel/org.magpie.expose.desktop`, `.local/share/plasma/desktoptheme/expose`, `.local/share/aurorae/themes/expose`, `.local/share/color-schemes/Expose.colors`, `.config/Kvantum`, `.local/share/wallpapers/{expose,Bløff}` | [Exposé](https://www.opencode.net/phob1an/expose) by phob1an, unmodified, GPL (see the bundled `LICENSE` files) |
+| Windows XP Global Theme (taskbar layout, Alt+Tab, cursors, Exposé look) | `.local/share/plasma/look-and-feel/com.github.marpogaus.winxp` | this repository, GPL-2.0+ |
+| Exposé (window borders, Plasma theme, colours, Kvantum, wallpapers) | `.local/share/plasma/desktoptheme/expose`, `.local/share/aurorae/themes/expose`, `.local/share/color-schemes/Expose.colors`, `.config/Kvantum`, `.local/share/wallpapers/{expose,Bløff}` | [Exposé](https://www.opencode.net/phob1an/expose) by phob1an, unmodified, GPL (see the bundled `LICENSE` files) |
 | Cursors | `.local/share/icons/ModernXP` | built from [modernXP](https://github.com/na0miluv/modernXP-cursor-theme), GPL-3.0 |
 | Dolphin as XP Explorer | `.local/share/kxmlgui5/dolphin`, `.local/share/dolphin` | toolbar derived from [Dolphin](https://invent.kde.org/system/dolphin), GPL-2.0+ |
 
@@ -89,8 +87,10 @@ taller (about 28 px per row) to get several rows of task buttons.
 The notification area uses Plasma's own System Tray (so volume, network,
 battery and app icons all work), on XP's light blue block with the expand
 arrow on the left. Plasma gives every panel widget at least 22 px, so tray
-icons are 22 px where XP had 16 px, and the expand arrow comes from the
-icon theme (`arrow-left`), not from XP's round chevron.
+icons are 22 px where XP had 16 px. The tray's "show hidden icons" arrow
+gets XP's round chevron, and clipboard, brightness, Bluetooth,
+notifications and similar status icons start out hidden behind it (System
+Tray settings → Entries to change that).
 
 Quick Launch shows Show Desktop plus up to four launchers as 16 px icons
 (browser, file manager and Konsole by default) and puts the rest behind

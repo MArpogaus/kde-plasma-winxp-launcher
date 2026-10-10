@@ -2,7 +2,7 @@
 //
 // Desktop layout of the Windows XP Global Theme: one 30 px taskbar at the
 // bottom with Start, Quick Launch, task buttons, the notification area and the clock.
-// Apply the Exposé Global Theme first for the look of everything else.
+// The look (Exposé) comes from contents/defaults.
 
 var panel = new Panel;
 panel.location = "bottom";
@@ -31,4 +31,17 @@ var trayConfig = (trayContainmentId && desktopById(trayContainmentId)) || tray;
 trayConfig.currentConfigGroup = ["General"];
 trayConfig.writeConfig("reverseIconOrder", true);
 trayConfig.writeConfig("iconSpacing", 1);
+// XP hides inactive icons behind the chevron; keep volume, network,
+// battery and app icons in view
+trayConfig.writeConfig("hiddenItems", [
+    "org.kde.plasma.clipboard",
+    "org.kde.plasma.brightness",
+    "org.kde.plasma.bluetooth",
+    "org.kde.plasma.notifications",
+    "org.kde.plasma.keyboardindicator",
+    "org.kde.plasma.printmanager",
+    "org.kde.plasma.cameraindicator",
+    "org.kde.plasma.manage-inputmethod",
+    "org.kde.kdeconnect",
+]);
 panel.addWidget("com.github.marpogaus.winxpclock");
