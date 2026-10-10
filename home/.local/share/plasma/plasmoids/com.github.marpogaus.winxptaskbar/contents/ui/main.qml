@@ -154,7 +154,7 @@ PlasmoidItem {
 
                     onClicked: event => {
                         if (event.button === Qt.RightButton) {
-                            windowMenu.show(task);
+                            windowMenu.show(task, event.x, event.y);
                         } else if (event.button === Qt.MiddleButton) {
                             tasksModel.requestNewInstance(task.modelIndex);
                         } else if (task.model.IsActive === true && task.model.IsMinimized !== true) {
@@ -176,10 +176,12 @@ PlasmoidItem {
         readonly property bool minimized: task ? task.model.IsMinimized === true : false
         readonly property bool maximized: task ? task.model.IsMaximized === true : false
 
-        function show(item) {
+        // At the pointer like XP's; at the bottom of the screen it opens
+        // upwards with its left edge at the pointer
+        function show(item, x, y) {
             task = item;
             visualParent = item;
-            openRelative();
+            open(x, y);
         }
 
         function request(action) {
