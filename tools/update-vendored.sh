@@ -2,11 +2,11 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 #
 # Maintainer script: refresh the third-party files bundled in home/ (Exposé,
-# modernXP cursors, Dolphin's XP toolbar) from their upstream projects. Users do not need this, they copy home/.
-# Needs git, curl, python3 and rsvg-convert. URLs can be overridden with
-# WINXP_*_URL for testing.
+# modernXP cursors) from their upstream projects. Users do not need this,
+# they copy home/. Needs git, python3 and rsvg-convert. URLs can be
+# overridden with WINXP_*_URL for testing.
 set -euo pipefail
-for tool in git curl python3 rsvg-convert; do
+for tool in git python3 rsvg-convert; do
     command -v "$tool" >/dev/null || { echo "error: $tool is required" >&2; exit 1; }
 done
 cd "$(dirname "$0")/.."
@@ -17,7 +17,6 @@ trap 'rm -rf "$SRC"' EXIT
 clone() { git clone --quiet --depth 1 "$@"; }
 clone "${WINXP_EXPOSE_URL:-https://www.opencode.net/phob1an/expose.git}" "$SRC/expose"
 clone "${WINXP_CURSORS_URL:-https://github.com/na0miluv/modernXP-cursor-theme.git}" "$SRC/cursors"
-curl -fsSL "${WINXP_DOLPHIN_RC_URL:-https://raw.githubusercontent.com/KDE/dolphin/master/src/dolphinui.rc}" -o "$SRC/dolphinui.rc"
 
 H=$ROOT/home
 D=$H/.local/share
@@ -54,9 +53,5 @@ rm -rf "$D/icons/ModernXP"
 python3 tools/xcursor.py --config-dir "$C/config" --png-root "$SRC/png" --aliases "$C/cursorList" \
     --out "$D/icons/ModernXP" --name "Modern XP"
 cp "$SRC/cursors/LICENSE" "$D/icons/ModernXP/LICENSE"
-
-# Dolphin: XP Explorer toolbar
-mkdir -p "$D/kxmlgui5/dolphin"
-python3 tools/patch-dolphin-ui.py "$SRC/dolphinui.rc" "$D/kxmlgui5/dolphin/dolphinui.rc"
 
 echo "Vendored files refreshed in home/. Review with: git status home/"

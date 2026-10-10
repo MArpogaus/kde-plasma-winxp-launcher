@@ -114,8 +114,8 @@ done
 | Cursors | `.local/share/icons/ModernXP` | built from [modernXP](https://github.com/na0miluv/modernXP-cursor-theme), GPL-3.0 |
 | Dolphin as XP Explorer | `.local/share/kxmlgui5/dolphin`, `.local/share/dolphin` | toolbar derived from [Dolphin](https://invent.kde.org/system/dolphin), GPL-2.0+ |
 
-`tools/update-vendored.sh` refreshes Exposé and rebuilds the cursors and
-the Dolphin toolbar from upstream.
+`tools/update-vendored.sh` refreshes Exposé and rebuilds the cursors from
+upstream.
 
 ### Taskbar and notification area
 
@@ -160,8 +160,7 @@ Dolphin remembers all three. XP's blue task pane has no Dolphin
 counterpart.
 
 The toolbar file is made for the Dolphin version it was taken from; a newer
-Dolphin with a changed toolbar file ignores it until
-`tools/update-vendored.sh` refreshes it.
+Dolphin with a changed toolbar file ignores it until it is updated.
 
 ## Start menu features
 
@@ -210,8 +209,7 @@ Right-click the start button → *Configure Windows XP Start Menu…*
 - `tools/check-qml.py`: finds QML properties that shadow built-in ones
   (needs PySide6).
 - `tools/update-vendored.sh`: refreshes the third-party files in `home/`.
-- `tools/xcursor.py`, `tools/patch-dolphin-ui.py`: helpers of
-  `update-vendored.sh`.
+- `tools/xcursor.py`: builds the cursor theme for `update-vendored.sh`.
 - Edits to widgets: copy `home/` again and restart plasmashell
   (`systemctl --user restart plasma-plasmashell`).
 
