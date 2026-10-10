@@ -45,7 +45,25 @@ var ROWS = [
     "184e39 1e5023 1e5223 1f5226 1e5528 1e5a26 1e5923 255f2f 2c5e31 2c6034 2a5f34 285d31 265b2e 25552d 205227 1e4e26 1b491b 184218 163c16",
 ];
 
+// The pressed button (menu open) in the middle, one colour per row: a dark
+// inner shadow along the top, no highlight, brightest towards the bottom
+var PRESSED = "21503b 396b35 357434 2f7d2e 247f25 1d7e20 1c7d1e 1b7a1a 187919 167b19 157f15 158314 148615 138b15 108d12 119012 139213 139213 139213 139213 139213 139213 139213 139213 139213 139213 139213 118011 0e6c0e 0c5a0c";
+
 var table = ROWS.map(row => row.split(" ").map(hex => [0, 2, 4].map(i => parseInt(hex.substr(i, 2), 16))));
+
+var pressedCentre = PRESSED.split(" ").map(hex => [0, 2, 4].map(i => parseInt(hex.substr(i, 2), 16)));
+
+// Each column's colour relative to the middle one, averaged over the
+// middle rows: the pressed face keeps the edges' shading but not the
+// highlights of the top rows
+var MIDDLE = COLUMNS.findIndex(([kind]) => kind === "M");
+var columnShade = COLUMNS.map((column, i) => [0, 1, 2].map(channel => {
+    let sum = 0;
+    for (let r = 8; r <= 20; ++r) {
+        sum += table[r][i][channel] / table[r][MIDDLE][channel];
+    }
+    return sum / 13;
+}));
 
 // How far the right edge pulls back from the middle at row y, fitted to
 // XP's button: a power curve, fuller at the top than at the bottom
@@ -60,10 +78,14 @@ function mix(a, b, t) {
 }
 
 // Colour samples of row y (interpolated between the table's rows)
-function rowAt(y, h) {
+function rowAt(y, h, pressed) {
     const r = Math.max(0, Math.min(29, (y + 0.5) * 30 / h - 0.5));
     const top = Math.floor(r);
     const bottom = Math.min(29, top + 1);
+    if (pressed) {
+        const centre = mix(pressedCentre[top], pressedCentre[bottom], r - top);
+        return columnShade.map(shade => [0, 1, 2].map(channel => Math.min(255, centre[channel] * shade[channel])));
+    }
     return table[top].map((c, i) => mix(c, table[bottom][i], r - top));
 }
 
@@ -86,26 +108,24 @@ function css(c) {
 }
 
 // Paints the face into a w × h canvas context, one horizontal gradient per
-// pixel row; `look` is "normal", "hover" or "pressed". `curved` false draws
+// pixel row; `look` is "normal", "hover" or "pressed" (menu open). `curved` false draws
 // a square right end (vertical panels).
 function paint(ctx, w, h, look, curved) {
     const scale = h / 30;
-    const middle = COLUMNS.findIndex(([kind]) => kind === "M");
+    const middle = MIDDLE;
     const centres = columnCentres(w, scale);
     // Positions from left to right, the middle colour filling the gap
     // between the left and the right samples
     const xs = centres.slice(0, middle).concat([centres[middle - 1] + 10 * scale, centres[middle] - 10 * scale], centres.slice(middle));
     ctx.clearRect(0, 0, w, h);
     for (let y = 0; y < h; ++y) {
-        const samples = rowAt(y, h);
+        const samples = rowAt(y, h, look === "pressed");
         const colours = samples.slice(0, middle).concat([samples[middle], samples[middle]], samples.slice(middle + 1));
         const gradient = ctx.createLinearGradient(0, 0, w, 0);
         colours.forEach((colour, i) => {
             let c = colour;
             if (look === "hover") {
                 c = mix(c, [255, 255, 255], 0.12);
-            } else if (look === "pressed") {
-                c = mix(c, [0, 26, 0], 0.3);
             }
             gradient.addColorStop(Math.max(0, Math.min(1, xs[i] / w)), css(c));
         });

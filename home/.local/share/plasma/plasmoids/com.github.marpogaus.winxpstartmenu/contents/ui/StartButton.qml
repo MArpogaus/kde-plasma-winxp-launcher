@@ -82,7 +82,6 @@ Item {
             readonly property bool custom: button.iconName.length > 0
             x: button.vertical ? Math.round((parent.width - width) / 2) : Math.round(button.thickness * (custom ? 0.27 : 0.23))
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: button.pressedLook ? 1 : 0
             width: Math.round(button.thickness * (custom ? 0.667 : 0.84))
             height: width
 
@@ -124,9 +123,9 @@ Item {
         Text {
             id: label
             visible: !button.vertical
-            x: Math.round(button.thickness * 1.17) + (button.pressedLook ? 1 : 0)
+            x: Math.round(button.thickness * 1.17)
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: button.pressedLook ? 2 : 1
+            anchors.verticalCenterOffset: 1
             text: button.text
             textFormat: Text.PlainText
             // Grey antialiasing: the panel's native rendering adds colour fringes
