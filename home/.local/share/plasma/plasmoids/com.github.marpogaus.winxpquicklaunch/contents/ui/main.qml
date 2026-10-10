@@ -24,11 +24,20 @@ PlasmoidItem {
     readonly property int cell: 22
     readonly property int spacing: 1
 
-    // Entries: Show Desktop (optional) followed by the configured launchers
-    // What the TasksModel kept of the configured launchers: it drops
-    // duplicates, invalid URLs and preferred:// apps that are not set, so
-    // positions are counted and edited on its list
-    readonly property int launcherCount: launchers.launcherCount
+    // Entries: Show Desktop (optional) followed by the launchers the
+    // TasksModel kept (it drops duplicates, invalid URLs and preferred://
+    // apps that are not set), so positions are counted and edited on its
+    // list. Counted here: TasksModel's launcherCount and count only notify
+    // changes after its first fill, while an Instantiator follows the rows.
+    readonly property int launcherCount: {
+        let n = 0;
+        for (let i = 0; i < launcherRows.count; ++i) {
+            if (launchers.data(launchers.makeModelIndex(i), TaskManager.AbstractTasksModel.IsLauncher) === true) {
+                ++n;
+            }
+        }
+        return n;
+    }
     readonly property int entryCount: launcherCount + (Plasmoid.configuration.showDesktop ? 1 : 0)
     readonly property int shownCount: Math.min(entryCount, Plasmoid.configuration.maximumIcons)
     readonly property bool overflow: entryCount > shownCount
@@ -51,6 +60,12 @@ PlasmoidItem {
         sortMode: TaskManager.TasksModel.SortManual
         filterByActivity: true
         activity: "winxp-quicklaunch-launchers-only"
+    }
+
+    Instantiator {
+        id: launcherRows
+        model: launchers
+        delegate: QtObject {}
     }
 
     P5Support.DataSource {
@@ -243,7 +258,8 @@ PlasmoidItem {
                         onClicked: overflowMenu.openRelative()
                     }
                 }
-            }        }
+            }
+        }
 
         // Etched separator towards the task buttons
         Item {
