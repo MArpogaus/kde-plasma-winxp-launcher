@@ -165,7 +165,6 @@ PlasmoidItem {
                 id: chevronMouse
                 anchors.fill: parent
                 onClicked: anchorItem.trayExpanded = !anchorItem.trayExpanded
-                }
             }
         }
     }
