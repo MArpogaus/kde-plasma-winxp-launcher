@@ -92,8 +92,7 @@ every panel widget at least 22 px, so tray icons are 22 px where XP had
 16 px. Like XP's *Hide inactive icons*, clipboard, brightness, Bluetooth,
 notifications and similar status icons start out hidden (System Tray
 settings → Entries to change that); XP's round chevron on the left shows
-them in the notification area itself instead of Plasma's popup (it
-toggles the tray's *Always show all entries*).
+them in the notification area itself instead of Plasma's popup.
 
 The clock follows System Settings → Region & Language. Right-click →
 Configure for XP's options: *Show the clock*, an XP style time format

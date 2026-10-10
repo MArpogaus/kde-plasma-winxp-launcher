@@ -75,13 +75,14 @@ PlasmoidItem {
             target: bar
         }
 
-        Flow {
+        // One row (one column in a vertical panel) that never wraps
+        Grid {
             id: row
 
             x: 2
             y: root.horizontal ? Math.round(bar.area.y + (bar.area.height - root.cell) / 2) : 2
-            width: root.horizontal ? implicitWidth : bar.width
-            flow: root.horizontal ? Flow.LeftToRight : Flow.TopToBottom
+            rows: root.horizontal ? 1 : -1
+            columns: root.horizontal ? -1 : 1
             spacing: root.spacing
 
             LaunchButton {

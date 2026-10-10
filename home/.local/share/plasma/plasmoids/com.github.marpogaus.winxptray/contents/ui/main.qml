@@ -76,14 +76,37 @@ PlasmoidItem {
 
         // XP's round chevron. Plasma's own "show hidden icons" arrow opens a
         // popup; XP instead widens the notification area in place. So hide
-        // Plasma's arrow and toggle the tray's "Always show all entries"
-        // setting from here. The tray is found in the panel once it has
-        // loaded (it comes after this widget) and again whenever it reloads.
+        // Plasma's arrow and, while expanded, let the tray's list of shown
+        // icons take the hidden ones too (and its hidden list none): the
+        // same move Plasma makes when an app's icon becomes active, so it is
+        // immediate. The tray is found in the panel once it has loaded (it
+        // comes after this widget) and again whenever it reloads.
         property Item tray: null
-        readonly property var trayConfig: tray ? tray.plasmoid.configuration : null
-        readonly property bool trayExpanded: trayConfig ? trayConfig.showAllItems === true : false
+        property bool trayExpanded: false
+        property var originalFilters: null
         readonly property bool showChevron: horizontal && tray !== null
             && (trayExpanded || tray.hiddenLayout.itemCount > 0)
+
+        onTrayExpandedChanged: {
+            if (!tray) {
+                return;
+            }
+            const shown = tray.visibleLayout.model;
+            const hidden = tray.hiddenModel;
+            if (!originalFilters) {
+                originalFilters = { shown: shown.filterRowCallback, hidden: hidden.filterRowCallback };
+            }
+            if (trayExpanded) {
+                shown.filterRowCallback = (row, parent) => {
+                    const status = shown.sourceModel.data(shown.sourceModel.index(row, 0, parent), shown.filterRole);
+                    return status === PlasmaCore.Types.ActiveStatus || status === PlasmaCore.Types.PassiveStatus;
+                };
+                hidden.filterRowCallback = () => false;
+            } else {
+                shown.filterRowCallback = originalFilters.shown;
+                hidden.filterRowCallback = originalFilters.hidden;
+            }
+        }
 
         function findItem(item, test) {
             if (test(item)) {
@@ -111,6 +134,8 @@ PlasmoidItem {
                     i => "wasExpanded" in i && "arrowAnimationDuration" in i);
                 if (expander) {
                     expander.visible = false;
+                    anchorItem.originalFilters = null;
+                    anchorItem.trayExpanded = false;
                     anchorItem.tray = tray;
                 }
             }
@@ -139,13 +164,7 @@ PlasmoidItem {
             MouseArea {
                 id: chevronMouse
                 anchors.fill: parent
-                onClicked: {
-                    anchorItem.trayConfig.showAllItems = !anchorItem.trayExpanded;
-                    // The tray only reloads its settings once they are saved,
-                    // which otherwise happens seconds later
-                    if (typeof anchorItem.trayConfig.writeConfig === "function") {
-                        anchorItem.trayConfig.writeConfig();
-                    }
+                onClicked: anchorItem.trayExpanded = !anchorItem.trayExpanded
                 }
             }
         }
