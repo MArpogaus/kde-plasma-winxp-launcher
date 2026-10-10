@@ -306,7 +306,7 @@ PlasmoidItem {
     }
 
     // bottomAlign: grow upwards from visualParent's bottom edge (All Programs);
-    // otherwise the cascade is top-aligned next to it (folders, XP style).
+    // otherwise the cascade's first row is level with visualParent.
     function openCascade(level, visualParent, model, ownerView, ownerIndex, bottomAlign) {
         closeCascadesFrom(level);
         if (!model || !visualParent) {
@@ -321,11 +321,7 @@ PlasmoidItem {
             // keeps it stacked above the menu (or the cascade it came from)
             transientParent: level > 0 && cascades[level - 1] ? cascades[level - 1] : menuDialog,
         });
-        if (bottomAlign) {
-            cascade.alignBottomTo(visualParent);
-        } else {
-            cascade.visualParent = visualParent;
-        }
+        cascade.placeAt(visualParent, bottomAlign === true);
         cascade.visible = true;
         const list = cascades.slice(0, level);
         list[level] = cascade;
@@ -468,6 +464,17 @@ PlasmoidItem {
         sessionDialog.open("turnoff");
     }
 
+    // The Quick Launch widget in the same panel, if there is one
+    function quickLaunch() {
+        const applets = Plasmoid.containment ? Plasmoid.containment.applets : [];
+        for (let i = 0; i < applets.length; ++i) {
+            if (applets[i].pluginName === "com.github.marpogaus.winxpquicklaunch") {
+                return applets[i];
+            }
+        }
+        return null;
+    }
+
     function showItemContextMenu(model, index, favoriteId, actionList, visualParent, x, y) {
         if (!model) {
             return;
@@ -489,6 +496,24 @@ PlasmoidItem {
             } else {
                 entries.push({ text: i18n("Pin to Start menu"), icon: "window-pin", handler: () => {
                     favorites.addFavorite(favoriteId, -1);
+                } });
+            }
+        }
+
+        const quickLaunchApplet = favoriteId ? quickLaunch() : null;
+        if (quickLaunchApplet) {
+            // Quick Launch takes the launcher URLs the Task Manager uses
+            const url = favoriteId.startsWith("/") ? "file://" + favoriteId
+                : favoriteId.includes(":") ? favoriteId : "applications:" + favoriteId;
+            const config = quickLaunchApplet.configuration;
+            const launchers = Array.from(config.launchers);
+            if (launchers.includes(url)) {
+                entries.push({ text: i18n("Remove from Quick Launch"), icon: "list-remove", handler: () => {
+                    config.launchers = launchers.filter(launcher => launcher !== url);
+                } });
+            } else {
+                entries.push({ text: i18n("Add to Quick Launch"), icon: "list-add", handler: () => {
+                    config.launchers = launchers.concat([url]);
                 } });
             }
         }

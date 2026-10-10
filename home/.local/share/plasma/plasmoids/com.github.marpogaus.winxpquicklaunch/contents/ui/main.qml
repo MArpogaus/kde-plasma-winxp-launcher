@@ -3,7 +3,9 @@
 
     Windows XP Quick Launch toolbar: 16 px launcher icons in 22 px cells,
     Show Desktop first, a » button for launchers that do not fit and a
-    separator towards the task buttons.
+    separator towards the task buttons. Like XP's: drop applications on it
+    to add them, drag icons to reorder them, right-click to remove them.
+    The start menu's "Add to Quick Launch" writes the same launcher list.
 */
 import QtQuick
 import QtQuick.Layouts
@@ -13,6 +15,7 @@ import org.kde.plasma.extras as PlasmaExtras
 import org.kde.plasma.plasma5support as P5Support
 import org.kde.kirigami as Kirigami
 import org.kde.taskmanager as TaskManager
+import org.kde.draganddrop as DragAndDrop
 
 PlasmoidItem {
     id: root
@@ -60,6 +63,46 @@ PlasmoidItem {
         launchers.requestActivate(launchers.makeModelIndex(row));
     }
 
+    // Launcher list editing; the TasksModel follows the configuration
+    function editLaunchers(edit) {
+        const list = Array.from(Plasmoid.configuration.launchers);
+        edit(list);
+        Plasmoid.configuration.launchers = list;
+    }
+
+    function addLaunchers(urls, position) {
+        editLaunchers(list => {
+            let at = Math.max(0, Math.min(position, list.length));
+            urls.map(url => url.toString()).forEach(url => {
+                if (url.length > 0 && !list.includes(url)) {
+                    list.splice(at++, 0, url);
+                }
+            });
+        });
+    }
+
+    function removeLauncher(position) {
+        editLaunchers(list => list.splice(position, 1));
+    }
+
+    function moveLauncher(from, to) {
+        if (from !== to) {
+            editLaunchers(list => list.splice(to, 0, list.splice(from, 1)[0]));
+        }
+    }
+
+    // Launcher position (insertion point) for a point in the icon row
+    property Item iconRow: null
+    function launcherIndexAt(x, y) {
+        const along = horizontal ? x - iconRow.x : y - iconRow.y;
+        const first = Plasmoid.configuration.showDesktop ? 1 : 0;
+        const slot = Math.round(along / (cell + spacing)) - first;
+        return Math.max(0, Math.min(slot, Math.min(launcherCount, shownCount - first)));
+    }
+
+    // Insertion marker position while something is dragged over the bar
+    property int dropIndex: -1
+
     fullRepresentation: Item {
         id: bar
 
@@ -73,6 +116,35 @@ PlasmoidItem {
         PanelArea {
             id: panelArea
             target: bar
+        }
+
+        Component.onCompleted: root.iconRow = row
+
+        // Applications dragged from menus, Dolphin or the desktop
+        DragAndDrop.DropArea {
+            anchors.fill: parent
+            onDragEnter: event => root.dropIndex = root.launcherIndexAt(event.x, event.y)
+            onDragMove: event => root.dropIndex = root.launcherIndexAt(event.x, event.y)
+            onDragLeave: root.dropIndex = -1
+            onDrop: event => {
+                if (event.mimeData.urls.length > 0) {
+                    root.addLaunchers(event.mimeData.urls, root.dropIndex);
+                    event.accept(Qt.CopyAction);
+                }
+                root.dropIndex = -1;
+            }
+        }
+
+        // Where a dropped or dragged launcher goes
+        Rectangle {
+            visible: root.dropIndex >= 0
+            readonly property real offset: (root.dropIndex + (Plasmoid.configuration.showDesktop ? 1 : 0)) * (root.cell + root.spacing) - 1
+            x: root.horizontal ? row.x + offset - 1 : 0
+            y: root.horizontal ? row.y : row.y + offset - 1
+            width: root.horizontal ? 2 : bar.width
+            height: root.horizontal ? root.cell : 2
+            color: "#ffffff"
+            z: 1
         }
 
         // One row (one column in a vertical panel) that never wraps
@@ -98,6 +170,8 @@ PlasmoidItem {
                 delegate: LaunchButton {
                     required property int index
                     required property var model
+
+                    launcherIndex: index
 
                     // Launchers come first in the model, in configuration order
                     visible: model.IsLauncher === true
@@ -183,6 +257,9 @@ PlasmoidItem {
 
         property var iconSource
         property string toolTip
+        // Position in the launcher list; -1 for Show Desktop
+        property int launcherIndex: -1
+        property bool dragging: false
 
         signal clicked()
 
@@ -215,11 +292,73 @@ PlasmoidItem {
             location: Plasmoid.location
         }
 
+        // Click starts it; dragging along the bar moves it; right-click
+        // offers to remove it
         MouseArea {
             id: mouse
+
+            property point pressPoint
+
             anchors.fill: parent
             hoverEnabled: true
-            onClicked: button.clicked()
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            onPressed: mouse => {
+                pressPoint = Qt.point(mouse.x, mouse.y);
+                button.dragging = false;
+            }
+            onPositionChanged: mouse => {
+                if (!pressed || button.launcherIndex < 0) {
+                    return;
+                }
+                const moved = Math.abs(mouse.x - pressPoint.x) + Math.abs(mouse.y - pressPoint.y);
+                if (moved > 6) {
+                    button.dragging = true;
+                }
+                if (button.dragging) {
+                    const p = mapToItem(root.iconRow, mouse.x, mouse.y);
+                    root.dropIndex = root.launcherIndexAt(p.x + root.iconRow.x, p.y + root.iconRow.y);
+                }
+            }
+            onReleased: mouse => {
+                // dragging stays set until the next press so that this
+                // release does not count as a click
+                if (button.dragging) {
+                    const to = root.dropIndex;
+                    root.dropIndex = -1;
+                    if (to >= 0) {
+                        root.moveLauncher(button.launcherIndex, to > button.launcherIndex ? to - 1 : to);
+                    }
+                }
+            }
+            onCanceled: {
+                button.dragging = false;
+                root.dropIndex = -1;
+            }
+            onClicked: mouse => {
+                if (mouse.button === Qt.RightButton) {
+                    if (button.launcherIndex >= 0) {
+                        contextMenu.open(mouse.x, mouse.y);
+                    }
+                } else if (!button.dragging) {
+                    button.clicked();
+                }
+            }
+        }
+
+        PlasmaExtras.Menu {
+            id: contextMenu
+            visualParent: button
+
+            PlasmaExtras.MenuItem {
+                text: i18n("Remove from Quick Launch")
+                icon: "list-remove"
+                onClicked: root.removeLauncher(button.launcherIndex)
+            }
+            PlasmaExtras.MenuItem {
+                text: i18n("Configure Quick Launch…")
+                icon: "configure"
+                onClicked: Plasmoid.internalAction("configure").trigger()
+            }
         }
     }
 }
