@@ -1,86 +1,97 @@
 # Windows XP for KDE Plasma 6
 
-A one-click transformation pack that turns a Plasma 6 desktop into Windows XP
-(Luna, blue): start button and start menu, taskbar, notification area,
-Turn Off / Log Off dialogs with the grey screen fade, XP icons, cursors, fonts,
-sounds, window borders, Bliss and a Dolphin set up like XP's Explorer.
-
-```sh
-git clone https://github.com/MArpogaus/kde-plasma-winxp-launcher.git
-cd kde-plasma-winxp-launcher
-./install.sh            # undo with ./install.sh --uninstall
-```
+Turns a Plasma 6 desktop into Windows XP (Luna, blue): start button and
+start menu, taskbar, notification area, Turn Off / Log Off dialogs with the
+grey screen fade, XP Alt+Tab, Luna icons, XP cursors, Exposé window borders
+and application style, and Dolphin set up like XP's Explorer.
 
 | Start menu | All Programs |
 | --- | --- |
 | ![Start menu](docs/preview-menu.png) | ![All Programs](docs/preview-all-programs.png) |
 
-*Shown on the [Exposé](https://www.opencode.net/phob1an/expose) theme by phob1an
-(its wallpaper and 38 px taskbar, GPL-2.0+). Rendered offscreen with placeholder
-programs; the icons come from a stand-in icon theme instead of Exposé's DamaDamas.*
+## Install
 
-Exposé's selection colour (`#326AC4`) matches the Luna highlight the menu uses,
-so the menu fits the theme without changes.
+Everything lives in `home/` at the place it belongs in your home directory.
 
-## What the pack installs
+```sh
+git clone https://github.com/MArpogaus/kde-plasma-winxp-launcher.git
+cd kde-plasma-winxp-launcher
+cp -r home/. ~
+```
 
-| Part | Source |
-| --- | --- |
-| Start menu, taskbar, notification area, clock, Turn Off / Log Off dialogs | this repository (`plasmoids/`) |
-| Grey screen fade behind the dialogs (KWin effect), XP Alt+Tab switcher | this repository (`kwin/`) |
-| Plasma theme, window borders, Kvantum application style, colours, splash, login screen | [Exposé](https://www.opencode.net/phob1an/expose) by phob1an |
-| XP icons (original bitmaps), XP fonts, XP wallpapers, start flag | [xfce-winxp-tc](https://github.com/rozniak/xfce-winxp-tc) |
-| Fallback icons for KDE-only names (traced XP style), Bliss in 4K | [KDE Plasma Luna](https://github.com/klapeto/KDE-Plasma-Luna) |
-| Cursors (HiDPI) | [modernXP](https://github.com/na0miluv/modernXP-cursor-theme), or xfce-winxp-tc's XP cursors if neither `rsvg-convert` nor Inkscape is installed |
-| Sounds | [Windows XP Sound Theme](https://github.com/wonordel/Windows-XP-Sound-Theme-KDE) |
+Then *System Settings → Colors & Themes → Global Theme → Windows XP*, tick
+*Use desktop layout from theme*, and *Apply*. Log out and back in once.
 
-How `install.sh` works:
+This applies the Exposé colours, Plasma theme, window borders and Kvantum
+style, Luna icons, modernXP cursors, the XP Alt+Tab switcher, the Exposé
+splash screen and wallpaper, and replaces your panels with a 30 px XP
+taskbar: Start, task buttons, notification area, system tray, clock.
 
-1. **Downloads everything first.** If any resource is unavailable it stops and
-   nothing on the system has been changed.
-2. Builds the cursor theme (`tools/xcursor.py`, a byte-compatible replacement
-   for xcursorgen), the icon theme (`tools/build-icon-theme.py`; XP icons
-   first, then Luna, then Breeze) and Dolphin's XP toolbar
-   (`tools/patch-dolphin-ui.py`, for your Dolphin version).
-3. Backs up the configuration files it changes (first run only).
-4. Installs everything into your home directory.
-5. Applies it: colours, Plasma theme, icons, cursors, Kvantum style, window
-   borders and XP button layout, Tahoma / Trebuchet MS fonts, double click,
-   sounds, splash screen, Dolphin, and replaces the bottom panel with a 30 px
-   XP taskbar (`layout/xp-desktop.js`) on Bliss.
+Requirements: Plasma 6; [Kvantum](https://github.com/tsujan/Kvantum) for the
+application style (without it applications fall back to Fusion).
 
-Options: `--with-sddm` (login screen, needs sudo), `--no-panel` (keep your
-panels), `--no-dolphin`, `--icons FILE|URL` (any icon theme archive, e.g. one
-downloaded from store.kde.org), `--uninstall`.
+Copying overwrites Dolphin's toolbar (`~/.local/share/kxmlgui5/dolphin/dolphinui.rc`),
+Dolphin's default view and Kvantum's theme choice (`~/.config/Kvantum/kvantum.kvconfig`).
 
-Requirements: Plasma 6, git, python3, curl. Recommended: Kvantum (application
-style) and `rsvg-convert` (HiDPI cursors).
+### Original XP files (optional)
 
-Fonts, sounds and bitmaps that come from Windows are (C) Microsoft Corp. The
-installer downloads them from their upstream projects on your machine; this
-repository contains none of them.
+XP's fonts, original icons, sounds, Bliss and the original start flag belong
+to Microsoft, so they are not part of this repository.
+`./get-microsoft-files.sh` downloads them from
+[xfce-winxp-tc](https://github.com/rozniak/xfce-winxp-tc) and
+[Windows-XP-Sound-Theme-KDE](https://github.com/wonordel/Windows-XP-Sound-Theme-KDE),
+and switches to the XP icons (falling back to Luna), Tahoma / Trebuchet MS,
+the XP sounds and Bliss. The start button picks up XP's flag automatically.
+
+### Login screen (optional)
+
+Exposé's login screen is a system-wide SDDM theme; see
+[Exposé](https://www.opencode.net/phob1an/expose) (`sddm/themes/expose`).
+
+### Uninstall
+
+Pick another Global Theme with *Use desktop layout from theme* ticked (so
+no panel keeps the XP widgets), then remove the copied files and, if you ran
+`get-microsoft-files.sh`, what it downloaded:
+
+```sh
+(cd home && git ls-files) | (cd ~ && xargs -d '\n' rm -f)
+rm -rf ~/.local/share/{fonts,wallpapers,sounds}/WindowsXP \
+       ~/.local/share/icons/WindowsXP-Luna ~/.local/share/winxp-kde
+```
+
+The XP fonts and sounds stay selected in *System Settings* until you pick
+others there.
+
+## What is in `home/`
+
+| Part | Path | Source, license |
+| --- | --- | --- |
+| Start menu, taskbar, notification area, clock widgets | `.local/share/plasma/plasmoids/com.github.marpogaus.*` | this repository, GPL-2.0+ |
+| Grey fade behind Turn Off / Log Off (KWin effect) | `.local/share/kwin/effects/winxp_sessionfade` | this repository, GPL-2.0+ |
+| XP Alt+Tab (KWin window switcher) | `.local/share/kwin/tabbox/winxp_alttab` | this repository, GPL-2.0+ |
+| Windows XP Global Theme (defaults, taskbar layout) | `.local/share/plasma/look-and-feel/com.github.marpogaus.winxp` | this repository; splash from Exposé, GPL-3.0 |
+| Plasma theme, window borders, colours, Kvantum style, wallpaper | `desktoptheme/expose`, `aurorae/themes/Expose`, `color-schemes`, `.config/Kvantum`, `wallpapers/Expose` | [Exposé](https://www.opencode.net/phob1an/expose) by phob1an, GPL-3.0 (wallpaper CC BY-SA 4.0) |
+| Luna icons (up to 128 px) | `.local/share/icons/Luna` | [KDE Plasma Luna](https://github.com/klapeto/KDE-Plasma-Luna) by klapeto, GPL-3.0 |
+| Cursors | `.local/share/icons/ModernXP` | built from [modernXP](https://github.com/na0miluv/modernXP-cursor-theme), GPL-3.0 |
+| Dolphin as XP Explorer | `.local/share/kxmlgui5/dolphin`, `.local/share/dolphin` | toolbar derived from [Dolphin](https://invent.kde.org/system/dolphin), GPL-2.0+ |
+
+The third-party parts keep their licences (see the LICENSE files next to
+them); because of them the bundle as a whole is distributed under GPL-3.0.
+`tools/update-vendored.sh` refreshes them from upstream.
 
 ### Dolphin as XP Explorer
 
-Toolbar *Back · Forward · Up | Search · Folders | Views* with labels on Back,
-Search and Folders, the address bar on its own row, menu bar and status bar on,
-48 px "tiles" with type and size, folders first, double click. Press F7 (or
-*Folders*) once to show the folder tree; Dolphin remembers it. XP's blue task
-pane on the left has no Dolphin counterpart; the Places panel takes its spot.
+Toolbar *Back · Forward · Up | Search · Folders | Views* with labels on
+Back, Search and Folders, the address bar on its own row, and tiles
+(compact view) with type and size. Press Ctrl+M once for the menu bar, F7
+for the folder tree and Ctrl++ until the tiles reach XP's 48 px icons;
+Dolphin remembers all three. XP's blue task pane has no Dolphin
+counterpart.
 
-## Widgets only
-
-```sh
-./install-widgets.sh
-```
-
-installs the four widgets (*Windows XP Start Menu*, *Windows XP Taskbar*,
-*Windows XP Notification Area*, *Windows XP Clock*), and installs and
-enables the fade effect and the *Windows XP* Alt+Tab switcher
-(`packages.list`), without changing anything else. For the XP taskbar look, add them in this
-order to a 30 px bottom panel: Start Menu, Taskbar, Notification Area,
-System Tray, Clock. The Notification Area paints the light blue block under
-everything to its right.
+The toolbar file is made for the Dolphin release it was taken from; a newer
+Dolphin with a changed toolbar file ignores it until
+`tools/update-vendored.sh` refreshes it.
 
 ## Start menu features
 
@@ -107,31 +118,34 @@ everything to its right.
 ### Fonts
 
 XP uses **Tahoma** in the menu and **Franklin Gothic Medium** on the start
-button. If they are not installed the widget falls back to bundled look-alikes:
-Wine's metric-compatible Tahoma (LGPL) and Libre Franklin (OFL); see
-`plasmoids/startmenu/contents/fonts`. Installing the original Tahoma gives the authentic
-bold weight. Both fonts are configurable in the widget settings.
+button. If they are not installed the start menu falls back to bundled
+look-alikes: Wine's metric-compatible Tahoma (LGPL) and Libre Franklin (OFL),
+see the widget's `contents/fonts`. Both fonts are configurable.
 
 ## Configuration
 
 Right-click the start button → *Configure Windows XP Start Menu…*
 
-- button label, icon (empty = built-in flag) and fonts
+- button label, icon (empty = XP's flag if downloaded, else the built-in one) and fonts
 - number of frequently used programs; which optional entries of the right
-  column are shown (My Recent Documents, My Pictures, My Music, My Network
-  Places, Set Program Access and Defaults, Printers and Faxes), like XP's
-  *Customize Start Menu* dialog
+  column are shown, like XP's *Customize Start Menu* dialog
 - the location or command behind every entry of the right column
-  (My Computer, Control Panel, Printers and Faxes, Help and Support, Search, Run…)
 
-## Notes
+## Development
 
-- Uses Plasma's private `org.kde.plasma.private.kicker` models (as Kickoff,
-  Kicker and many third-party launchers do), so pinned programs and usage
-  statistics come from KActivities.
-- All artwork in `plasmoids/startmenu/contents/images` is original and licensed with the
-  rest of the project. No Microsoft assets are included.
+- `tools/check-qml.py`: finds QML properties that shadow built-in ones
+  (needs PySide6).
+- `tools/update-vendored.sh`: refreshes the third-party files in `home/`.
+- `tools/xcursor.py`, `tools/build-icon-theme.py`, `tools/patch-dolphin-ui.py`:
+  helpers used by the two scripts.
+- Edits to widgets: copy `home/` again and restart plasmashell
+  (`systemctl --user restart plasma-plasmashell`).
+
+The start menu uses Plasma's private `org.kde.plasma.private.kicker` models
+(as Kickoff and Kicker do). All artwork of the widgets is original; no
+Microsoft assets are included in this repository.
 
 ## License
 
-GPL-2.0-or-later
+This repository's own code: GPL-2.0-or-later. Bundled third-party files:
+see the table above.

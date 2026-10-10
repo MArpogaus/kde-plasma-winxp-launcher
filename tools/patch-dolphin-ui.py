@@ -3,13 +3,14 @@
 """Turn Dolphin's dolphinui.rc into an XP Explorer layout.
 
 Main toolbar: Back, Forward, Up | Search, Folders | Views, with text next to
-Back, Search and Folders; the address bar gets its own row below. The
+Back, Search and Folders (text beside icons, 24 px icons, set in the file
+itself); the address bar gets its own row below. The
 version attribute is kept, so a newer Dolphin simply ignores the file.
 """
 import re
 import sys
 
-TOOLBARS = """<ToolBar noMerge="1" name="mainToolBar" >
+TOOLBARS = """<ToolBar noMerge="1" name="mainToolBar" iconText="icontextright" iconSize="24" >
         <text context="@title:menu">Main Toolbar</text>
         <Action name="go_back" />
         <Action name="go_forward" />

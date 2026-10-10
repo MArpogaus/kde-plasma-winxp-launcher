@@ -1,0 +1,17 @@
+{
+    "KPackageStructure": "Plasma/LookAndFeel",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "Marcel Arpogaus"
+            }
+        ],
+        "Category": "",
+        "Description": "Windows XP (Luna): XP taskbar and start menu, Exposé theme, Luna icons, modernXP cursors, XP Alt+Tab",
+        "Id": "com.github.marpogaus.winxp",
+        "License": "GPL-3.0+",
+        "Name": "Windows XP",
+        "Website": "https://github.com/MArpogaus/kde-plasma-winxp-launcher"
+    },
+    "X-Plasma-APIVersion": "2"
+}
