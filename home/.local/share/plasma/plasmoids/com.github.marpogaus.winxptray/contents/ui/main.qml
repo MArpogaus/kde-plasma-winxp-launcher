@@ -28,7 +28,7 @@ PlasmoidItem {
         }
 
         // Room for the bevel (and the chevron) before the first tray icon
-        Layout.minimumWidth: horizontal ? (showChevron ? 26 : 10) : -1
+        Layout.minimumWidth: horizontal ? (showChevron ? 14 : 10) : -1
         Layout.maximumWidth: Layout.minimumWidth
         Layout.minimumHeight: horizontal ? -1 : 10
         Layout.maximumHeight: horizontal ? -1 : 10
@@ -116,9 +116,10 @@ PlasmoidItem {
             }
         }
 
+        // Centred on the block's left edge, half over the taskbar like XP's
         Image {
             visible: anchorItem.showChevron
-            x: 3
+            x: 1 - width / 2
             y: Math.round(anchorItem.area.y + (anchorItem.area.height - height) / 2)
             width: 22
             height: 22
