@@ -36,14 +36,14 @@ Dolphin's default view and the selected Kvantum theme (`~/.config/Kvantum/kvantu
 
 ### Original XP files and icons (optional)
 
-XP's fonts, icons, sounds, Bliss and the original start flag belong to
+XP's fonts, icons, sounds, Bliss and the original start button belong to
 Microsoft, so they are not part of this repository.
 `./get-microsoft-files.sh` downloads them from
 [xfce-winxp-tc](https://github.com/rozniak/xfce-winxp-tc) and
 [Windows-XP-Sound-Theme-KDE](https://github.com/wonordel/Windows-XP-Sound-Theme-KDE)
 and switches to the XP icons (with Breeze for names XP has no icon for),
 Tahoma / Trebuchet MS, the XP sounds and Bliss. The start button picks up
-XP's flag automatically.
+XP's flag and its button images (normal, hover, pressed) automatically.
 
 XP's icons are bitmaps of up to 48 px, so the Windows XP layout sets the
 desktop to XP's 32 px icons, where they are sharp; larger sizes (Dolphin

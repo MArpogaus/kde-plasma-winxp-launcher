@@ -45,15 +45,24 @@ PlasmoidItem {
         }
     }
 
-    // Start icon: the configured one, else XP's original 20 px flag if
-    // get-microsoft-files.sh put it in place, else the bundled flag ("")
+    // XP's own start button images (flag and button in its three looks),
+    // when get-microsoft-files.sh has put them in place
+    readonly property string xpArtDir: StandardPaths.writableLocation(StandardPaths.GenericDataLocation) + "/winxp-kde/"
+
+    // Start icon: the configured one, else XP's original 20 px flag, else
+    // the bundled flag ("")
     readonly property string startIcon: Plasmoid.configuration.startIcon
         || (xpFlag.status === Image.Ready ? xpFlag.source.toString() : "")
 
     Image {
         id: xpFlag
         visible: false
-        source: StandardPaths.writableLocation(StandardPaths.GenericDataLocation) + "/winxp-kde/start_flag.png"
+        source: root.xpArtDir + "start_flag.png"
+    }
+    Image {
+        id: xpButton
+        visible: false
+        source: root.xpArtDir + "start_button_border.png"
     }
 
     readonly property bool vertical: Plasmoid.formFactor === PlasmaCore.Types.Vertical
@@ -73,6 +82,7 @@ PlasmoidItem {
         fillPanel: Plasmoid.formFactor === PlasmaCore.Types.Horizontal
         text: Plasmoid.configuration.startText
         iconName: root.startIcon
+        artDir: xpButton.status === Image.Ready ? root.xpArtDir : ""
     }
 
     toolTipMainText: i18n("Click here to begin")

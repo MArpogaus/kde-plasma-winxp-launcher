@@ -18,6 +18,9 @@ Item {
 
     property string text: "start"
     property string iconName: ""
+    // Folder with XP's start_button[_hover|_press]_{border,body}.png; ""
+    // draws the button from StartButtonFace.js instead
+    property string artDir: ""
     property bool vertical: false
     // In a horizontal panel the button covers the visible taskbar from top
     // to bottom (not just the applet area inside the panel's padding) and,
@@ -57,10 +60,35 @@ Item {
         width: button.width + button.leftOverflow
         height: button.area.height
 
+        // XP's own button: a frame image (edges 5, 2, 13 and 3 px wide) and
+        // a body image stretched inside it, as xfce-winxp-tc's Luna uses them
+        Item {
+            anchors.fill: parent
+            visible: button.artDir.length > 0 && !button.vertical
+            readonly property string prefix: button.artDir + "start_button"
+                + (button.pressedLook ? "_press" : button.hoveredLook ? "_hover" : "")
+
+            Image {
+                x: 5
+                y: 2
+                width: parent.width - 18
+                height: parent.height - 5
+                source: parent.visible ? parent.prefix + "_body.png" : ""
+                smooth: false
+            }
+            BorderImage {
+                anchors.fill: parent
+                source: parent.visible ? parent.prefix + "_border.png" : ""
+                border { left: 5; top: 2; right: 13; bottom: 3 }
+                smooth: false
+            }
+        }
+
         // Square on the left, a shallow curve on the right, shaded in both
         // directions like XP's (see StartButtonFace.js)
         Canvas {
             anchors.fill: parent
+            visible: button.artDir.length === 0 || button.vertical
             readonly property string look: button.pressedLook ? "pressed" : button.hoveredLook ? "hover" : "normal"
             onLookChanged: requestPaint()
             onWidthChanged: requestPaint()
@@ -78,9 +106,9 @@ Item {
         Item {
             id: flag
             // The built-in flag fills ~75 % of its box. A custom icon (XP's 20 px
-            // start_flag.png) fills its box: 20 px at x = 8 on a 30 px taskbar.
+            // start_flag.png) fills its box: 20 px at x = 10 on a 30 px taskbar.
             readonly property bool custom: button.iconName.length > 0
-            x: button.vertical ? Math.round((parent.width - width) / 2) : Math.round(button.thickness * (custom ? 0.27 : 0.23))
+            x: button.vertical ? Math.round((parent.width - width) / 2) : Math.round(button.thickness * (custom ? 0.34 : 0.23))
             anchors.verticalCenter: parent.verticalCenter
             width: Math.round(button.thickness * (custom ? 0.667 : 0.84))
             height: width
