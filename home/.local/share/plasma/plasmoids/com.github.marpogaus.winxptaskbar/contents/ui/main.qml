@@ -62,7 +62,7 @@ PlasmoidItem {
         // Overflow: how many buttons of the minimum width fit per row, with
         // and without room for the » at the end
         readonly property int minimumWidth: Plasmoid.configuration.minimumButtonWidth
-        readonly property int overflowWidth: 16
+        readonly property int overflowWidth: 13
         readonly property int fitPerRow: Math.max(1, Math.floor((width + spacing) / (minimumWidth + spacing)))
         readonly property bool overflow: root.horizontal && count > rows * fitPerRow
         readonly property int shownCount: overflow
@@ -181,18 +181,19 @@ PlasmoidItem {
             }
         }
 
-        // » for the windows that do not fit, at the end of the last row;
-        // it only looks like a button under the pointer (as Quick Launch's)
+        // » for the windows that do not fit, at the end of the taskbar,
+        // exactly like Quick Launch's: in the top half of the taskbar, and
+        // only looking like a button under the pointer
         Rectangle {
             id: overflowButton
             visible: bar.overflow
             x: bar.width - width
-            y: Math.round(bar.area.y + bar.spacing + (bar.rows - 1) * bar.rowPitch)
+            y: Math.round(bar.area.y + 3)
             width: bar.overflowWidth
-            height: Math.round(bar.buttonHeight)
+            height: 12
             radius: 2
-            color: overflowMouse.pressed ? "#1d5fd0" : overflowMouse.containsMouse || overflowPopup.visible ? "#5a9cf8" : "transparent"
-            border.color: overflowMouse.containsMouse || overflowPopup.visible ? Qt.rgba(1, 1, 1, 0.35) : "transparent"
+            color: overflowMouse.pressed ? "#1d5fd0" : overflowMouse.containsMouse ? "#5a9cf8" : "transparent"
+            border.color: overflowMouse.containsMouse ? Qt.rgba(1, 1, 1, 0.35) : "transparent"
 
             Text {
                 anchors.centerIn: parent
@@ -232,10 +233,10 @@ PlasmoidItem {
                 requestActivate();
             }
 
-            // Above the », right edges aligned (it sits at the taskbar's end)
+            // Above the », left edges aligned (as Quick Launch's)
             function place() {
                 const p = overflowButton.mapToGlobal(0, 0);
-                x = Math.round(p.x + overflowButton.width) - width;
+                x = Math.round(p.x);
                 y = Math.round(p.y) - height;
             }
             onHeightChanged: if (visible) place()
