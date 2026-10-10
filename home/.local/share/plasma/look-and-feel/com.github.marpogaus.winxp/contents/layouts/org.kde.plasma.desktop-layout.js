@@ -22,13 +22,17 @@ panel.addWidget("com.github.marpogaus.winxpquicklaunch");
 panel.addWidget("com.github.marpogaus.winxptaskbar");
 panel.addWidget("com.github.marpogaus.winxptray");
 var tray = panel.addWidget("org.kde.plasma.systemtray");
-// XP keeps the expand arrow at the left end of the notification area
-tray.currentConfigGroup = ["General"];
-tray.writeConfig("reverseIconOrder", true);
-tray.writeConfig("iconSpacing", 1);
+// XP keeps the expand arrow at the left end of the notification area.
+// Plasma 6 releases before the tray became a single containment keep its
+// settings in a separate containment.
+var trayContainmentId = tray.readConfig("SystrayContainmentId");
+var trayConfig = (trayContainmentId && desktopById(trayContainmentId)) || tray;
+trayConfig.currentConfigGroup = ["General"];
+trayConfig.writeConfig("reverseIconOrder", true);
+trayConfig.writeConfig("iconSpacing", 1);
 // XP hides inactive icons behind the chevron; keep volume, network,
 // battery and app icons in view
-tray.writeConfig("hiddenItems", [
+trayConfig.writeConfig("hiddenItems", [
     "org.kde.plasma.clipboard",
     "org.kde.plasma.brightness",
     "org.kde.plasma.bluetooth",

@@ -14,10 +14,21 @@ import org.kde.kcmutils as KCM
 KCM.SimpleKCM {
     property alias cfg_showClock: showClock.checked
     property alias cfg_useRegionFormats: regionFormats.checked
-    property alias cfg_timeFormat: timeFormat.editText
-    property alias cfg_amSymbol: amSymbol.editText
-    property alias cfg_pmSymbol: pmSymbol.editText
-    property alias cfg_longDateFormat: longDateFormat.editText
+    // Editable combo boxes set their text to the first entry when they are
+    // completed, so the saved values are copied in afterwards
+    property string cfg_timeFormat
+    property string cfg_amSymbol
+    property string cfg_pmSymbol
+    property string cfg_longDateFormat
+    property bool loaded: false
+
+    Component.onCompleted: {
+        timeFormat.editText = cfg_timeFormat;
+        amSymbol.editText = cfg_amSymbol;
+        pmSymbol.editText = cfg_pmSymbol;
+        longDateFormat.editText = cfg_longDateFormat;
+        loaded = true;
+    }
     property alias cfg_fontFamily: fontFamily.text
     property alias cfg_clickCommand: clickCommand.text
 
@@ -45,6 +56,7 @@ KCM.SimpleKCM {
 
         QQC2.ComboBox {
             id: timeFormat
+            onEditTextChanged: if (loaded) cfg_timeFormat = editText
             Kirigami.FormData.label: i18n("Time format:")
             enabled: customFormats.checked
             editable: true
@@ -52,6 +64,7 @@ KCM.SimpleKCM {
         }
         QQC2.ComboBox {
             id: amSymbol
+            onEditTextChanged: if (loaded) cfg_amSymbol = editText
             Kirigami.FormData.label: i18n("AM symbol:")
             enabled: customFormats.checked
             editable: true
@@ -59,6 +72,7 @@ KCM.SimpleKCM {
         }
         QQC2.ComboBox {
             id: pmSymbol
+            onEditTextChanged: if (loaded) cfg_pmSymbol = editText
             Kirigami.FormData.label: i18n("PM symbol:")
             enabled: customFormats.checked
             editable: true
@@ -66,6 +80,7 @@ KCM.SimpleKCM {
         }
         QQC2.ComboBox {
             id: longDateFormat
+            onEditTextChanged: if (loaded) cfg_longDateFormat = editText
             Kirigami.FormData.label: i18n("Long date (tooltip):")
             enabled: customFormats.checked
             editable: true

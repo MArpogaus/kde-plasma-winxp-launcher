@@ -6,6 +6,9 @@
 # Needs git, curl, python3 and rsvg-convert. URLs can be overridden with
 # WINXP_*_URL for testing.
 set -euo pipefail
+for tool in git curl python3 rsvg-convert; do
+    command -v "$tool" >/dev/null || { echo "error: $tool is required" >&2; exit 1; }
+done
 cd "$(dirname "$0")/.."
 ROOT=$PWD
 SRC=$(mktemp -d)
@@ -29,7 +32,11 @@ replace "$E/themes/expose" "$D/aurorae/themes/expose"
 replace "$E/Kvantum/Expose" "$H/.config/Kvantum/Expose"
 replace "$E/wallpapers/expose" "$D/wallpapers/expose"
 # the repository may spell the wallpaper's directory as Bl#U00f8ff
-for dir in "$E"/wallpapers/Bl*; do replace "$dir" "$D/wallpapers/Bløff"; done
+shopt -s nullglob
+blaff=("$E"/wallpapers/Bl*)
+shopt -u nullglob
+[ "${#blaff[@]}" -eq 1 ] || { echo "expected one Bløff wallpaper directory, found ${#blaff[@]}" >&2; exit 1; }
+replace "${blaff[0]}" "$D/wallpapers/Bløff"
 mkdir -p "$D/color-schemes"
 cp "$E/Expose.colors" "$D/color-schemes/Expose.colors"
 printf '[General]\ntheme=Expose\n' > "$H/.config/Kvantum/kvantum.kvconfig"

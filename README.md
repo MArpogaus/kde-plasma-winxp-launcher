@@ -33,7 +33,9 @@ and wallpaper are XP's.
    style and wallpaper. [Kvantum](https://github.com/tsujan/Kvantum) is
    needed for the application style. Exposé's *ExposeAir* icons and login
    screen are not bundled; get them with *Get New…* in the Icons and Login
-   Screen settings (or use the XP icons below).
+   Screen settings (or use the XP icons below). Re-applying the Global Theme
+   sets the icons back to ExposeAir; run `./get-microsoft-files.sh` again
+   afterwards if you use the XP icons.
 
 Copying overwrites Dolphin's toolbar (`~/.local/share/kxmlgui5/dolphin/dolphinui.rc`),
 Dolphin's default view and the selected Kvantum theme (`~/.config/Kvantum/kvantum.kvconfig`).
@@ -59,7 +61,7 @@ to `~/.local/share/icons` and choose it under System Settings → Icons.
 ### Uninstall
 
 Apply Breeze (or any other) Global Theme with its desktop layout, then
-remove the copied files:
+remove the copied files (from this repository's directory):
 
 ```sh
 (cd home && git ls-files -z) | (cd ~ && xargs -0 rm -f)
@@ -76,6 +78,7 @@ for key in font menuFont toolBarFont smallestReadableFont; do
 done
 kwriteconfig6 --file kdeglobals --group WM --key activeFont --delete
 kwriteconfig6 --file kdeglobals --group Sounds --key Theme --delete
+kwriteconfig6 --file kdeglobals --group Icons --key Theme --delete
 ```
 
 ## What is in `home/`
@@ -83,10 +86,11 @@ kwriteconfig6 --file kdeglobals --group Sounds --key Theme --delete
 | Part | Path | Source, license |
 | --- | --- | --- |
 | Start menu, Quick Launch, taskbar, notification area, clock widgets | `.local/share/plasma/plasmoids/com.github.marpogaus.*` | this repository, GPL-2.0+ |
+| Fallback fonts for the start menu | `.local/share/plasma/plasmoids/com.github.marpogaus.winxpstartmenu/contents/fonts` | Wine's Tahoma (LGPL-2.1+), Libre Franklin (OFL-1.1) |
 | Grey fade behind Turn Off / Log Off (KWin effect) | `.local/share/kwin/effects/winxp_sessionfade` | this repository, GPL-2.0+ |
 | XP Alt+Tab (KWin window switcher) | `.local/share/kwin/tabbox/winxp_alttab` | this repository, GPL-2.0+ |
 | Windows XP Global Theme (taskbar layout, Alt+Tab, cursors, Exposé look) | `.local/share/plasma/look-and-feel/com.github.marpogaus.winxp` | this repository, GPL-2.0+ |
-| Exposé (window borders, Plasma theme, colours, Kvantum, wallpapers) | `.local/share/plasma/desktoptheme/expose`, `.local/share/aurorae/themes/expose`, `.local/share/color-schemes/Expose.colors`, `.config/Kvantum`, `.local/share/wallpapers/{expose,Bløff}` | [Exposé](https://www.opencode.net/phob1an/expose) by phob1an, unmodified, GPL (see the bundled `LICENSE` files); wallpapers CC BY-SA 4.0 |
+| Exposé (window borders, Plasma theme, colours, Kvantum, wallpapers) | `.local/share/plasma/desktoptheme/expose`, `.local/share/aurorae/themes/expose`, `.local/share/color-schemes/Expose.colors`, `.config/Kvantum`, `.local/share/wallpapers/{expose,Bløff}` | [Exposé](https://www.opencode.net/phob1an/expose) by phob1an, unmodified, GPL-3.0 (see the bundled `LICENSE` files); wallpapers CC BY-SA 4.0 |
 | Cursors | `.local/share/icons/ModernXP` | built from [modernXP](https://github.com/na0miluv/modernXP-cursor-theme), GPL-3.0 |
 | Dolphin as XP Explorer | `.local/share/kxmlgui5/dolphin`, `.local/share/dolphin` | toolbar derived from [Dolphin](https://invent.kde.org/system/dolphin), GPL-2.0+ |
 
@@ -98,7 +102,8 @@ the Dolphin toolbar from upstream.
 The start button, task buttons and notification area are laid out on the
 visible taskbar, not only on the space Plasma gives each widget, so they
 line up like XP's whatever the panel theme's padding. Make the taskbar
-taller (about 28 px per row) to get several rows of task buttons.
+taller (about 28 px per row) to get several rows of task buttons. Right-click a free spot →
+Configure for the widest button and which windows are shown.
 
 The notification area uses Plasma's own System Tray (so volume, network,
 battery and app icons all work), on XP's light blue block. Plasma gives
@@ -169,7 +174,9 @@ Right-click the start button → *Configure Windows XP Start Menu…*
 - button label, icon (empty = XP's flag if downloaded, else the built-in one) and fonts
 - number of frequently used programs; which optional entries of the right
   column are shown, like XP's *Customize Start Menu* dialog
-- the location or command behind every entry of the right column
+- the location or command behind My Computer, Network, Control Panel, Set
+  Program Access and Defaults, Printers and Faxes, Help and Support, Search
+  and Run (My Documents, Pictures and Music follow the XDG folders)
 
 ## Development
 

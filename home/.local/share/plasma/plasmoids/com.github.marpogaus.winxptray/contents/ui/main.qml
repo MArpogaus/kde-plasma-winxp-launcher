@@ -113,8 +113,9 @@ PlasmoidItem {
 
         // Hidden icons keep their status while shown in the row, and Plasma
         // lays a hidden item out as in its popup list (32 px icon, margins,
-        // a text label). Give them the row's look instead; collapsing
-        // destroys these items, so nothing has to be undone.
+        // a text label). Give them the row's look instead. Collapsing
+        // destroys these items; one that turned active meanwhile keeps the
+        // overrides, which equal Plasma's own row layout.
         function fitShownItems() {
             if (!tray || !trayExpanded) {
                 return;
@@ -149,6 +150,23 @@ PlasmoidItem {
             target: anchorItem.tray ? anchorItem.tray.visibleLayout : null
             function onCountChanged() {
                 Qt.callLater(anchorItem.fitShownItems);
+            }
+        }
+        // An icon already in the row can turn hidden while expanded
+        Connections {
+            target: anchorItem.tray ? anchorItem.tray.visibleLayout.model : null
+            function onDataChanged() {
+                Qt.callLater(anchorItem.fitShownItems);
+            }
+        }
+        // Plasma's own activation of the tray (shortcut, keyboard) opens
+        // its popup of hidden icons; collapse first so it is not empty
+        Connections {
+            target: anchorItem.tray ? anchorItem.tray.systemTrayState : null
+            function onExpandedChanged() {
+                if (anchorItem.tray.systemTrayState.expanded) {
+                    anchorItem.trayExpanded = false;
+                }
             }
         }
 
@@ -189,12 +207,15 @@ PlasmoidItem {
         }
 
         Timer {
-            interval: 1000
+            property int attempts: 0
+            // Every second at first, then rarely when the panel has no tray
+            interval: attempts < 30 ? 1000 : 10000
             repeat: true
             // Vertical panels keep Plasma's own arrow
             running: anchorItem.horizontal && !anchorItem.tray && !!anchorItem.Window.window
             triggeredOnStart: true
             onTriggered: {
+                ++attempts;
                 const tray = anchorItem.findItem(anchorItem.Window.contentItem,
                     i => "systemTrayState" in i && "hiddenLayout" in i && "plasmoid" in i);
                 const expander = tray && anchorItem.findItem(tray,
@@ -205,6 +226,7 @@ PlasmoidItem {
                     anchorItem.trayExpanded = false;
                     anchorItem.expander = expander;
                     anchorItem.tray = tray;
+                    attempts = 0;
                 }
             }
         }

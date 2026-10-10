@@ -109,18 +109,25 @@ PlasmoidItem {
         if (app) {
             return "applications:" + app[1];
         }
-        return /^(file|applications|preferred):/.test(text) ? text : "";
+        // Other local files (documents, folders) would make dead launchers
+        return /^(applications|preferred):/.test(text) || /^file:.*\.desktop$/.test(text) ? text : "";
     }
 
+    // Returns whether anything was added
     function addLaunchers(urls, position) {
+        const added = urls.map(launcherUrl).filter(url => url.length > 0);
+        if (added.length === 0) {
+            return false;
+        }
         editLaunchers(list => {
             let at = Math.max(0, Math.min(position, list.length));
-            urls.map(launcherUrl).forEach(url => {
-                if (url.length > 0 && !list.includes(url)) {
+            added.forEach(url => {
+                if (!list.includes(url)) {
                     list.splice(at++, 0, url);
                 }
             });
         });
+        return true;
     }
 
     function removeLauncher(position) {
@@ -165,12 +172,14 @@ PlasmoidItem {
         // Applications dragged from menus, Dolphin or the desktop
         DragAndDrop.DropArea {
             anchors.fill: parent
-            onDragEnter: event => root.dropIndex = root.launcherIndexAt(event.x, event.y)
-            onDragMove: event => root.dropIndex = root.launcherIndexAt(event.x, event.y)
+            // Otherwise the panel's own drop area (for adding widgets)
+            // takes the drop
+            preventStealing: true
+            onDragEnter: event => root.dropIndex = event.mimeData.hasUrls ? root.launcherIndexAt(event.x, event.y) : -1
+            onDragMove: event => root.dropIndex = event.mimeData.hasUrls ? root.launcherIndexAt(event.x, event.y) : -1
             onDragLeave: root.dropIndex = -1
             onDrop: event => {
-                if (event.mimeData.urls.length > 0) {
-                    root.addLaunchers(event.mimeData.urls, root.dropIndex);
+                if (root.addLaunchers(event.mimeData.urls, root.dropIndex)) {
                     event.accept(Qt.CopyAction);
                 }
                 root.dropIndex = -1;
@@ -224,8 +233,8 @@ PlasmoidItem {
                 }
             }
 
-            // XP's » button for the icons that do not fit: a small lighter
-            // blue button in the top half of the taskbar
+            // XP's » for the icons that do not fit, in the top half of the
+            // taskbar; it only looks like a button under the pointer
             Item {
                 visible: root.overflow
                 width: 13
@@ -239,8 +248,8 @@ PlasmoidItem {
                     width: parent.width
                     height: 12
                     radius: 2
-                    color: overflowMouse.pressed ? "#1d5fd0" : overflowMouse.containsMouse ? "#5a9cf8" : "#3c87ee"
-                    border.color: Qt.rgba(1, 1, 1, 0.35)
+                    color: overflowMouse.pressed ? "#1d5fd0" : overflowMouse.containsMouse ? "#5a9cf8" : "transparent"
+                    border.color: overflowMouse.containsMouse ? Qt.rgba(1, 1, 1, 0.35) : "transparent"
 
                     Text {
                         anchors.centerIn: parent
@@ -290,6 +299,8 @@ PlasmoidItem {
         PlasmaExtras.Menu {
             id: overflowMenu
             visualParent: overflowButton
+            // Above the », left edges aligned
+            placement: PlasmaExtras.Menu.TopPosedLeftAlignedPopup
         }
 
         Instantiator {
