@@ -4,12 +4,29 @@
       xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0 http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
   <kcfgfile name=""/>
   <group name="General">
-    <entry name="fontFamily" type="String">
-      <default>Tahoma</default>
+    <entry name="showClock" type="Bool">
+      <default>true</default>
+    </entry>
+    <entry name="useRegionFormats" type="Bool">
+      <label>Use the time and date formats of System Settings → Region &amp; Language</label>
+      <default>true</default>
     </entry>
     <entry name="timeFormat" type="String">
-      <label>Qt time format; empty uses the locale's short time format</label>
-      <default></default>
+      <label>XP time format: h, hh (12 hour), H, HH (24 hour), mm, ss, tt (AM/PM symbol), t</label>
+      <default>h:mm tt</default>
+    </entry>
+    <entry name="amSymbol" type="String">
+      <default>AM</default>
+    </entry>
+    <entry name="pmSymbol" type="String">
+      <default>PM</default>
+    </entry>
+    <entry name="longDateFormat" type="String">
+      <label>XP long date format for the tooltip: d, dd, ddd, dddd, M, MM, MMM, MMMM, yy, yyyy</label>
+      <default>dddd, MMMM dd, yyyy</default>
+    </entry>
+    <entry name="fontFamily" type="String">
+      <default>Tahoma</default>
     </entry>
     <entry name="clickCommand" type="String">
       <default>systemsettings kcm_clock</default>

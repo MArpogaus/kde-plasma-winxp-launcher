@@ -27,9 +27,9 @@ PlasmoidItem {
             target: anchorItem
         }
 
-        // Room for the bevel before the first tray icon
-        Layout.minimumWidth: horizontal ? 10 : -1
-        Layout.maximumWidth: horizontal ? 10 : -1
+        // Room for the bevel (and the chevron) before the first tray icon
+        Layout.minimumWidth: horizontal ? (showChevron ? 26 : 10) : -1
+        Layout.maximumWidth: Layout.minimumWidth
         Layout.minimumHeight: horizontal ? -1 : 10
         Layout.maximumHeight: horizontal ? -1 : 10
 
@@ -74,19 +74,24 @@ PlasmoidItem {
             }
         }
 
-        // The System Tray's "show hidden icons" arrow only takes its icon
-        // from the icon theme. Give it XP's round chevron instead: find it
-        // in the panel (the tray loads after this widget and can reload)
-        // and point its two icons, collapsed and expanded, at our images.
-        property QtObject expander: null
+        // XP's round chevron. Plasma's own "show hidden icons" arrow opens a
+        // popup; XP instead widens the notification area in place. So hide
+        // Plasma's arrow and toggle the tray's "Always show all entries"
+        // setting from here. The tray is found in the panel once it has
+        // loaded (it comes after this widget) and again whenever it reloads.
+        property Item tray: null
+        readonly property var trayConfig: tray ? tray.plasmoid.configuration : null
+        readonly property bool trayExpanded: trayConfig ? trayConfig.showAllItems === true : false
+        readonly property bool showChevron: horizontal && tray !== null
+            && (trayExpanded || tray.hiddenLayout.itemCount > 0)
 
-        function findExpander(item) {
-            if ("wasExpanded" in item && "arrowAnimationDuration" in item) {
+        function findItem(item, test) {
+            if (test(item)) {
                 return item;
             }
             const children = item.children;
             for (let i = 0; i < children.length; ++i) {
-                const found = findExpander(children[i]);
+                const found = findItem(children[i], test);
                 if (found) {
                     return found;
                 }
@@ -97,20 +102,34 @@ PlasmoidItem {
         Timer {
             interval: 1000
             repeat: true
-            running: !anchorItem.expander && !!anchorItem.Window.window
+            running: !anchorItem.tray && !!anchorItem.Window.window
             triggeredOnStart: true
             onTriggered: {
-                const expander = anchorItem.findExpander(anchorItem.Window.contentItem);
-                if (!expander) {
-                    return;
+                const tray = anchorItem.findItem(anchorItem.Window.contentItem,
+                    i => "systemTrayState" in i && "hiddenLayout" in i && "plasmoid" in i);
+                const expander = tray && anchorItem.findItem(tray,
+                    i => "wasExpanded" in i && "arrowAnimationDuration" in i);
+                if (expander) {
+                    expander.visible = false;
+                    anchorItem.tray = tray;
                 }
-                const icons = Array.from(expander.children).filter(c => "source" in c);
-                if (icons.length !== 2) {
-                    return;
-                }
-                icons[0].source = Qt.resolvedUrl("../images/chevron-left.svg");
-                icons[1].source = Qt.resolvedUrl("../images/chevron-right.svg");
-                anchorItem.expander = expander;
+            }
+        }
+
+        Image {
+            visible: anchorItem.showChevron
+            x: 3
+            y: Math.round(anchorItem.area.y + (anchorItem.area.height - height) / 2)
+            width: 22
+            height: 22
+            source: anchorItem.trayExpanded ? "../images/chevron-right.svg" : "../images/chevron-left.svg"
+            sourceSize: Qt.size(width, height)
+            opacity: chevronMouse.pressed ? 0.8 : 1
+
+            MouseArea {
+                id: chevronMouse
+                anchors.fill: parent
+                onClicked: anchorItem.trayConfig.showAllItems = !anchorItem.trayExpanded
             }
         }
     }

@@ -37,7 +37,7 @@ PlasmoidItem {
     }
 
     FontLoader { source: root.tahomaSource }
-    FontLoader { source: Qt.resolvedUrl("../fonts/LibreFranklin-MediumItalic.ttf") }
+    FontLoader { source: Qt.resolvedUrl("../fonts/LibreFranklin-Bold.ttf") }
 
     Component.onCompleted: {
         if (!fontInstalled("Tahoma")) {

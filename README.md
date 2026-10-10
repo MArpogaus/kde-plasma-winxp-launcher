@@ -85,12 +85,18 @@ line up like XP's whatever the panel theme's padding. Make the taskbar
 taller (about 28 px per row) to get several rows of task buttons.
 
 The notification area uses Plasma's own System Tray (so volume, network,
-battery and app icons all work), on XP's light blue block with the expand
-arrow on the left. Plasma gives every panel widget at least 22 px, so tray
-icons are 22 px where XP had 16 px. The tray's "show hidden icons" arrow
-gets XP's round chevron, and clipboard, brightness, Bluetooth,
-notifications and similar status icons start out hidden behind it (System
-Tray settings → Entries to change that).
+battery and app icons all work), on XP's light blue block. Plasma gives
+every panel widget at least 22 px, so tray icons are 22 px where XP had
+16 px. Like XP's *Hide inactive icons*, clipboard, brightness, Bluetooth,
+notifications and similar status icons start out hidden (System Tray
+settings → Entries to change that); XP's round chevron on the left shows
+them in the notification area itself instead of Plasma's popup (it
+toggles the tray's *Always show all entries*).
+
+The clock follows System Settings → Region & Language. Right-click →
+Configure for XP's options: *Show the clock*, an XP style time format
+(`h:mm tt`, `HH:mm`, …) with own AM/PM symbols, the long date shown as
+tooltip and what double-clicking runs.
 
 Quick Launch shows Show Desktop plus up to four launchers as 16 px icons
 (browser, file manager and Konsole by default) and puts the rest behind

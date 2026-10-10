@@ -34,6 +34,12 @@ Item {
     readonly property int thickness: vertical ? width : area.height
     readonly property bool pressedLook: mouseArea.pressed || controller.menuOpen
     readonly property bool hoveredLook: mouseArea.containsMouse && !pressedLook
+    // XP draws "start" in Franklin Gothic Medium Italic. The Libre Franklin
+    // stand-in matches it best as upright Bold slanted by 8° about the baseline.
+    readonly property bool libreFranklin: xp.startFontFamily === "Libre Franklin"
+    readonly property matrix4x4 labelSlant: libreFranklin
+        ? Qt.matrix4x4(1, -0.14, 0, 0.14 * label.height * 0.75, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
+        : Qt.matrix4x4()
 
     Layout.minimumWidth: vertical ? -1 : Math.round(area.height * 3.3) - leftOverflow
     Layout.preferredWidth: Layout.minimumWidth
@@ -42,122 +48,61 @@ Item {
     Layout.preferredHeight: Layout.minimumHeight
     Layout.maximumHeight: Layout.minimumHeight
 
-    // Sampled from a real XP taskbar (rows of a 30 px button)
+    // Sampled row by row from XP's start button between the flag and the
+    // label (30 px tall); hover and pressed are overlays on it
     Gradient {
         id: normalGradient
         GradientStop {
-            position: 0.00
-            color: "#1d4b1d"
+            position: 0.02
+            color: "#4f9250"
         }
         GradientStop {
-            position: 0.04
-            color: "#2b6b2b"
-        }
-        GradientStop {
-            position: 0.09
-            color: "#3e8d3b"
+            position: 0.08
+            color: "#8bbe8c"
         }
         GradientStop {
             position: 0.15
-            color: "#2b912d"
+            color: "#74af74"
         }
         GradientStop {
-            position: 0.25
-            color: "#1d8d20"
+            position: 0.22
+            color: "#5aa05a"
         }
         GradientStop {
-            position: 0.55
-            color: "#1b8c1b"
+            position: 0.32
+            color: "#479647"
         }
         GradientStop {
-            position: 0.80
-            color: "#1e941c"
-        }
-        GradientStop {
-            position: 0.90
-            color: "#1f8e1e"
-        }
-        GradientStop {
-            position: 0.95
-            color: "#1c7c1e"
-        }
-        GradientStop {
-            position: 1.00
-            color: "#0e5c12"
-        }
-    }
-    Gradient {
-        id: hoverGradient
-        GradientStop {
-            position: 0.00
-            color: "#266026"
-        }
-        GradientStop {
-            position: 0.04
-            color: "#368236"
-        }
-        GradientStop {
-            position: 0.09
-            color: "#4fa64b"
-        }
-        GradientStop {
-            position: 0.15
-            color: "#37a63a"
-        }
-        GradientStop {
-            position: 0.25
-            color: "#28a22b"
+            position: 0.42
+            color: "#3f983f"
         }
         GradientStop {
             position: 0.55
-            color: "#26a126"
+            color: "#3da63e"
         }
         GradientStop {
-            position: 0.80
-            color: "#2aaa27"
+            position: 0.68
+            color: "#3eaf3e"
         }
         GradientStop {
-            position: 0.90
-            color: "#2aa229"
-        }
-        GradientStop {
-            position: 0.95
-            color: "#258f27"
-        }
-        GradientStop {
-            position: 1.00
-            color: "#12701a"
-        }
-    }
-    Gradient {
-        id: pressedGradient
-        GradientStop {
-            position: 0.00
-            color: "#0f350f"
-        }
-        GradientStop {
-            position: 0.06
-            color: "#17641a"
-        }
-        GradientStop {
-            position: 0.15
-            color: "#167a18"
-        }
-        GradientStop {
-            position: 0.55
-            color: "#157e16"
+            position: 0.78
+            color: "#3dab3d"
         }
         GradientStop {
             position: 0.85
-            color: "#188a18"
+            color: "#399e39"
+        }
+        GradientStop {
+            position: 0.92
+            color: "#328531"
         }
         GradientStop {
             position: 0.95
-            color: "#17741a"
+            color: "#2b722b"
         }
         GradientStop {
-            position: 1.00
-            color: "#0b4f0f"
+            position: 0.98
+            color: "#255f2f"
         }
     }
 
@@ -179,20 +124,26 @@ Item {
                 width: parent.width + (button.vertical ? 0 : radius)
                 height: parent.height
                 radius: button.vertical ? 3 : Math.round(button.thickness * 0.42)
-                gradient: button.pressedLook ? pressedGradient : button.hoveredLook ? hoverGradient : normalGradient
-                border.width: 1
-                border.color: "#0b4f12"
+                gradient: normalGradient
+
+                // Hover lightens, pressed darkens
+                Rectangle {
+                    anchors.fill: parent
+                    radius: parent.radius
+                    visible: button.hoveredLook || button.pressedLook
+                    color: button.pressedLook ? Qt.rgba(0, 0.1, 0, 0.3) : Qt.rgba(1, 1, 1, 0.12)
+                }
 
                 // Darker band along the left edge
                 Rectangle {
                     x: shape.radius
-                    width: 6
+                    width: 3
                     height: parent.height
                     gradient: Gradient {
                         orientation: Gradient.Horizontal
                         GradientStop {
                             position: 0.0
-                            color: Qt.rgba(0, 0.12, 0, 0.55)
+                            color: Qt.rgba(0, 0.12, 0, 0.4)
                         }
                         GradientStop {
                             position: 1.0
@@ -254,6 +205,8 @@ Item {
             y: label.y + 2
             text: label.text
             font: label.font
+            renderType: label.renderType
+            transform: Matrix4x4 { matrix: button.labelSlant }
             color: Qt.rgba(0, 0, 0, 0.22)
         }
         Text {
@@ -262,21 +215,25 @@ Item {
             y: label.y + 1
             text: label.text
             font: label.font
+            renderType: label.renderType
+            transform: Matrix4x4 { matrix: button.labelSlant }
             color: Qt.rgba(0, 0.08, 0, 0.7)
         }
         Text {
             id: label
             visible: !button.vertical
-            x: Math.round(button.thickness * 1.13) + (button.pressedLook ? 1 : 0)
+            x: Math.round(button.thickness * 1.17) + (button.pressedLook ? 1 : 0)
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: button.pressedLook ? 0 : -1
+            anchors.verticalCenterOffset: button.pressedLook ? 2 : 1
             text: button.text
             textFormat: Text.PlainText
+            // Grey antialiasing: the panel's native rendering adds colour fringes
+            renderType: Text.QtRendering
             font.family: button.xp.startFontFamily
-            font.pixelSize: Math.round(button.thickness * 0.6)
-            font.letterSpacing: -0.5
-            font.italic: true
-            font.weight: Font.Medium
+            font.pixelSize: Math.round(button.thickness * 0.567)
+            font.italic: !button.libreFranklin
+            font.weight: button.libreFranklin ? Font.Bold : Font.Medium
+            transform: Matrix4x4 { matrix: button.labelSlant }
             color: "#ffffff"
         }
 
