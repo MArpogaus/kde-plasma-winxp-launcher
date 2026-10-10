@@ -9,8 +9,13 @@ where the stock Kickoff/Kicker menus look out of place.
 | --- | --- |
 | ![Start menu](docs/preview-menu.png) | ![All Programs](docs/preview-all-programs.png) |
 
-*Previews were rendered offscreen with placeholder data, a generic icon theme
-and substitute fonts. With Tahoma and an XP icon theme it looks like the real thing.*
+*Shown on the [Exposé](https://www.opencode.net/phob1an/expose) theme by phob1an
+(its wallpaper and 38 px taskbar, GPL-2.0+). Rendered offscreen with placeholder
+programs; the icons come from a stand-in icon theme instead of Exposé's DamaDamas,
+and Tahoma was replaced by a similar font.*
+
+Exposé's selection colour (`#326AC4`) matches the Luna highlight the menu uses,
+so the menu fits the theme without changes.
 
 ## Features
 
