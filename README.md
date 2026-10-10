@@ -111,10 +111,10 @@ done
 | XP Alt+Tab (KWin window switcher) | `.local/share/kwin/tabbox/winxp_alttab` | this repository, GPL-2.0+ |
 | Windows XP Global Theme (taskbar layout, Alt+Tab, cursors, Exposé look) | `.local/share/plasma/look-and-feel/com.github.marpogaus.winxp` | this repository, GPL-2.0+ |
 | Exposé (window borders, Plasma theme, colours, Kvantum, wallpapers) | `.local/share/plasma/desktoptheme/expose`, `.local/share/aurorae/themes/expose`, `.local/share/color-schemes/Expose.colors`, `.config/Kvantum`, `.local/share/wallpapers/{expose,Bløff}` | [Exposé](https://www.opencode.net/phob1an/expose) by phob1an, unmodified, GPL-3.0 (see the bundled `LICENSE` files); wallpapers CC BY-SA 4.0 |
-| Cursors | `.local/share/icons/ModernXP` | built from [modernXP](https://github.com/na0miluv/modernXP-cursor-theme), GPL-3.0 |
+| Cursors | `.local/share/icons/ModernXP` | [modernXP](https://github.com/na0miluv/modernXP-cursor-theme) release, unmodified, GPL-3.0 |
 | Dolphin as XP Explorer | `.local/share/kxmlgui5/dolphin`, `.local/share/dolphin` | toolbar derived from [Dolphin](https://invent.kde.org/system/dolphin), GPL-2.0+ |
 
-`tools/update-vendored.sh` refreshes Exposé and rebuilds the cursors from
+`tools/update-vendored.sh` refreshes Exposé and the cursors from
 upstream.
 
 ### Taskbar and notification area
@@ -209,7 +209,6 @@ Right-click the start button → *Configure Windows XP Start Menu…*
 - `tools/check-qml.py`: finds QML properties that shadow built-in ones
   (needs PySide6).
 - `tools/update-vendored.sh`: refreshes the third-party files in `home/`.
-- `tools/xcursor.py`: builds the cursor theme for `update-vendored.sh`.
 - Edits to widgets: copy `home/` again and restart plasmashell
   (`systemctl --user restart plasma-plasmashell`).
 

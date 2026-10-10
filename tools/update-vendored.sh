@@ -3,10 +3,10 @@
 #
 # Maintainer script: refresh the third-party files bundled in home/ (Exposé,
 # modernXP cursors) from their upstream projects. Users do not need this,
-# they copy home/. Needs git, python3 and rsvg-convert. URLs can be
-# overridden with WINXP_*_URL for testing.
+# they copy home/. Needs git and curl. URLs can be overridden with
+# WINXP_*_URL for testing.
 set -euo pipefail
-for tool in git python3 rsvg-convert; do
+for tool in git curl; do
     command -v "$tool" >/dev/null || { echo "error: $tool is required" >&2; exit 1; }
 done
 cd "$(dirname "$0")/.."
@@ -16,7 +16,10 @@ trap 'rm -rf "$SRC"' EXIT
 
 clone() { git clone --quiet --depth 1 "$@"; }
 clone "${WINXP_EXPOSE_URL:-https://www.opencode.net/phob1an/expose.git}" "$SRC/expose"
-clone "${WINXP_CURSORS_URL:-https://github.com/na0miluv/modernXP-cursor-theme.git}" "$SRC/cursors"
+curl -fsSL "${WINXP_CURSORS_URL:-https://github.com/na0miluv/modernXP-cursor-theme/releases/download/final/ModernXP.tar.gz}" \
+    | tar -xz -C "$SRC"
+curl -fsSL "${WINXP_CURSORS_LICENSE_URL:-https://raw.githubusercontent.com/na0miluv/modernXP-cursor-theme/main/LICENSE}" \
+    -o "$SRC/ModernXP/LICENSE"
 
 H=$ROOT/home
 D=$H/.local/share
@@ -40,18 +43,7 @@ mkdir -p "$D/color-schemes"
 cp "$E/Expose.colors" "$D/color-schemes/Expose.colors"
 printf '[General]\ntheme=Expose\n' > "$H/.config/Kvantum/kvantum.kvconfig"
 
-# modernXP cursors (GPL-3.0), rendered at every size their configs use
-C=$SRC/cursors/src
-# shellcheck disable=SC2013 # sizes are single words
-for size in $(awk '/^[0-9]/ {print $1}' "$C"/config/*.cursor | sort -un); do
-    mkdir -p "$SRC/png/$size"
-    for svg in "$C"/svg/*.svg; do
-        rsvg-convert -w "$size" -h "$size" -o "$SRC/png/$size/$(basename "${svg%.svg}").png" "$svg"
-    done
-done
-rm -rf "$D/icons/ModernXP"
-python3 tools/xcursor.py --config-dir "$C/config" --png-root "$SRC/png" --aliases "$C/cursorList" \
-    --out "$D/icons/ModernXP" --name "Modern XP"
-cp "$SRC/cursors/LICENSE" "$D/icons/ModernXP/LICENSE"
+# modernXP cursors (GPL-3.0), the project's own release build
+replace "$SRC/ModernXP" "$D/icons/ModernXP"
 
 echo "Vendored files refreshed in home/. Review with: git status home/"
