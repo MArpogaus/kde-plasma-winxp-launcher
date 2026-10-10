@@ -209,26 +209,41 @@ PlasmoidItem {
                 }
             }
 
-            // XP's » button for the icons that do not fit
+            // XP's » button for the icons that do not fit: a small lighter
+            // blue button in the top half of the taskbar
             Item {
                 visible: root.overflow
                 width: 13
                 height: root.cell
 
-                Text {
-                    anchors.centerIn: parent
-                    text: "»"
-                    font.family: "Tahoma"
-                    font.pixelSize: 13
-                    font.bold: true
-                    color: "#ffffff"
+                Rectangle {
+                    id: overflowButton
+                    // the row is centred on the taskbar; XP's button starts
+                    // 3 px below the taskbar's top
+                    y: root.horizontal ? Math.round(bar.area.y + 3 - row.y) : 0
+                    width: parent.width
+                    height: 12
+                    radius: 2
+                    color: overflowMouse.pressed ? "#1d5fd0" : overflowMouse.containsMouse ? "#5a9cf8" : "#3c87ee"
+                    border.color: Qt.rgba(1, 1, 1, 0.35)
+
+                    Text {
+                        anchors.centerIn: parent
+                        anchors.verticalCenterOffset: -1
+                        text: "»"
+                        font.family: "Tahoma"
+                        font.pixelSize: 11
+                        font.bold: true
+                        color: "#ffffff"
+                    }
+                    MouseArea {
+                        id: overflowMouse
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onClicked: overflowMenu.openRelative()
+                    }
                 }
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: overflowMenu.openRelative()
-                }
-            }
-        }
+            }        }
 
         // Etched separator towards the task buttons
         Item {
@@ -258,7 +273,7 @@ PlasmoidItem {
 
         PlasmaExtras.Menu {
             id: overflowMenu
-            visualParent: row
+            visualParent: overflowButton
         }
 
         Instantiator {

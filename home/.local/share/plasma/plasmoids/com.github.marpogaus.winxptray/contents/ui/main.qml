@@ -103,9 +103,52 @@ PlasmoidItem {
                     return status === PlasmaCore.Types.ActiveStatus || status === PlasmaCore.Types.PassiveStatus;
                 };
                 hidden.filterRowCallback = () => false;
+                Qt.callLater(fitShownItems);
+                fitRetry.restart();
             } else {
                 shown.filterRowCallback = originalFilters.shown;
                 hidden.filterRowCallback = originalFilters.hidden;
+            }
+        }
+
+        // Hidden icons keep their status while shown in the row, and Plasma
+        // lays a hidden item out as in its popup list (32 px icon, margins,
+        // a text label). Give them the row's look instead; collapsing
+        // destroys these items, so nothing has to be undone.
+        function fitShownItems() {
+            if (!tray || !trayExpanded) {
+                return;
+            }
+            const plasmaTray = tray;
+            const children = tray.visibleLayout.contentItem.children;
+            for (let i = 0; i < children.length; ++i) {
+                const item = children[i].item;
+                if (!item || !item.inHiddenLayout || !item.iconContainer) {
+                    continue;
+                }
+                const icon = item.iconContainer;
+                const row = icon.parent;
+                icon.implicitWidth = Qt.binding(() => plasmaTray.itemSize);
+                icon.implicitHeight = Qt.binding(() => item.height);
+                row.anchors.margins = 0;
+                for (let j = 0; j < row.children.length; ++j) {
+                    if (row.children[j] !== icon) {
+                        row.children[j].visible = false;
+                    }
+                }
+            }
+        }
+
+        Timer {
+            id: fitRetry
+            interval: 250
+            onTriggered: anchorItem.fitShownItems()
+        }
+
+        Connections {
+            target: anchorItem.tray ? anchorItem.tray.visibleLayout : null
+            function onCountChanged() {
+                Qt.callLater(anchorItem.fitShownItems);
             }
         }
 

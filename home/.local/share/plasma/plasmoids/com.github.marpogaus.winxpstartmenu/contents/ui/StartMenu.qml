@@ -535,7 +535,8 @@ FocusScope {
                     color: menu.xp.leftSeparator
                 }
 
-                // "All Programs ▶" – label aligned with the program names
+                // "All Programs ▶": as wide as the column, label and arrow
+                // centred; the menu opens right after it
                 Item {
                     id: allPrograms
 
@@ -544,9 +545,7 @@ FocusScope {
                     x: 2
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 4
-                    // XP sizes the button to its label and arrow; the menu
-                    // opens right after the arrow, over the left column
-                    width: Math.min(parent.width - 4, allProgramsArrow.x + allProgramsArrow.width + 7)
+                    width: parent.width - 4
                     height: 24
 
                     Rectangle {
@@ -557,7 +556,7 @@ FocusScope {
 
                     Text {
                         id: allProgramsLabel
-                        x: 40
+                        x: Math.round((allPrograms.width - width - 12 - allProgramsArrow.width) / 2)
                         anchors.verticalCenter: parent.verticalCenter
                         text: i18n("All Programs")
                         renderType: Text.NativeRendering

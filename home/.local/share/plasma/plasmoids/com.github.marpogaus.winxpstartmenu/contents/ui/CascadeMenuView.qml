@@ -44,8 +44,10 @@ Item {
         } else {
             widest = metrics.advanceWidth(emptyLabel.title);
         }
-        // icon gutter (28) + room for the cascade arrow (26)
-        view.columnWidth = Math.min(Math.max(Math.ceil(widest) + 28 + 26, 130), 380);
+        // As XP's: the text starts 24 px into the menu (icon at 6 px), and
+        // 25 px follow the longest name (room for the cascade arrow); the
+        // rows sit 2 px inside the frame
+        view.columnWidth = Math.min(Math.max(Math.ceil(widest) + 23 + 23, 130), 380);
     }
 
     property int hoverIndex: -1
@@ -174,8 +176,8 @@ Item {
                     iconSource: cell.model.decoration
                     title: cell.model.display ?? ""
                     iconSize: 16
-                    leftPadding: 5
-                    textSpacing: 7
+                    leftPadding: 4
+                    textSpacing: 3
                     showArrow: cell.hasChildren
                     forceHighlight: view.openIndex === cell.index
 
@@ -204,8 +206,8 @@ Item {
             xp: view.xp
             title: i18n("(Empty)")
             iconSize: 16
-            leftPadding: 5
-            textSpacing: 7
+            leftPadding: 4
+            textSpacing: 3
             interactive: false
         }
     }
