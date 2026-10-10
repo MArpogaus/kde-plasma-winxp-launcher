@@ -206,8 +206,6 @@ Right-click the start button → *Configure Windows XP Start Menu…*
 
 ## Development
 
-- `tools/check-qml.py`: finds QML properties that shadow built-in ones
-  (needs PySide6).
 - `tools/update-vendored.sh`: refreshes the third-party files in `home/`.
 - Edits to widgets: copy `home/` again and restart plasmashell
   (`systemctl --user restart plasma-plasmashell`).
