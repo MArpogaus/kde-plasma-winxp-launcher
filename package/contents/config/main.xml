@@ -27,8 +27,9 @@
       <min>0</min>
       <max>12</max>
     </entry>
-    <entry name="showNetworkPlaces" type="Bool">
-      <default>true</default>
+    <entry name="hiddenPlaces" type="StringList">
+      <label>Entries of the right column that are hidden</label>
+      <default>network</default>
     </entry>
     <entry name="favoritesInitialized" type="Bool">
       <default>false</default>

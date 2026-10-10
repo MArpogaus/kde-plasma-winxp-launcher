@@ -29,36 +29,42 @@ Item {
     Layout.preferredHeight: Layout.minimumHeight
     Layout.maximumHeight: Layout.minimumHeight
 
+    // Sampled from a real XP taskbar (rows of a 30 px button)
     Gradient {
         id: normalGradient
-        GradientStop { position: 0.00; color: "#3a8b39" }
-        GradientStop { position: 0.04; color: "#7cc874" }
-        GradientStop { position: 0.10; color: "#5db556" }
-        GradientStop { position: 0.24; color: "#45a142" }
-        GradientStop { position: 0.50; color: "#3d9a3c" }
-        GradientStop { position: 0.78; color: "#378f36" }
-        GradientStop { position: 0.92; color: "#2f842f" }
-        GradientStop { position: 1.00; color: "#2a6d29" }
+        GradientStop { position: 0.00; color: "#1d4b1d" }
+        GradientStop { position: 0.04; color: "#2b6b2b" }
+        GradientStop { position: 0.09; color: "#3e8d3b" }
+        GradientStop { position: 0.15; color: "#2b912d" }
+        GradientStop { position: 0.25; color: "#1d8d20" }
+        GradientStop { position: 0.55; color: "#1b8c1b" }
+        GradientStop { position: 0.80; color: "#1e941c" }
+        GradientStop { position: 0.90; color: "#1f8e1e" }
+        GradientStop { position: 0.95; color: "#1c7c1e" }
+        GradientStop { position: 1.00; color: "#0e5c12" }
     }
     Gradient {
         id: hoverGradient
-        GradientStop { position: 0.00; color: "#45a043" }
-        GradientStop { position: 0.04; color: "#93d98a" }
-        GradientStop { position: 0.10; color: "#70c868" }
-        GradientStop { position: 0.24; color: "#55b551" }
-        GradientStop { position: 0.50; color: "#4cae4a" }
-        GradientStop { position: 0.78; color: "#45a243" }
-        GradientStop { position: 0.92; color: "#3b963a" }
-        GradientStop { position: 1.00; color: "#317e30" }
+        GradientStop { position: 0.00; color: "#266026" }
+        GradientStop { position: 0.04; color: "#368236" }
+        GradientStop { position: 0.09; color: "#4fa64b" }
+        GradientStop { position: 0.15; color: "#37a63a" }
+        GradientStop { position: 0.25; color: "#28a22b" }
+        GradientStop { position: 0.55; color: "#26a126" }
+        GradientStop { position: 0.80; color: "#2aaa27" }
+        GradientStop { position: 0.90; color: "#2aa229" }
+        GradientStop { position: 0.95; color: "#258f27" }
+        GradientStop { position: 1.00; color: "#12701a" }
     }
     Gradient {
         id: pressedGradient
-        GradientStop { position: 0.00; color: "#24612a" }
-        GradientStop { position: 0.06; color: "#2d7a2f" }
-        GradientStop { position: 0.20; color: "#2f7f31" }
-        GradientStop { position: 0.50; color: "#328532" }
-        GradientStop { position: 0.85; color: "#2f8030" }
-        GradientStop { position: 1.00; color: "#2b6f2b" }
+        GradientStop { position: 0.00; color: "#0f350f" }
+        GradientStop { position: 0.06; color: "#17641a" }
+        GradientStop { position: 0.15; color: "#167a18" }
+        GradientStop { position: 0.55; color: "#157e16" }
+        GradientStop { position: 0.85; color: "#188a18" }
+        GradientStop { position: 0.95; color: "#17741a" }
+        GradientStop { position: 1.00; color: "#0b4f0f" }
     }
 
     Item {
@@ -74,31 +80,30 @@ Item {
             radius: button.vertical ? 3 : Math.round(button.thickness * 0.42)
             gradient: button.pressedLook ? pressedGradient : button.hoveredLook ? hoverGradient : normalGradient
             border.width: 1
-            border.color: button.pressedLook ? "#1d4f1d" : "#2a6e29"
+            border.color: "#0b4f12"
 
-            // Soft glow behind the flag
+            // Darker band along the left edge
             Rectangle {
                 x: shape.radius
-                width: parent.width * 0.45
+                width: 6
                 height: parent.height
-                opacity: button.pressedLook ? 0.0 : 1.0
                 gradient: Gradient {
                     orientation: Gradient.Horizontal
-                    GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0.10) }
-                    GradientStop { position: 1.0; color: Qt.rgba(1, 1, 1, 0.0) }
+                    GradientStop { position: 0.0; color: Qt.rgba(0, 0.12, 0, 0.55) }
+                    GradientStop { position: 1.0; color: Qt.rgba(0, 0.12, 0, 0.0) }
                 }
             }
 
             // Shading along the rounded right edge
             Rectangle {
                 anchors.right: parent.right
-                width: shape.radius * 1.6
+                width: shape.radius * 1.4
                 height: parent.height
                 radius: shape.radius
                 gradient: Gradient {
                     orientation: Gradient.Horizontal
-                    GradientStop { position: 0.0; color: Qt.rgba(0, 0, 0, 0.0) }
-                    GradientStop { position: 1.0; color: Qt.rgba(0, 0, 0, 0.22) }
+                    GradientStop { position: 0.0; color: Qt.rgba(0, 0.1, 0, 0.0) }
+                    GradientStop { position: 1.0; color: Qt.rgba(0, 0.1, 0, 0.35) }
                 }
             }
         }
@@ -106,10 +111,11 @@ Item {
 
     Item {
         id: flag
-        x: button.vertical ? Math.round((parent.width - width) / 2) : Math.round(button.thickness * 0.2)
+        // The flag fills ~75 % of its box: at 30 px it shows 19 px wide at x = 10
+        x: button.vertical ? Math.round((parent.width - width) / 2) : Math.round(button.thickness * 0.23)
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: button.pressedLook ? 1 : 0
-        width: Math.round(button.thickness * 0.7)
+        width: Math.round(button.thickness * 0.84)
         height: width
 
         Image {
@@ -128,26 +134,34 @@ Item {
     }
 
     Text {
-        id: labelShadow
+        visible: !button.vertical
+        x: label.x + 2
+        y: label.y + 2
+        text: label.text
+        font: label.font
+        color: Qt.rgba(0, 0, 0, 0.22)
+    }
+    Text {
         visible: !button.vertical
         x: label.x + 1
         y: label.y + 1
         text: label.text
         font: label.font
-        color: Qt.rgba(0.08, 0.2, 0.08, 0.75)
+        color: Qt.rgba(0, 0.08, 0, 0.7)
     }
     Text {
         id: label
         visible: !button.vertical
-        x: flag.x + flag.width + Math.round(button.thickness * 0.08)
+        x: Math.round(button.thickness * 1.13) + (button.pressedLook ? 1 : 0)
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: button.pressedLook ? 0 : -1
         text: button.text
         textFormat: Text.PlainText
         font.family: button.xp.startFontFamily
-        font.pixelSize: Math.round(button.thickness * 0.62)
+        font.pixelSize: Math.round(button.thickness * 0.6)
+        font.letterSpacing: -0.5
         font.italic: true
-        font.bold: true
+        font.weight: Font.Medium
         color: "#ffffff"
     }
 

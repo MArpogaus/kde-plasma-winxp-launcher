@@ -66,6 +66,8 @@ Item {
             width: parent.width
             text: entry.title
             textFormat: Text.PlainText
+            lineHeightMode: Text.FixedHeight
+            lineHeight: 12
             wrapMode: entry.wrap ? Text.WordWrap : Text.NoWrap
             maximumLineCount: entry.wrap ? 2 : 1
             elide: Text.ElideRight
@@ -83,6 +85,8 @@ Item {
             visible: entry.subtitle.length > 0
             text: entry.subtitle
             textFormat: Text.PlainText
+            lineHeightMode: Text.FixedHeight
+            lineHeight: 12
             elide: Text.ElideRight
             renderType: Text.NativeRendering
             font.family: entry.xp.fontFamily

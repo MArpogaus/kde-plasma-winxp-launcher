@@ -21,7 +21,28 @@ PlasmoidItem {
 
     readonly property XpTheme xp: XpTheme {
         fontFamily: Plasmoid.configuration.fontFamily
-        startFontFamily: Plasmoid.configuration.startFontFamily
+        startFontFamily: root.fontInstalled(Plasmoid.configuration.startFontFamily)
+                         ? Plasmoid.configuration.startFontFamily : "Libre Franklin"
+    }
+
+    // Bundled look-alikes for the non-free XP fonts. Tahoma (Wine, LGPL) is
+    // only registered when no real Tahoma is installed; bold is synthesised
+    // because Wine's bold face renders with regular-weight outlines.
+    // Libre Franklin (OFL) stands in for Franklin Gothic Medium.
+    readonly property var installedFonts: Qt.fontFamilies()
+    property string tahomaSource: ""
+
+    function fontInstalled(family) {
+        return installedFonts.indexOf(family) >= 0;
+    }
+
+    FontLoader { source: root.tahomaSource }
+    FontLoader { source: Qt.resolvedUrl("../fonts/LibreFranklin-MediumItalic.ttf") }
+
+    Component.onCompleted: {
+        if (!fontInstalled("Tahoma")) {
+            tahomaSource = Qt.resolvedUrl("../fonts/tahoma.ttf");
+        }
     }
 
     readonly property bool vertical: Plasmoid.formFactor === PlasmaCore.Types.Vertical
@@ -177,7 +198,7 @@ PlasmoidItem {
             frequentModel: frequentModel
             searchModel: runnerModel.count > 0 ? runnerModel.modelForRow(0) : null
             numFrequentApps: Plasmoid.configuration.numFrequentApps
-            showNetworkPlaces: Plasmoid.configuration.showNetworkPlaces
+            hiddenPlaces: Plasmoid.configuration.hiddenPlaces
             userName: kuser.fullName || kuser.loginName
             userAvatar: kuser.faceIconUrl
         }

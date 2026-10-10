@@ -13,7 +13,7 @@ KCM.SimpleKCM {
     property alias cfg_startFontFamily: startFontFamily.text
     property alias cfg_fontFamily: fontFamily.text
     property alias cfg_numFrequentApps: numFrequentApps.value
-    property alias cfg_showNetworkPlaces: showNetworkPlaces.checked
+    property var cfg_hiddenPlaces: []
     property alias cfg_myComputerUrl: myComputerUrl.text
     property alias cfg_networkUrl: networkUrl.text
     property alias cfg_controlPanelCommand: controlPanelCommand.text
@@ -56,9 +56,31 @@ KCM.SimpleKCM {
             from: 0
             to: 12
         }
-        QQC2.CheckBox {
-            id: showNetworkPlaces
-            text: i18n("Show My Network Places")
+        Repeater {
+            model: [
+                { key: "recent", text: i18n("My Recent Documents") },
+                { key: "pictures", text: i18n("My Pictures") },
+                { key: "music", text: i18n("My Music") },
+                { key: "network", text: i18n("My Network Places") },
+                { key: "defaults", text: i18n("Set Program Access and Defaults") },
+                { key: "printers", text: i18n("Printers and Faxes") }
+            ]
+
+            delegate: QQC2.CheckBox {
+                required property var modelData
+                required property int index
+
+                Kirigami.FormData.label: index === 0 ? i18n("Show:") : ""
+                text: modelData.text
+                checked: cfg_hiddenPlaces.indexOf(modelData.key) < 0
+                onToggled: {
+                    const hidden = cfg_hiddenPlaces.filter(key => key !== modelData.key);
+                    if (!checked) {
+                        hidden.push(modelData.key);
+                    }
+                    cfg_hiddenPlaces = hidden;
+                }
+            }
         }
 
         Item {

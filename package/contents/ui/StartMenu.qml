@@ -21,7 +21,8 @@ FocusScope {
     property var frequentModel: null
     property var searchModel: null
     property int numFrequentApps: 6
-    property bool showNetworkPlaces: true
+    // Keys of right-column entries to hide (see the places list below)
+    property var hiddenPlaces: ["network"]
 
     property string userName
     property url userAvatar
@@ -38,8 +39,9 @@ FocusScope {
     readonly property int screenHeight: Screen.height
     readonly property int bodyHeight: Math.max(leftColumn.neededHeight, rightColumn.neededHeight, 330)
 
+    // header | 1 px line | body | 1 px line | footer
     width: xp.menuWidth
-    height: xp.headerHeight + 2 + bodyHeight + xp.footerHeight
+    height: xp.headerHeight + 1 + bodyHeight + 1 + xp.footerHeight
 
     onSearchTextChanged: searchIndex = 0
 
@@ -147,12 +149,14 @@ FocusScope {
 
     // ------------------------------------------------------------------
     // Frame. The window is transparent; the top corners are rounded by
-    // clipping a rounded rectangle that extends below the bottom edge.
+    // clipping rounded rectangles that extend below the bottom edge.
+    // Colours of header and footer are sampled row by row from XP.
     // ------------------------------------------------------------------
     Item {
         anchors.fill: parent
         clip: true
 
+        // Blue frame behind everything (shows as the 3 px side borders)
         Rectangle {
             width: parent.width
             height: parent.height + menu.xp.cornerRadius
@@ -160,52 +164,98 @@ FocusScope {
             color: menu.xp.frame
         }
 
+        // --------------------------------------------------------------
         // Header
-        Rectangle {
+        // --------------------------------------------------------------
+        Item {
             id: header
             width: parent.width
-            height: menu.xp.headerHeight + menu.xp.cornerRadius
-            radius: menu.xp.cornerRadius
-            gradient: Gradient {
-                GradientStop { position: 0.00; color: "#1868ce" }
-                GradientStop { position: 0.12; color: "#0e60cb" }
-                GradientStop { position: 0.20; color: "#0e60cb" }
-                GradientStop { position: 0.32; color: "#1164cf" }
-                GradientStop { position: 0.33; color: "#1667cf" }
-                GradientStop { position: 0.47; color: "#1b6cd3" }
-                GradientStop { position: 0.54; color: "#1e70d9" }
-                GradientStop { position: 0.60; color: "#2476dc" }
-                GradientStop { position: 0.65; color: "#297ae0" }
-                GradientStop { position: 0.77; color: "#3482e3" }
-                GradientStop { position: 0.79; color: "#3786e5" }
-                GradientStop { position: 0.90; color: "#428ee9" }
-                GradientStop { position: 1.00; color: "#4791eb" }
+            height: menu.xp.headerHeight
+            clip: true
+
+            Rectangle {
+                width: parent.width
+                height: parent.height + menu.xp.cornerRadius
+                radius: menu.xp.cornerRadius
+                // 63 rows + 6 hidden rows: position = row / 69
+                gradient: Gradient {
+                    GradientStop { position: 0 / 69; color: "#225cc5" }
+                    GradientStop { position: 1 / 69; color: "#67a2e7" }
+                    GradientStop { position: 2 / 69; color: "#75abe8" }
+                    GradientStop { position: 3 / 69; color: "#397fd9" }
+                    GradientStop { position: 4 / 69; color: "#1a69d2" }
+                    GradientStop { position: 6 / 69; color: "#1464cd" }
+                    GradientStop { position: 9 / 69; color: "#0e60cb" }
+                    GradientStop { position: 11 / 69; color: "#0c5fcb" }
+                    GradientStop { position: 14 / 69; color: "#0d60cb" }
+                    GradientStop { position: 20 / 69; color: "#1164ce" }
+                    GradientStop { position: 30 / 69; color: "#1b6cd3" }
+                    GradientStop { position: 40 / 69; color: "#2577dc" }
+                    GradientStop { position: 50 / 69; color: "#3383e5" }
+                    GradientStop { position: 56 / 69; color: "#3d8ae8" }
+                    GradientStop { position: 62 / 69; color: "#4792ec" }
+                    GradientStop { position: 1.0; color: "#4792ec" }
+                }
+            }
+
+            // Light bevel and glow on the left edge
+            Rectangle {
+                x: 1
+                y: 3
+                width: 1
+                height: parent.height - 3
+                color: "#7493da"
+            }
+            Rectangle {
+                x: 2
+                y: 3
+                width: 7
+                height: parent.height - 3
+                gradient: Gradient {
+                    orientation: Gradient.Horizontal
+                    GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0.28) }
+                    GradientStop { position: 1.0; color: Qt.rgba(1, 1, 1, 0.0) }
+                }
+            }
+            // Shading on the right edge
+            Rectangle {
+                anchors.right: parent.right
+                anchors.rightMargin: 1
+                y: 3
+                width: 8
+                height: parent.height - 3
+                gradient: Gradient {
+                    orientation: Gradient.Horizontal
+                    GradientStop { position: 0.0; color: Qt.rgba(0, 0.1, 0.35, 0.0) }
+                    GradientStop { position: 1.0; color: Qt.rgba(0, 0.1, 0.35, 0.22) }
+                }
             }
         }
 
-        // User picture
+        // User picture: 48 x 48 in a light rounded frame
         Rectangle {
             id: avatarFrame
-            x: 5
-            anchors.verticalCenter: parent.top
-            anchors.verticalCenterOffset: menu.xp.headerHeight / 2
-            width: 46
-            height: 46
-            radius: 3
-            color: Qt.rgba(222 / 255, 222 / 255, 222 / 255, 0.8)
+            x: 7
+            y: 6
+            width: 52
+            height: 52
+            radius: 4
+            color: "#dfe8f6"
+            border.width: 1
+            border.color: Qt.rgba(0.05, 0.2, 0.5, 0.45)
 
-            Rectangle {
-                anchors.fill: parent
-                anchors.margins: 2
-                radius: 2
-                color: "#ffffff"
+            Item {
+                x: 2
+                y: 2
+                width: 48
+                height: 48
                 clip: true
 
                 Image {
                     id: avatar
                     anchors.fill: parent
                     source: menu.userAvatar
-                    sourceSize: Qt.size(84, 84)
+                    sourceSize: Qt.size(96, 96)
                     fillMode: Image.PreserveAspectCrop
                     smooth: true
                     visible: status === Image.Ready
@@ -221,41 +271,40 @@ FocusScope {
         }
 
         Text {
-            x: avatarFrame.x + avatarFrame.width + 6 + 1
+            x: avatarFrame.x + avatarFrame.width + 8 + 1
             anchors.verticalCenter: avatarFrame.verticalCenter
             anchors.verticalCenterOffset: 1
-            width: parent.width - x - 8
+            width: parent.width - x - 10
             text: menu.userName
             textFormat: Text.PlainText
             elide: Text.ElideRight
             renderType: Text.NativeRendering
             font.family: menu.xp.fontFamily
-            font.pixelSize: 14
+            font.pixelSize: 18
             font.bold: true
-            color: Qt.rgba(0, 0, 0, 0.7)
+            color: Qt.rgba(0, 0, 0, 0.6)
         }
         Text {
-            x: avatarFrame.x + avatarFrame.width + 6
+            x: avatarFrame.x + avatarFrame.width + 8
             anchors.verticalCenter: avatarFrame.verticalCenter
-            width: parent.width - x - 8
+            width: parent.width - x - 10
             text: menu.userName
             textFormat: Text.PlainText
             elide: Text.ElideRight
             renderType: Text.NativeRendering
             font.family: menu.xp.fontFamily
-            font.pixelSize: 14
+            font.pixelSize: 18
             font.bold: true
             color: "#ffffff"
         }
 
-        // Light inner outline around the whole frame
+        // Dark rule between header and body
         Rectangle {
-            width: parent.width
-            height: parent.height + menu.xp.cornerRadius
-            radius: menu.xp.cornerRadius
-            color: "transparent"
-            border.width: 1
-            border.color: menu.xp.frameHighlight
+            x: 1
+            y: menu.xp.headerHeight
+            width: parent.width - 2
+            height: 1
+            color: menu.xp.bodyTopLine
         }
 
         // --------------------------------------------------------------
@@ -263,44 +312,26 @@ FocusScope {
         // --------------------------------------------------------------
         Item {
             id: body
-            x: 2
-            y: menu.xp.headerHeight
-            width: parent.width - 4
-            height: menu.bodyHeight + 2
-
-            // Orange line under the header
-            Rectangle {
-                width: parent.width
-                height: 2
-                color: "#385de7"
-                Rectangle {
-                    anchors.fill: parent
-                    gradient: Gradient {
-                        orientation: Gradient.Horizontal
-                        GradientStop { position: 0.0; color: Qt.rgba(0.855, 0.533, 0.290, 0) }
-                        GradientStop { position: 0.5; color: menu.xp.orange }
-                        GradientStop { position: 1.0; color: Qt.rgba(0.855, 0.533, 0.290, 0) }
-                    }
-                }
-            }
+            x: menu.xp.frameWidth
+            y: menu.xp.headerHeight + 1
+            width: parent.width - 2 * menu.xp.frameWidth
+            height: menu.bodyHeight
 
             // ---------------- left column: programs ----------------
             Rectangle {
                 id: leftColumn
 
-                readonly property int neededHeight: 6 + leftTop.implicitHeight + allProgramsSeparator.height + allPrograms.height + 6
+                readonly property int neededHeight: 9 + leftTop.implicitHeight + allProgramsSeparator.height + allPrograms.height + 4
 
-                y: 2
                 width: menu.xp.leftWidth
-                height: parent.height - 2
+                height: parent.height
                 color: menu.xp.leftBackground
 
                 Column {
                     id: leftTop
-                    x: 5
-                    y: 6
-                    width: parent.width - 10
-                    spacing: 2
+                    x: 2
+                    y: 9
+                    width: parent.width - 4
                     visible: !menu.searching
 
                     Repeater {
@@ -317,9 +348,12 @@ FocusScope {
                                                                  : favoriteId === "preferred://mail" ? i18n("E-mail") : ""
 
                             width: leftTop.width
-                            height: 34
+                            height: menu.xp.programRowHeight
                             xp: menu.xp
                             iconSource: model.decoration
+                            iconSize: menu.xp.programIconSize
+                            leftPadding: 3
+                            textSpacing: 5
                             title: specialTitle || (model.display ?? "")
                             subtitle: specialTitle ? (model.display ?? "") : ""
                             bold: true
@@ -332,6 +366,9 @@ FocusScope {
 
                     MenuSeparator {
                         width: parent.width
+                        height: menu.xp.separatorHeight - 2
+                        leftInset: 40
+                        rightInset: 41
                         color: menu.xp.leftSeparator
                         visible: menu.frequentItems.length > 0
                     }
@@ -345,9 +382,12 @@ FocusScope {
                             required property var modelData
 
                             width: leftTop.width
-                            height: 34
+                            height: menu.xp.programRowHeight
                             xp: menu.xp
                             iconSource: modelData.decoration
+                            iconSize: menu.xp.programIconSize
+                            leftPadding: 3
+                            textSpacing: 5
                             title: modelData.display
 
                             onHoveredChanged: if (hovered) menu.hovered("", frequent)
@@ -360,20 +400,20 @@ FocusScope {
                 // Search results replace the program lists while typing
                 Item {
                     id: searchPane
-                    x: 5
+                    x: 2
                     y: 6
-                    width: parent.width - 10
+                    width: parent.width - 4
                     height: allProgramsSeparator.y - y
                     visible: menu.searching
 
                     Item {
                         id: searchHeader
                         width: parent.width
-                        height: 22
+                        height: 24
 
                         Kirigami.Icon {
                             id: searchIcon
-                            x: 2
+                            x: 8
                             anchors.verticalCenter: parent.verticalCenter
                             width: 16
                             height: 16
@@ -417,6 +457,9 @@ FocusScope {
                         id: searchSeparator
                         anchors.top: searchHeader.bottom
                         width: parent.width
+                        height: menu.xp.separatorHeight
+                        leftInset: 40
+                        rightInset: 41
                         color: menu.xp.leftSeparator
                     }
 
@@ -429,7 +472,6 @@ FocusScope {
                         boundsBehavior: Flickable.StopAtBounds
                         model: menu.searching ? menu.searchModel : null
                         currentIndex: menu.searchIndex
-                        spacing: 1
 
                         onCurrentIndexChanged: positionViewAtIndex(currentIndex, ListView.Contain)
 
@@ -440,11 +482,13 @@ FocusScope {
                             required property var model
 
                             width: searchList.width
-                            height: 28
+                            height: menu.xp.placeRowHeight
                             xp: menu.xp
                             iconSource: model.decoration
                             title: model.display ?? ""
-                            iconSize: 24
+                            iconSize: menu.xp.placeIconSize
+                            leftPadding: 7
+                            textSpacing: 9
                             forceHighlight: index === menu.searchIndex
 
                             onHoveredChanged: if (hovered) menu.searchIndex = index
@@ -456,11 +500,12 @@ FocusScope {
                     MenuEntry {
                         anchors.top: searchSeparator.bottom
                         width: parent.width
-                        height: 22
+                        height: 24
                         visible: searchList.count === 0
                         xp: menu.xp
                         iconSize: 0
-                        leftPadding: 4
+                        leftPadding: 40
+                        textSpacing: 0
                         title: i18n("No items match your search.")
                         interactive: false
                     }
@@ -468,23 +513,26 @@ FocusScope {
 
                 MenuSeparator {
                     id: allProgramsSeparator
-                    x: 5
+                    x: 2
                     anchors.bottom: allPrograms.top
-                    width: parent.width - 10
+                    width: parent.width - 4
+                    height: menu.xp.separatorHeight
+                    leftInset: 40
+                    rightInset: 41
                     color: menu.xp.leftSeparator
                 }
 
-                // "All Programs ▶"
+                // "All Programs ▶" – label aligned with the program names
                 Item {
                     id: allPrograms
 
                     readonly property bool highlighted: allProgramsMouse.containsMouse || menu.openCascade === "programs"
 
-                    x: 5
+                    x: 2
                     anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 6
-                    width: parent.width - 10
-                    height: 26
+                    anchors.bottomMargin: 4
+                    width: parent.width - 4
+                    height: 24
 
                     Rectangle {
                         anchors.fill: parent
@@ -492,24 +540,23 @@ FocusScope {
                         visible: allPrograms.highlighted
                     }
 
-                    Row {
-                        anchors.centerIn: parent
-                        spacing: 6
-
-                        Text {
-                            anchors.verticalCenter: parent.verticalCenter
-                            text: i18n("All Programs")
-                            renderType: Text.NativeRendering
-                            font.family: menu.xp.fontFamily
-                            font.pixelSize: menu.xp.fontPixelSize
-                            font.bold: true
-                            color: allPrograms.highlighted ? menu.xp.highlightText : menu.xp.leftText
-                        }
-                        Image {
-                            anchors.verticalCenter: parent.verticalCenter
-                            source: "../images/all-programs.svg"
-                            sourceSize: Qt.size(18, 18)
-                        }
+                    Text {
+                        id: allProgramsLabel
+                        x: 40
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: i18n("All Programs")
+                        renderType: Text.NativeRendering
+                        font.family: menu.xp.fontFamily
+                        font.pixelSize: menu.xp.fontPixelSize
+                        font.bold: true
+                        color: allPrograms.highlighted ? menu.xp.highlightText : menu.xp.leftText
+                    }
+                    Image {
+                        anchors.left: allProgramsLabel.right
+                        anchors.leftMargin: 12
+                        anchors.verticalCenter: parent.verticalCenter
+                        source: "../images/all-programs.svg"
+                        sourceSize: Qt.size(17, 22)
                     }
 
                     MouseArea {
@@ -527,29 +574,30 @@ FocusScope {
                 }
             }
 
+            // Divider between the columns
+            Rectangle {
+                x: leftColumn.width
+                width: 1
+                height: parent.height
+                color: menu.xp.rightBorder
+            }
+
             // ---------------- right column: places ----------------
             Rectangle {
                 id: rightColumn
 
-                readonly property int neededHeight: 6 + placesColumn.implicitHeight + 6
+                readonly property int neededHeight: 8 + placesColumn.implicitHeight + 6
 
-                x: leftColumn.width
-                y: 2
-                width: parent.width - leftColumn.width
-                height: parent.height - 2
+                x: leftColumn.width + 1
+                width: menu.xp.rightWidth
+                height: parent.height
                 color: menu.xp.rightBackground
-
-                Rectangle {
-                    width: 1
-                    height: parent.height
-                    color: menu.xp.rightBorder
-                }
 
                 Column {
                     id: placesColumn
-                    x: 6
-                    y: 6
-                    width: parent.width - 11
+                    x: 2
+                    y: 8
+                    width: parent.width - 4
 
                     Repeater {
                         model: [
@@ -558,7 +606,7 @@ FocusScope {
                             { key: "pictures", icon: "folder-pictures", title: i18n("My Pictures"), bold: true },
                             { key: "music", icon: "folder-music", title: i18n("My Music"), bold: true },
                             { key: "computer", icon: "computer", title: i18n("My Computer"), bold: true },
-                            { key: "network", icon: "network-workgroup", title: i18n("My Network Places"), bold: true, hidden: !menu.showNetworkPlaces },
+                            { key: "network", icon: "network-workgroup", title: i18n("My Network Places"), bold: true },
                             { separator: true },
                             { key: "controlpanel", icon: "preferences-system", title: i18n("Control Panel") },
                             { key: "defaults", icon: "preferences-desktop-default-applications", title: i18n("Set Program Access and Defaults") },
@@ -573,14 +621,19 @@ FocusScope {
                             id: place
 
                             required property var modelData
+                            readonly property bool hidden: !modelData.separator && menu.hiddenPlaces.indexOf(modelData.key) >= 0
 
                             width: placesColumn.width
-                            height: modelData.hidden ? 0 : (modelData.separator ? 9 : Math.max(26, placeEntry.labelsHeight + 6))
-                            visible: !modelData.hidden
+                            height: hidden ? 0
+                                  : modelData.separator ? menu.xp.separatorHeight
+                                  : Math.max(menu.xp.placeRowHeight, placeEntry.labelsHeight + 8)
+                            visible: !hidden
 
                             MenuSeparator {
                                 anchors.fill: parent
                                 visible: place.modelData.separator === true
+                                leftInset: 52
+                                rightInset: 56
                                 color: menu.xp.rightSeparator
                             }
 
@@ -594,9 +647,9 @@ FocusScope {
                                 bold: place.modelData.bold === true
                                 showArrow: place.modelData.arrow === true
                                 wrap: true
-                                iconSize: 22
-                                leftPadding: 2
-                                textSpacing: 5
+                                iconSize: menu.xp.placeIconSize
+                                leftPadding: 5
+                                textSpacing: 3
                                 textColor: menu.xp.rightText
                                 forceHighlight: place.modelData.key === "recent" && menu.openCascade === "recent"
 
@@ -614,6 +667,27 @@ FocusScope {
                     }
                 }
             }
+
+            // Orange line under the header, drawn over both columns
+            Rectangle {
+                width: parent.width
+                height: 2
+                gradient: Gradient {
+                    orientation: Gradient.Horizontal
+                    GradientStop { position: 0.0; color: Qt.rgba(0.855, 0.533, 0.290, 0) }
+                    GradientStop { position: 0.45; color: menu.xp.orange }
+                    GradientStop { position: 1.0; color: Qt.rgba(0.855, 0.533, 0.290, 0) }
+                }
+            }
+        }
+
+        // Rule between body and footer
+        Rectangle {
+            x: 1
+            y: body.y + body.height
+            width: parent.width - 2
+            height: 1
+            color: menu.xp.bodyBottomLine
         }
 
         // --------------------------------------------------------------
@@ -625,29 +699,43 @@ FocusScope {
             width: parent.width
             height: menu.xp.footerHeight
             gradient: Gradient {
-                GradientStop { position: 0.00; color: "#4282d6" }
-                GradientStop { position: 0.03; color: "#3b85e0" }
-                GradientStop { position: 0.05; color: "#418ae3" }
-                GradientStop { position: 0.17; color: "#418ae3" }
-                GradientStop { position: 0.21; color: "#3c87e2" }
-                GradientStop { position: 0.26; color: "#3786e4" }
-                GradientStop { position: 0.29; color: "#3482e3" }
-                GradientStop { position: 0.39; color: "#2e7ee1" }
-                GradientStop { position: 0.49; color: "#2374df" }
-                GradientStop { position: 0.57; color: "#2072db" }
-                GradientStop { position: 0.62; color: "#196edb" }
-                GradientStop { position: 0.72; color: "#176bd8" }
-                GradientStop { position: 0.75; color: "#1468d7" }
-                GradientStop { position: 0.83; color: "#1165d6" }
-                GradientStop { position: 0.88; color: "#0f61cb" }
-                GradientStop { position: 1.00; color: "#0f61cb" }
+                GradientStop { position: 0 / 38; color: "#438be3" }
+                GradientStop { position: 3 / 38; color: "#438be4" }
+                GradientStop { position: 6 / 38; color: "#3e89e4" }
+                GradientStop { position: 10 / 38; color: "#3683e4" }
+                GradientStop { position: 15 / 38; color: "#2d7de2" }
+                GradientStop { position: 20 / 38; color: "#2274de" }
+                GradientStop { position: 25 / 38; color: "#196ddb" }
+                GradientStop { position: 30 / 38; color: "#1568d6" }
+                GradientStop { position: 35 / 38; color: "#1062cf" }
+                GradientStop { position: 37 / 38; color: "#0d5bc7" }
+                GradientStop { position: 1.0; color: "#0c56c0" }
+            }
+
+            // Edge shading (darker towards the outline on both sides)
+            Rectangle {
+                x: 1
+                width: 1
+                height: parent.height
+                color: Qt.rgba(0.08, 0.12, 0.5, 0.35)
+            }
+            Rectangle {
+                anchors.right: parent.right
+                anchors.rightMargin: 1
+                width: 5
+                height: parent.height
+                gradient: Gradient {
+                    orientation: Gradient.Horizontal
+                    GradientStop { position: 0.0; color: Qt.rgba(0, 0.1, 0.35, 0.0) }
+                    GradientStop { position: 1.0; color: Qt.rgba(0, 0.1, 0.35, 0.25) }
+                }
             }
 
             Row {
                 anchors.right: parent.right
-                anchors.rightMargin: 6
+                anchors.rightMargin: 5
                 anchors.verticalCenter: parent.verticalCenter
-                spacing: 6
+                spacing: 4
 
                 FooterButton {
                     iconSource: "../images/log-off.svg"
@@ -661,6 +749,40 @@ FocusScope {
                 }
             }
         }
+
+        // Side frame of the body: outline + light blue, slightly darker
+        // next to the outline on the right
+        Rectangle {
+            x: 1
+            y: body.y
+            width: 2
+            height: body.height
+            color: menu.xp.frameHighlight
+        }
+        Rectangle {
+            x: parent.width - 3
+            y: body.y
+            width: 1
+            height: body.height
+            color: menu.xp.frameHighlight
+        }
+        Rectangle {
+            x: parent.width - 2
+            y: body.y
+            width: 1
+            height: body.height
+            color: menu.xp.frameShade
+        }
+
+        // 1 px outline around the whole menu
+        Rectangle {
+            width: parent.width
+            height: parent.height + menu.xp.cornerRadius
+            radius: menu.xp.cornerRadius
+            color: "transparent"
+            border.width: 1
+            border.color: menu.xp.frameOutline
+        }
     }
 
     component FooterButton: Item {
@@ -672,7 +794,7 @@ FocusScope {
         signal clicked()
 
         width: footerRow.width + 6
-        height: 28
+        height: 30
 
         Rectangle {
             anchors.fill: parent
@@ -685,12 +807,13 @@ FocusScope {
             id: footerRow
             x: 3
             anchors.verticalCenter: parent.verticalCenter
-            spacing: 4
+            anchors.verticalCenterOffset: footerMouse.pressed ? 1 : 0
+            spacing: 3
 
             Image {
                 anchors.verticalCenter: parent.verticalCenter
                 source: footerButton.iconSource
-                sourceSize: Qt.size(22, 22)
+                sourceSize: Qt.size(24, 24)
             }
             Text {
                 anchors.verticalCenter: parent.verticalCenter
