@@ -3,7 +3,7 @@
 #
 # Maintainer script: refresh the third-party files bundled in home/ (Exposé,
 # modernXP cursors, Dolphin's XP toolbar) from their upstream projects. Users do not need this, they copy home/.
-# Needs git, python3 and rsvg-convert. URLs can be overridden with
+# Needs git, curl, python3 and rsvg-convert. URLs can be overridden with
 # WINXP_*_URL for testing.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -28,16 +28,17 @@ replace "$E/desktoptheme/expose" "$D/plasma/desktoptheme/expose"
 replace "$E/themes/expose" "$D/aurorae/themes/expose"
 replace "$E/Kvantum/Expose" "$H/.config/Kvantum/Expose"
 replace "$E/wallpapers/expose" "$D/wallpapers/expose"
-# the archive may spell the wallpaper's directory as Bl#U00f8ff
+# the repository may spell the wallpaper's directory as Bl#U00f8ff
 for dir in "$E"/wallpapers/Bl*; do replace "$dir" "$D/wallpapers/Bløff"; done
 mkdir -p "$D/color-schemes"
 cp "$E/Expose.colors" "$D/color-schemes/Expose.colors"
 printf '[General]\ntheme=Expose\n' > "$H/.config/Kvantum/kvantum.kvconfig"
 
 
-# modernXP cursors (GPL-3.0), built at 32, 64 and 96 px
+# modernXP cursors (GPL-3.0), rendered at every size their configs use
 C=$SRC/cursors/src
-for size in 32 64 96; do
+# shellcheck disable=SC2013 # sizes are single words
+for size in $(awk '/^[0-9]/ {print $1}' "$C"/config/*.cursor | sort -un); do
     mkdir -p "$SRC/png/$size"
     for svg in "$C"/svg/*.svg; do
         rsvg-convert -w "$size" -h "$size" -o "$SRC/png/$size/$(basename "${svg%.svg}").png" "$svg"
@@ -45,7 +46,7 @@ for size in 32 64 96; do
 done
 rm -rf "$D/icons/ModernXP"
 python3 tools/xcursor.py --config-dir "$C/config" --png-root "$SRC/png" --aliases "$C/cursorList" \
-    --out "$D/icons/ModernXP" --name "Modern XP" 2>/dev/null
+    --out "$D/icons/ModernXP" --name "Modern XP"
 cp "$SRC/cursors/LICENSE" "$D/icons/ModernXP/LICENSE"
 
 # Dolphin: XP Explorer toolbar

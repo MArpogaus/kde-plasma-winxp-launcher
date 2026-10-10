@@ -13,27 +13,22 @@ panel.lengthMode = "fill";
 panel.alignment = "left";
 panel.hiding = "none";
 
-var start = panel.addWidget("com.github.marpogaus.winxpstartmenu");
-// Meta opens the start menu
-start.currentConfigGroup = ["Shortcuts"];
-start.writeConfig("global", "Alt+F1");
+// Meta and Alt+F1 open the start menu: Plasma's launcher shortcut finds
+// it as the panel's application launcher (X-Plasma-Provides)
+panel.addWidget("com.github.marpogaus.winxpstartmenu");
 
 panel.addWidget("com.github.marpogaus.winxpquicklaunch");
 
 panel.addWidget("com.github.marpogaus.winxptaskbar");
 panel.addWidget("com.github.marpogaus.winxptray");
 var tray = panel.addWidget("org.kde.plasma.systemtray");
-// XP keeps the expand arrow at the left end of the notification area.
-// Older Plasma keeps the tray's settings in a separate containment; newer
-// Plasma makes the tray applet itself the containment.
-var trayContainmentId = tray.readConfig("SystrayContainmentId");
-var trayConfig = (trayContainmentId && desktopById(trayContainmentId)) || tray;
-trayConfig.currentConfigGroup = ["General"];
-trayConfig.writeConfig("reverseIconOrder", true);
-trayConfig.writeConfig("iconSpacing", 1);
+// XP keeps the expand arrow at the left end of the notification area
+tray.currentConfigGroup = ["General"];
+tray.writeConfig("reverseIconOrder", true);
+tray.writeConfig("iconSpacing", 1);
 // XP hides inactive icons behind the chevron; keep volume, network,
 // battery and app icons in view
-trayConfig.writeConfig("hiddenItems", [
+tray.writeConfig("hiddenItems", [
     "org.kde.plasma.clipboard",
     "org.kde.plasma.brightness",
     "org.kde.plasma.bluetooth",

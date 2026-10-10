@@ -58,11 +58,21 @@ Apply Breeze (or any other) Global Theme with its desktop layout, then
 remove the copied files:
 
 ```sh
-(cd home && git ls-files) | (cd ~ && xargs -d '\n' rm -f)
+(cd home && git ls-files -z) | (cd ~ && xargs -0 rm -f)
 ```
 
 Files from `get-microsoft-files.sh` are in `~/.local/share/{fonts,sounds,wallpapers}/WindowsXP`,
-`~/.local/share/icons/WindowsXP-Luna` and `~/.local/share/winxp-kde`.
+`~/.local/share/icons/WindowsXP-Luna` and `~/.local/share/winxp-kde`. It also
+set fonts, icons and sounds; choose others in System Settings (Text & Fonts,
+Icons, Sounds) or reset its settings:
+
+```sh
+for key in font menuFont toolBarFont smallestReadableFont; do
+    kwriteconfig6 --file kdeglobals --group General --key "$key" --delete
+done
+kwriteconfig6 --file kdeglobals --group WM --key activeFont --delete
+kwriteconfig6 --file kdeglobals --group Sounds --key Theme --delete
+```
 
 ## What is in `home/`
 
@@ -72,7 +82,7 @@ Files from `get-microsoft-files.sh` are in `~/.local/share/{fonts,sounds,wallpap
 | Grey fade behind Turn Off / Log Off (KWin effect) | `.local/share/kwin/effects/winxp_sessionfade` | this repository, GPL-2.0+ |
 | XP Alt+Tab (KWin window switcher) | `.local/share/kwin/tabbox/winxp_alttab` | this repository, GPL-2.0+ |
 | Windows XP Global Theme (taskbar layout, Alt+Tab, cursors, Exposé look) | `.local/share/plasma/look-and-feel/com.github.marpogaus.winxp` | this repository, GPL-2.0+ |
-| Exposé (window borders, Plasma theme, colours, Kvantum, wallpapers) | `.local/share/plasma/desktoptheme/expose`, `.local/share/aurorae/themes/expose`, `.local/share/color-schemes/Expose.colors`, `.config/Kvantum`, `.local/share/wallpapers/{expose,Bløff}` | [Exposé](https://www.opencode.net/phob1an/expose) by phob1an, unmodified, GPL (see the bundled `LICENSE` files) |
+| Exposé (window borders, Plasma theme, colours, Kvantum, wallpapers) | `.local/share/plasma/desktoptheme/expose`, `.local/share/aurorae/themes/expose`, `.local/share/color-schemes/Expose.colors`, `.config/Kvantum`, `.local/share/wallpapers/{expose,Bløff}` | [Exposé](https://www.opencode.net/phob1an/expose) by phob1an, unmodified, GPL (see the bundled `LICENSE` files); wallpapers CC BY-SA 4.0 |
 | Cursors | `.local/share/icons/ModernXP` | built from [modernXP](https://github.com/na0miluv/modernXP-cursor-theme), GPL-3.0 |
 | Dolphin as XP Explorer | `.local/share/kxmlgui5/dolphin`, `.local/share/dolphin` | toolbar derived from [Dolphin](https://invent.kde.org/system/dolphin), GPL-2.0+ |
 
@@ -115,7 +125,7 @@ for the folder tree and Ctrl++ until the tiles reach XP's 48 px icons;
 Dolphin remembers all three. XP's blue task pane has no Dolphin
 counterpart.
 
-The toolbar file is made for the Dolphin release it was taken from; a newer
+The toolbar file is made for the Dolphin version it was taken from; a newer
 Dolphin with a changed toolbar file ignores it until
 `tools/update-vendored.sh` refreshes it.
 

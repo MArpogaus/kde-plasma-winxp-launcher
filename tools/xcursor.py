@@ -6,12 +6,9 @@ Reads xcursorgen style config files (one image per line:
 ``<nominal size> <xhot> <yhot> <png path> [<delay ms>]``) and writes one
 Xcursor file per config, plus symlinks for alias names.
 
-Two input layouts are supported:
-
-* ``--config-dir DIR``: ``DIR/<name>.cursor`` or ``DIR/<name>.cfg`` files,
-  PNG paths relative to ``--png-root``.
-* ``--aliases FILE``: lines ``<alias> <target>`` (modernXP ``cursorList``) or
-  ``<alias>--><target>`` (xfce-winxp-tc ``mappings``).
+Input: ``--config-dir DIR`` holds ``<name>.cursor`` files with PNG paths
+relative to ``--png-root``; the optional ``--aliases FILE`` (modernXP's
+``cursorList``) has lines ``<alias> <target>``.
 
 Only 8-bit RGBA / RGB non-interlaced PNGs are supported, which is what
 Inkscape, rsvg-convert and the theme sources produce.
@@ -103,10 +100,12 @@ def xcursor_bytes(images):
 
 def resolve_png(png_root, nominal, rel):
     """Find the image for a config line, tolerating common typos in theme
-    sources: wrong size directory (e.g. 72/ for 96/) and _ vs - in names."""
+    sources: wrong size directory (e.g. 64/ for 96/; the directory named
+    after the nominal size wins, since the hotspot is given for that size)
+    and _ vs - in names."""
     directory, name = os.path.split(rel)
     names = [name, name.replace("_", "-"), name.replace("-", "_")]
-    for d in (directory, str(nominal)):
+    for d in (str(nominal), directory):
         for n in names:
             candidate = os.path.join(png_root, d, n)
             if os.path.exists(candidate):
@@ -142,10 +141,7 @@ def parse_aliases(path):
             line = line.strip()
             if not line or line.startswith("#"):
                 continue
-            if "-->" in line:
-                alias, target = line.split("-->", 1)
-            else:
-                alias, target = line.split(None, 1)
+            alias, target = line.split(None, 1)
             pairs.append((alias.strip(), target.strip()))
     return pairs
 
@@ -164,7 +160,7 @@ def main():
     built = set()
     for entry in sorted(os.listdir(args.config_dir)):
         base, ext = os.path.splitext(entry)
-        if ext not in (".cursor", ".cfg"):
+        if ext != ".cursor":
             continue
         images = parse_config(os.path.join(args.config_dir, entry), args.png_root)
         if not images:

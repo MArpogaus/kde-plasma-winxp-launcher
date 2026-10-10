@@ -14,7 +14,7 @@ icons use the 24 px images, 64 px and larger the 48 px ones); otherwise Breeze
 would fill in every 22, 64 or 128 px request.
 
 KDE_ALIASES adds names Plasma and KDE applications use that xfce-winxp-tc
-does not map.
+does not map, and replaces a few of its choices.
 """
 import argparse
 import os
@@ -70,26 +70,21 @@ apps/preferences-security-->secure_safe
 apps/preferences-online-accounts-->people
 apps/preferences-web-browser-shortcuts-->net_search
 apps/preferences-kde-connect-->phone
-apps/preferences-desktop-wallpaper-->control_display
 apps/applications-system-->settings
 apps/help-about-->help
 apps/org.kde.kate-->file_txt
 apps/org.kde.kwrite-->file_txt
 apps/accessories-text-editor-->file_txt
-apps/firefox-->firefox
-apps/thunderbird-->thunderbird
 actions/system-lock-screen-->lock
 actions/system-switch-user-->people
 actions/system-suspend-->shutdown
 actions/system-reboot-->shutdown
 actions/view-refresh-->refresh
-actions/edit-delete-->delete
 actions/configure-->settings
 places/folder-desktop-->desktop
 places/folder-home-->folder
 places/folder-root-->drive_disk
 places/folder-network-->net_places
-places/network-workgroup-->net_places
 places/folder-favorites-->fave
 places/folder-recent-->recent_docs
 places/folder-images-->folder_pictures
@@ -102,15 +97,10 @@ places/folder-public-->folder_shared
 places/folder-locked-->folder
 places/folder-cloud-->folder_network
 places/trash-empty-->bin
-places/user-trash-full-->bin_full
 mimetypes/unknown-->file_unknown
 mimetypes/application-octet-stream-->file_unknown
 mimetypes/application-x-zerosize-->file_generic
-mimetypes/text-x-script-->file_generic_script
-mimetypes/application-x-shellscript-->file_generic_shell
-mimetypes/text-x-python-->file_generic_script
 mimetypes/text-markdown-->file_txt
-mimetypes/application-json-->file_generic_markup
 mimetypes/text-xml-->file_generic_markup
 mimetypes/application-x-desktop-->shortcut
 mimetypes/inode-symlink-->shortcut
@@ -118,10 +108,6 @@ devices/drive-harddisk-solidstate-->drive_disk
 devices/drive-removable-media-usb-->drive_external
 devices/drive-removable-media-usb-pendrive-->drive_external
 devices/network-wireless-connected-100-->net_wireless
-status/audio-volume-high-->volume_on
-status/audio-volume-medium-->volume_on
-status/audio-volume-low-->volume_on
-status/audio-volume-muted-->volume_off
 """
 
 
@@ -138,9 +124,11 @@ def main():
     written = 0
     with open(os.path.join(args.source, "mappings")) as f:
         lines = [line.strip() for line in f]
-    mapped = {line.split("-->", 1)[0].split("/", 1)[-1] for line in lines if "-->" in line}
-    lines += [line for line in KDE_ALIASES.split()
-              if line.split("-->", 1)[0].split("/", 1)[1] not in mapped]
+    # KDE_ALIASES win over xfce-winxp-tc's mapping of the same name
+    aliases = KDE_ALIASES.split()
+    overridden = {line.split("-->", 1)[0].split("/", 1)[1] for line in aliases}
+    lines = [line for line in lines
+             if "-->" not in line or line.split("-->", 1)[0].split("/", 1)[-1] not in overridden] + aliases
     for line in lines:
         if "-->" not in line:
             continue
