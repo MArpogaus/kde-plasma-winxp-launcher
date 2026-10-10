@@ -59,6 +59,7 @@ PlasmoidItem {
         xp: root.xp
         controller: root
         vertical: root.vertical
+        flushLeft: Plasmoid.formFactor === PlasmaCore.Types.Horizontal
         text: Plasmoid.configuration.startText
         iconName: Plasmoid.configuration.startIcon
     }
@@ -143,9 +144,15 @@ PlasmoidItem {
         connectedSources: []
         onNewData: sourceName => disconnectSource(sourceName)
 
+        property int launches: 0
+
+        // A source stays connected until its process exits and connecting
+        // it again is a no-op, so a second click on e.g. Help and Support
+        // while the first one still runs would do nothing. A trailing
+        // comment line makes every launch a new source.
         function exec(command) {
             if (command && command.length > 0) {
-                connectSource(command);
+                connectSource(command + "\n# " + (++launches));
             }
         }
     }

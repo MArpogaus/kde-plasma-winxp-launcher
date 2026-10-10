@@ -55,7 +55,8 @@ def read_png(path):
         ftype = raw[i]
         line = bytearray(raw[i + 1:i + 1 + stride])
         i += 1 + stride
-        for x in range(stride):
+        # Filter 0 (None) stores the bytes as they are
+        for x in range(stride if ftype else 0):
             a = line[x - channels] if x >= channels else 0
             b = prev[x]
             c = prev[x - channels] if x >= channels else 0
@@ -87,13 +88,11 @@ def xcursor_bytes(images):
     offset = header_size + toc_size
     chunks = []
     for nominal, xhot, yhot, delay, w, h, rows in images:
-        pixels = bytearray()
-        for row in rows:
-            for r, g, b, a in row:
-                # Xcursor wants premultiplied ARGB, little endian
-                pr, pg, pb = (r * a + 127) // 255, (g * a + 127) // 255, (b * a + 127) // 255
-                pixels += struct.pack("<I", (a << 24) | (pr << 16) | (pg << 8) | pb)
-        chunk = struct.pack("<IIIIIIIII", 36, 0xFFFD0002, nominal, 1, w, h, xhot, yhot, delay) + bytes(pixels)
+        # Xcursor wants premultiplied ARGB, little endian
+        argb = [(a << 24) | (((r * a + 127) // 255) << 16) | (((g * a + 127) // 255) << 8) | ((b * a + 127) // 255)
+                for row in rows for r, g, b, a in row]
+        pixels = struct.pack(f"<{len(argb)}I", *argb)
+        chunk = struct.pack("<IIIIIIIII", 36, 0xFFFD0002, nominal, 1, w, h, xhot, yhot, delay) + pixels
         out += struct.pack("<III", 0xFFFD0002, nominal, offset)
         offset += len(chunk)
         chunks.append(chunk)

@@ -20,8 +20,14 @@ PlasmoidItem {
         id: anchorItem
 
         readonly property bool horizontal: Plasmoid.formFactor !== PlasmaCore.Types.Vertical
+        // Re-evaluated when any ancestor moves (e.g. the System Tray after
+        // us grows and the panel layout shifts this applet), not only when
+        // this item's own geometry changes
         readonly property point windowPos: {
-            x; y; width; height; Window.width; Window.height;
+            Window.width; Window.height;
+            for (let item = anchorItem; item; item = item.parent) {
+                item.x; item.y;
+            }
             return Window.window ? mapToItem(null, 0, 0) : Qt.point(0, 0);
         }
 

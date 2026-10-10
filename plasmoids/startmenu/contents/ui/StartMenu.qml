@@ -124,8 +124,13 @@ FocusScope {
     Keys.onPressed: event => {
         const modifiers = event.modifiers & (Qt.ControlModifier | Qt.AltModifier | Qt.MetaModifier);
         if (event.key === Qt.Key_Escape) {
+            // Cascades never take focus, so Escape arrives here: close the
+            // innermost cascade first, like XP, then the menu
+            const cascades = controller.cascades.length;
             if (searching) {
                 searchText = "";
+            } else if (cascades > 0) {
+                controller.closeCascadesFrom(cascades - 1);
             } else {
                 controller.closeMenu();
             }
@@ -136,10 +141,11 @@ FocusScope {
                 controller.launchSearchResult(searchIndex);
             }
         } else if (event.key === Qt.Key_Down && searching) {
-            searchIndex = Math.min(searchIndex + 1, searchList.count - 1);
+            searchIndex = Math.max(0, Math.min(searchIndex + 1, searchList.count - 1));
         } else if (event.key === Qt.Key_Up && searching) {
             searchIndex = Math.max(searchIndex - 1, 0);
-        } else if (modifiers === 0 && event.text.length > 0 && event.text.charCodeAt(0) >= 32) {
+        } else if (modifiers === 0 && event.text.length > 0 && event.text.charCodeAt(0) >= 32
+                   && event.text.charCodeAt(0) !== 127) { // Delete sends DEL (0x7f)
             searchText += event.text;
         } else {
             return;

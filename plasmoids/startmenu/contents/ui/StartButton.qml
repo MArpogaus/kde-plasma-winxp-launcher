@@ -17,11 +17,24 @@ Item {
     property string text: "start"
     property string iconName: ""
     property bool vertical: false
+    // XP's start button touches the screen edge. When we are the first
+    // widget of a horizontal panel, extend left over the panel theme's
+    // margin; the height always stays what the panel gives us.
+    property bool flushLeft: false
+    readonly property real windowX: {
+        Window.width;
+        for (let item = button; item; item = item.parent) {
+            item.x;
+        }
+        return Window.window ? mapToItem(null, 0, 0).x : 0;
+    }
+    readonly property real leftOverflow: flushLeft && !vertical && windowX > 0 && windowX < 16 ? windowX : 0
+
     readonly property int thickness: vertical ? width : height
     readonly property bool pressedLook: mouseArea.pressed || controller.menuOpen
     readonly property bool hoveredLook: mouseArea.containsMouse && !pressedLook
 
-    Layout.minimumWidth: vertical ? -1 : Math.round(height * 3.3)
+    Layout.minimumWidth: vertical ? -1 : Math.round(height * 3.3) - leftOverflow
     Layout.preferredWidth: Layout.minimumWidth
     Layout.maximumWidth: Layout.minimumWidth
     Layout.minimumHeight: vertical ? width : -1
@@ -149,7 +162,9 @@ Item {
 
     Item {
         id: face
-        anchors.fill: parent
+        x: -button.leftOverflow
+        width: button.width + button.leftOverflow
+        height: button.height
 
         Item {
             anchors.fill: parent

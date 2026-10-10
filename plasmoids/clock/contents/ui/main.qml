@@ -13,24 +13,38 @@ import org.kde.plasma.plasma5support as P5Support
 PlasmoidItem {
     id: root
 
-    property date now: new Date()
+    readonly property string timeFormat: Plasmoid.configuration.timeFormat || Qt.locale().timeFormat(Locale.ShortFormat)
+    readonly property bool showsSeconds: /s/.test(timeFormat)
+    readonly property date now: timeSource.data.Local ? timeSource.data.Local.DateTime : new Date()
 
     preferredRepresentation: fullRepresentation
     toolTipMainText: Qt.formatDate(now, Qt.locale().dateFormat(Locale.LongFormat))
     toolTipSubText: ""
 
-    Timer {
-        interval: 1000
-        running: true
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: root.now = new Date()
+    // Like Plasma's Digital Clock: wake up once a minute, on the minute,
+    // unless the format shows seconds
+    P5Support.DataSource {
+        id: timeSource
+        engine: "time"
+        connectedSources: ["Local"]
+        interval: root.showsSeconds ? 1000 : 60000
+        intervalAlignment: root.showsSeconds ? P5Support.Types.NoAlignment : P5Support.Types.AlignToMinute
     }
 
     P5Support.DataSource {
         id: executable
         engine: "executable"
         onNewData: sourceName => disconnectSource(sourceName)
+
+        property int launches: 0
+
+        // Reconnecting a source whose process still runs is a no-op, so
+        // make every launch a new source (see the start menu's exec()).
+        function exec(command) {
+            if (command && command.length > 0) {
+                connectSource(command + "\n# " + (++launches));
+            }
+        }
     }
 
     fullRepresentation: Item {
@@ -41,9 +55,7 @@ PlasmoidItem {
         Text {
             id: label
             anchors.centerIn: parent
-            text: Plasmoid.configuration.timeFormat
-                ? Qt.formatTime(root.now, Plasmoid.configuration.timeFormat)
-                : Qt.formatTime(root.now, Qt.locale().timeFormat(Locale.ShortFormat))
+            text: Qt.formatTime(root.now, root.timeFormat)
             renderType: Text.NativeRendering
             font.family: Plasmoid.configuration.fontFamily
             font.pixelSize: 11
@@ -52,11 +64,7 @@ PlasmoidItem {
 
         MouseArea {
             anchors.fill: parent
-            onDoubleClicked: {
-                if (Plasmoid.configuration.clickCommand) {
-                    executable.connectSource(Plasmoid.configuration.clickCommand);
-                }
-            }
+            onDoubleClicked: executable.exec(Plasmoid.configuration.clickCommand)
         }
     }
 }
