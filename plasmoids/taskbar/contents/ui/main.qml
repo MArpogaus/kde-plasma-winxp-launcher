@@ -55,7 +55,7 @@ PlasmoidItem {
             x; y; width; height; Window.width; Window.height;
             return Window.window ? mapToItem(null, 0, 0) : Qt.point(0, 0);
         }
-        readonly property real top: root.horizontal && Window.window ? -windowPos.y + 3 : 2
+        readonly property real buttonTop: root.horizontal && Window.window ? -windowPos.y + 3 : 2
         readonly property real buttonHeight: root.horizontal && Window.window ? Window.height - 5 : 25
 
         readonly property int count: buttons.count
@@ -80,7 +80,7 @@ PlasmoidItem {
                 readonly property var modelIndex: tasksModel.makeModelIndex(index)
 
                 x: root.horizontal ? index * (bar.buttonWidth + bar.spacing) : 0
-                y: root.horizontal ? bar.top : index * (25 + bar.spacing)
+                y: root.horizontal ? bar.buttonTop : index * (25 + bar.spacing)
                 width: root.horizontal ? bar.buttonWidth : bar.width
                 height: root.horizontal ? bar.buttonHeight : 25
 
