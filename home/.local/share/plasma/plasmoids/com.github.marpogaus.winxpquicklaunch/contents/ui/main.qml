@@ -405,9 +405,21 @@ PlasmoidItem {
             }
         }
 
+        // Close once nothing overflows any more. Editing the launcher list
+        // rebuilds the model, which briefly reports no launchers at all, so
+        // check again a moment later instead of closing at once.
         Connections {
             target: root
             function onOverflowChanged() {
+                if (!root.overflow) {
+                    closeIfEmpty.restart();
+                }
+            }
+        }
+        Timer {
+            id: closeIfEmpty
+            interval: 300
+            onTriggered: {
                 if (!root.overflow) {
                     overflowPopup.visible = false;
                 }
