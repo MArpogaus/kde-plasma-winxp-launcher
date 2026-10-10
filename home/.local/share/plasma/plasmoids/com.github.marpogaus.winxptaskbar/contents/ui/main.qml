@@ -46,14 +46,25 @@ PlasmoidItem {
     fullRepresentation: Item {
         id: bar
 
-        // Buttons fill the height the panel gives us (25 px on XP's 30 px taskbar)
-        readonly property real buttonHeight: root.horizontal ? height : 25
+        // Laid out on the visible taskbar: buttons start 3 px below its top
+        // and end 2 px above its bottom (25 px on XP's 30 px taskbar). A
+        // taller taskbar holds more rows of buttons, filled row by row.
+        readonly property rect area: root.horizontal ? panelArea.rect : Qt.rect(0, 0, width, height)
+        readonly property int spacing: 3
+        readonly property int rows: root.horizontal ? Math.max(1, Math.floor((area.height - 2) / 28)) : buttons.count
+        readonly property real rowPitch: root.horizontal ? (area.height - 2) / rows : 25 + spacing
+        readonly property real buttonHeight: rowPitch - spacing
 
         readonly property int count: buttons.count
-        readonly property int spacing: 3
+        readonly property int perRow: root.horizontal ? Math.max(1, Math.ceil(count / rows)) : 1
         readonly property real buttonWidth: count > 0
-            ? Math.max(1, Math.min(Plasmoid.configuration.maximumButtonWidth, Math.floor((width - (count - 1) * spacing) / count)))
+            ? Math.max(1, Math.min(Plasmoid.configuration.maximumButtonWidth, Math.floor((width - (perRow - 1) * spacing) / perRow)))
             : 0
+
+        PanelArea {
+            id: panelArea
+            target: bar
+        }
 
         // The applet takes its layout hints from this representation
         Layout.minimumWidth: root.horizontal ? 60 : -1
@@ -72,10 +83,10 @@ PlasmoidItem {
 
                 readonly property var modelIndex: tasksModel.makeModelIndex(index)
 
-                x: root.horizontal ? index * (bar.buttonWidth + bar.spacing) : 0
-                y: root.horizontal ? 0 : index * (25 + bar.spacing)
+                x: root.horizontal ? (index % bar.perRow) * (bar.buttonWidth + bar.spacing) : 0
+                y: Math.round(root.horizontal ? bar.area.y + bar.spacing + Math.floor(index / bar.perRow) * bar.rowPitch : index * bar.rowPitch)
                 width: root.horizontal ? bar.buttonWidth : bar.width
-                height: root.horizontal ? bar.buttonHeight : 25
+                height: Math.round(bar.buttonHeight)
 
                 icon: model.decoration
                 text: model.display ?? ""

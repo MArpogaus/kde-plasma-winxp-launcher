@@ -31,7 +31,7 @@ python3 tools/build-icon-theme.py --source "$W/icons/luna" --out "$D/icons/Windo
 cp -r "$SRC/sounds" "$D/sounds/WindowsXP"
 rm -rf "$D/sounds/WindowsXP/.git"
 
-# XP icons (falling back to Luna), sounds, Tahoma / Trebuchet MS, Bliss
+# XP icons (falling back to Breeze), sounds, Tahoma / Trebuchet MS, Bliss
 kwriteconfig6 --file kdeglobals --group Icons --key Theme WindowsXP-Luna
 kwriteconfig6 --file kdeglobals --group Sounds --key Theme WindowsXP
 for key in font menuFont toolBarFont; do

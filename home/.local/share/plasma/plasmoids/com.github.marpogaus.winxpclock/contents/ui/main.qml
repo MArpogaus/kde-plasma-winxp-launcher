@@ -48,13 +48,27 @@ PlasmoidItem {
     }
 
     fullRepresentation: Item {
+        id: clock
+
         Layout.minimumWidth: label.implicitWidth + 2 * 10
         Layout.preferredWidth: Layout.minimumWidth
         Layout.maximumWidth: Layout.minimumWidth
 
+        // Centred on the visible taskbar; the applet area inside the panel's
+        // padding is not centred on it
+        PanelArea {
+            id: panelArea
+            target: clock
+        }
+
         Text {
             id: label
-            anchors.centerIn: parent
+            anchors.horizontalCenter: parent.horizontalCenter
+            // In a vertical panel the visible taskbar spans the whole screen
+            // height, so centre on the applet itself there
+            readonly property rect area: Plasmoid.formFactor === PlasmaCore.Types.Vertical
+                ? Qt.rect(0, 0, clock.width, clock.height) : panelArea.rect
+            y: Math.round(area.y + (area.height - height) / 2)
             text: Qt.formatTime(root.now, root.timeFormat)
             renderType: Text.NativeRendering
             font.family: Plasmoid.configuration.fontFamily

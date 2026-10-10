@@ -2,6 +2,7 @@
 //
 // Desktop layout of the Windows XP Global Theme: one 30 px taskbar at the
 // bottom with Start, task buttons, the notification area and the clock.
+// Apply the Exposé Global Theme first for the look of everything else.
 
 var panel = new Panel;
 panel.location = "bottom";
@@ -19,5 +20,13 @@ start.writeConfig("global", "Alt+F1");
 
 panel.addWidget("com.github.marpogaus.winxptaskbar");
 panel.addWidget("com.github.marpogaus.winxptray");
-panel.addWidget("org.kde.plasma.systemtray");
+var tray = panel.addWidget("org.kde.plasma.systemtray");
+// XP keeps the expand arrow at the left end of the notification area.
+// Older Plasma keeps the tray's settings in a separate containment; newer
+// Plasma makes the tray applet itself the containment.
+var trayContainmentId = tray.readConfig("SystrayContainmentId");
+var trayConfig = (trayContainmentId && desktopById(trayContainmentId)) || tray;
+trayConfig.currentConfigGroup = ["General"];
+trayConfig.writeConfig("reverseIconOrder", true);
+trayConfig.writeConfig("iconSpacing", 1);
 panel.addWidget("com.github.marpogaus.winxpclock");

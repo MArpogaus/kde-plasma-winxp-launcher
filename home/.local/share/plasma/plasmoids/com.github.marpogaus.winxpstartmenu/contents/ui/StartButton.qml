@@ -17,24 +17,23 @@ Item {
     property string text: "start"
     property string iconName: ""
     property bool vertical: false
-    // XP's start button touches the screen edge. When we are the first
-    // widget of a horizontal panel, extend left over the panel theme's
-    // margin; the height always stays what the panel gives us.
-    property bool flushLeft: false
-    readonly property real windowX: {
-        Window.width;
-        for (let item = button; item; item = item.parent) {
-            item.x;
-        }
-        return Window.window ? mapToItem(null, 0, 0).x : 0;
-    }
-    readonly property real leftOverflow: flushLeft && !vertical && windowX > 0 && windowX < 16 ? windowX : 0
+    // In a horizontal panel the button covers the visible taskbar from top
+    // to bottom (not just the applet area inside the panel's padding) and,
+    // as the first widget, reaches the taskbar's left edge.
+    property bool fillPanel: false
+    readonly property rect area: fillPanel && !vertical ? panelArea.rect : Qt.rect(0, 0, width, height)
+    readonly property real leftOverflow: area.x < 0 && area.x > -16 ? -area.x : 0
 
-    readonly property int thickness: vertical ? width : height
+    PanelArea {
+        id: panelArea
+        target: button
+    }
+
+    readonly property int thickness: vertical ? width : area.height
     readonly property bool pressedLook: mouseArea.pressed || controller.menuOpen
     readonly property bool hoveredLook: mouseArea.containsMouse && !pressedLook
 
-    Layout.minimumWidth: vertical ? -1 : Math.round(height * 3.3) - leftOverflow
+    Layout.minimumWidth: vertical ? -1 : Math.round(area.height * 3.3) - leftOverflow
     Layout.preferredWidth: Layout.minimumWidth
     Layout.maximumWidth: Layout.minimumWidth
     Layout.minimumHeight: vertical ? width : -1
@@ -163,8 +162,9 @@ Item {
     Item {
         id: face
         x: -button.leftOverflow
+        y: button.area.y
         width: button.width + button.leftOverflow
-        height: button.height
+        height: button.area.height
 
         Item {
             anchors.fill: parent

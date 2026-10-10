@@ -20,15 +20,11 @@ PlasmoidItem {
         id: anchorItem
 
         readonly property bool horizontal: Plasmoid.formFactor !== PlasmaCore.Types.Vertical
-        // Re-evaluated when any ancestor moves (e.g. the System Tray after
-        // us grows and the panel layout shifts this applet), not only when
-        // this item's own geometry changes
-        readonly property point windowPos: {
-            Window.width; Window.height;
-            for (let item = anchorItem; item; item = item.parent) {
-                item.x; item.y;
-            }
-            return Window.window ? mapToItem(null, 0, 0) : Qt.point(0, 0);
+        readonly property rect area: panelArea.rect
+
+        PanelArea {
+            id: panelArea
+            target: anchorItem
         }
 
         // Room for the bevel before the first tray icon
@@ -39,9 +35,11 @@ PlasmoidItem {
 
         Item {
             id: block
-            // From here to the end of the panel, within the panel's height
-            width: anchorItem.horizontal ? Window.width - anchorItem.windowPos.x : anchorItem.width
-            height: anchorItem.horizontal ? anchorItem.height : Window.height - anchorItem.windowPos.y
+            // From here to the end of the visible taskbar, over its full height
+            x: anchorItem.horizontal ? 0 : anchorItem.area.x
+            y: anchorItem.horizontal ? anchorItem.area.y : 0
+            width: anchorItem.horizontal ? anchorItem.area.x + anchorItem.area.width : anchorItem.area.width
+            height: anchorItem.horizontal ? anchorItem.area.height : anchorItem.area.y + anchorItem.area.height
 
             // Sampled from the XP notification area (30 rows)
             Rectangle {

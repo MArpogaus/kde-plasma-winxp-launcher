@@ -7,9 +7,9 @@
             }
         ],
         "Category": "",
-        "Description": "Windows XP (Luna): XP taskbar and start menu, Exposé theme, Luna icons, modernXP cursors, XP Alt+Tab",
+        "Description": "XP taskbar with start menu, XP Alt+Tab and cursors. Apply the Expos\u00e9 Global Theme first; this one only changes the layout, Alt+Tab and cursors.",
         "Id": "com.github.marpogaus.winxp",
-        "License": "GPL-3.0+",
+        "License": "GPL-2.0+",
         "Name": "Windows XP",
         "Website": "https://github.com/MArpogaus/kde-plasma-winxp-launcher"
     },

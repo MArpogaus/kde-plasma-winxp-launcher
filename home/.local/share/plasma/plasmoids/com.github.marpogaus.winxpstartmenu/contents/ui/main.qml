@@ -70,7 +70,7 @@ PlasmoidItem {
         xp: root.xp
         controller: root
         vertical: root.vertical
-        flushLeft: Plasmoid.formFactor === PlasmaCore.Types.Horizontal
+        fillPanel: Plasmoid.formFactor === PlasmaCore.Types.Horizontal
         text: Plasmoid.configuration.startText
         iconName: root.startIcon
     }

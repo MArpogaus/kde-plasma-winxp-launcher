@@ -19,7 +19,7 @@ def main():
     ap.add_argument("--source", required=True, help="xfce-winxp-tc icons/luna directory")
     ap.add_argument("--out", required=True)
     ap.add_argument("--name", default="Windows XP (Luna)")
-    ap.add_argument("--inherits", default="Luna,breeze,hicolor")
+    ap.add_argument("--inherits", default="breeze,hicolor")
     args = ap.parse_args()
 
     res = os.path.join(args.source, "res")

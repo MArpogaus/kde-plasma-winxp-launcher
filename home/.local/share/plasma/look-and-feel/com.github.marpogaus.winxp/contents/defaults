@@ -1,33 +1,5 @@
-[kdeglobals][KDE]
-widgetStyle=kvantum
-
-[kdeglobals][General]
-ColorScheme=Expose
-
-[kdeglobals][Icons]
-Theme=Luna
-
 [kcminputrc][Mouse]
 cursorTheme=ModernXP
 
-[plasmarc][Theme]
-name=expose
-
-[Wallpaper]
-Image=Expose
-
-[kwinrc][org.kde.kdecoration2]
-library=org.kde.kwin.aurorae
-theme=__aurorae__svg__Expose
-# XP: window menu on the left; minimize, maximize, close on the right
-ButtonsOnLeft=M
-ButtonsOnRight=IAX
-
 [kwinrc][WindowSwitcher]
 LayoutName=winxp_alttab
-
-[kwinrc][DesktopSwitcher]
-LayoutName=org.kde.breeze.desktop
-
-[KSplash]
-Theme=com.github.marpogaus.winxp
