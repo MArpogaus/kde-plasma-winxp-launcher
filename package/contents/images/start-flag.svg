@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Original artwork: waving four-pane flag in the style of the Luna "start" button. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="r" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff8a4c"/><stop offset="1" stop-color="#e2380f"/>
+    </linearGradient>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b6ee4a"/><stop offset="1" stop-color="#5aa700"/>
+    </linearGradient>
+    <linearGradient id="b" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5fcbff"/><stop offset="1" stop-color="#0a78d8"/>
+    </linearGradient>
+    <linearGradient id="y" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffe066"/><stop offset="1" stop-color="#f3a400"/>
+    </linearGradient>
+  </defs>
+  <!-- soft drop shadow -->
+  <g fill="#000" opacity="0.35" transform="translate(1.2,1.4)">
+    <path d="M4.6,5.2 C8,3.6 11,3.7 15,5.4 L13.9,14.2 C10,12.6 7,12.6 3.5,14.1 Z"/>
+    <path d="M16.3,5.9 C20,7.4 24,7.5 29.5,5 L28.4,13.7 C23,16.1 19.2,15.9 15.2,14.5 Z"/>
+    <path d="M3.3,15.8 C7,14.3 10,14.3 13.7,15.9 L12.6,24.7 C9,23 6,23 2.2,24.6 Z"/>
+    <path d="M15,16.2 C19,17.6 23,17.7 28.2,15.3 L27.1,24 C21.8,26.3 18,26.1 13.9,24.8 Z"/>
+  </g>
+  <!-- trailing streaks -->
+  <g opacity="0.85">
+    <rect x="0.6" y="6.4" width="2.4" height="1.6" rx="0.6" fill="#e2380f" transform="skewY(-8)"/>
+    <rect x="0.2" y="17.2" width="1.6" height="1.6" rx="0.6" fill="#0a78d8" transform="skewY(-8)"/>
+  </g>
+  <path fill="url(#r)" stroke="#7a1e06" stroke-width="0.5" d="M4.6,5.2 C8,3.6 11,3.7 15,5.4 L13.9,14.2 C10,12.6 7,12.6 3.5,14.1 Z"/>
+  <path fill="url(#g)" stroke="#2f5f00" stroke-width="0.5" d="M16.3,5.9 C20,7.4 24,7.5 29.5,5 L28.4,13.7 C23,16.1 19.2,15.9 15.2,14.5 Z"/>
+  <path fill="url(#b)" stroke="#063f78" stroke-width="0.5" d="M3.3,15.8 C7,14.3 10,14.3 13.7,15.9 L12.6,24.7 C9,23 6,23 2.2,24.6 Z"/>
+  <path fill="url(#y)" stroke="#8a5d00" stroke-width="0.5" d="M15,16.2 C19,17.6 23,17.7 28.2,15.3 L27.1,24 C21.8,26.3 18,26.1 13.9,24.8 Z"/>
+</svg>

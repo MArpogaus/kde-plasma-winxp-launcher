@@ -1,0 +1,23 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "Marcel Arpogaus"
+            }
+        ],
+        "Category": "Application Launchers",
+        "Description": "A Windows XP (Luna) style start button and start menu",
+        "EnabledByDefault": true,
+        "Icon": "start-here-kde",
+        "Id": "com.github.marpogaus.winxpstartmenu",
+        "License": "GPL-2.0+",
+        "Name": "Windows XP Start Menu",
+        "Version": "1.0.0",
+        "Website": "https://github.com/MArpogaus/kde-plasma-winxp-launcher"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "X-Plasma-Provides": [
+        "org.kde.plasma.launchermenu"
+    ]
+}

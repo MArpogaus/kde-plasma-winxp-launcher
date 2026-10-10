@@ -1,0 +1,117 @@
+/*
+    SPDX-License-Identifier: GPL-2.0-or-later
+
+    One row of the start menu or of a cascading menu: icon, title,
+    optional grey subtitle and optional cascade arrow.
+*/
+import QtQuick
+import org.kde.kirigami as Kirigami
+
+Item {
+    id: entry
+
+    required property QtObject xp
+
+    property var iconSource
+    property string title
+    property string subtitle
+    property bool bold: false
+    property bool showArrow: false
+    property bool interactive: true
+    property int iconSize: 30
+    property int leftPadding: 2
+    property int textSpacing: 4
+    property color textColor: xp.leftText
+    property color subtitleColor: xp.subtitleText
+    property bool centered: false
+    property bool wrap: false
+    readonly property real labelsHeight: labels.implicitHeight
+
+    // Kept highlighted by the owner, e.g. while its cascade is open.
+    property bool forceHighlight: false
+    readonly property bool hovered: mouseArea.containsMouse
+    readonly property bool highlighted: entry.interactive && (hovered || forceHighlight)
+
+    signal clicked()
+    signal contextMenuRequested(real x, real y)
+
+    implicitHeight: Math.max(iconSize + 2, 18)
+
+    Rectangle {
+        anchors.fill: parent
+        color: entry.xp.highlight
+        visible: entry.highlighted
+    }
+
+    Kirigami.Icon {
+        id: icon
+        x: entry.centered ? 0 : entry.leftPadding
+        anchors.verticalCenter: parent.verticalCenter
+        width: entry.iconSize
+        height: entry.iconSize
+        visible: !entry.centered && entry.iconSize > 0
+        source: entry.iconSource ?? ""
+        roundToIconSize: false
+        animated: false
+    }
+
+    Column {
+        id: labels
+        anchors.verticalCenter: parent.verticalCenter
+        x: entry.centered ? 0 : icon.x + entry.iconSize + entry.textSpacing
+        width: entry.centered ? parent.width : parent.width - x - (entry.showArrow ? 14 : 4)
+        spacing: 0
+
+        Text {
+            width: parent.width
+            text: entry.title
+            textFormat: Text.PlainText
+            wrapMode: entry.wrap ? Text.WordWrap : Text.NoWrap
+            maximumLineCount: entry.wrap ? 2 : 1
+            elide: Text.ElideRight
+            horizontalAlignment: entry.centered ? Text.AlignHCenter : Text.AlignLeft
+            renderType: Text.NativeRendering
+            font.family: entry.xp.fontFamily
+            font.pixelSize: entry.xp.fontPixelSize
+            font.bold: entry.bold
+            color: !entry.interactive ? entry.xp.disabledText
+                 : entry.highlighted ? entry.xp.highlightText : entry.textColor
+        }
+
+        Text {
+            width: parent.width
+            visible: entry.subtitle.length > 0
+            text: entry.subtitle
+            textFormat: Text.PlainText
+            elide: Text.ElideRight
+            renderType: Text.NativeRendering
+            font.family: entry.xp.fontFamily
+            font.pixelSize: entry.xp.fontPixelSize
+            color: entry.highlighted ? entry.xp.highlightText : entry.subtitleColor
+        }
+    }
+
+    Image {
+        anchors.right: parent.right
+        anchors.rightMargin: 6
+        anchors.verticalCenter: parent.verticalCenter
+        visible: entry.showArrow
+        source: entry.highlighted ? "../images/arrow-white.svg" : "../images/arrow.svg"
+        sourceSize: Qt.size(4, 7)
+    }
+
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+        hoverEnabled: true
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
+        enabled: entry.interactive
+        onClicked: mouse => {
+            if (mouse.button === Qt.RightButton) {
+                entry.contextMenuRequested(mouse.x, mouse.y);
+            } else {
+                entry.clicked();
+            }
+        }
+    }
+}

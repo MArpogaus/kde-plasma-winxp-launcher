@@ -1,0 +1,478 @@
+/*
+    SPDX-License-Identifier: GPL-2.0-or-later
+
+    Windows XP style start menu for Plasma 6.
+
+    The menu is not shown through Plasma's applet popup (which would wrap
+    it in the Plasma theme's frame) but in its own frameless window, so
+    every pixel is drawn by StartMenu.qml.
+*/
+import QtQuick
+import QtCore
+import org.kde.plasma.plasmoid
+import org.kde.plasma.core as PlasmaCore
+import org.kde.plasma.extras as PlasmaExtras
+import org.kde.plasma.plasma5support as P5Support
+import org.kde.plasma.private.kicker as Kicker
+import org.kde.coreaddons as KCoreAddons
+
+PlasmoidItem {
+    id: root
+
+    readonly property XpTheme xp: XpTheme {
+        fontFamily: Plasmoid.configuration.fontFamily
+        startFontFamily: Plasmoid.configuration.startFontFamily
+    }
+
+    readonly property bool vertical: Plasmoid.formFactor === PlasmaCore.Types.Vertical
+    property bool menuOpen: false
+    property double lastClosed: 0
+    property bool contextMenuOpen: false
+    property var cascades: []
+
+    // The button itself is the (inline) full representation, so Plasma never
+    // opens its own popup; `expanded` just mirrors our menu window.
+    preferredRepresentation: fullRepresentation
+    compactRepresentation: null
+    fullRepresentation: StartButton {
+        xp: root.xp
+        controller: root
+        vertical: root.vertical
+        text: Plasmoid.configuration.startText
+        iconName: Plasmoid.configuration.startIcon
+    }
+
+    toolTipMainText: i18n("Click here to begin")
+    toolTipSubText: ""
+    Plasmoid.icon: "start-here-kde"
+    Plasmoid.status: menuOpen ? PlasmaCore.Types.RequiresAttentionStatus : PlasmaCore.Types.PassiveStatus
+
+    // The global shortcut (Meta) toggles `expanded`.
+    onExpandedChanged: {
+        if (expanded !== menuOpen) {
+            if (expanded) {
+                openMenu();
+            } else {
+                closeMenu();
+            }
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // Data models (shared with Kicker / Kickoff)
+    // ------------------------------------------------------------------
+    Kicker.RootModel {
+        id: rootModel
+
+        autoPopulate: false
+        appletInterface: root
+        appNameFormat: 0
+        flat: false
+        sorted: true
+        showSeparators: false
+        showAllApps: false
+        showRecentApps: false
+        showRecentDocs: false
+        showPowerSession: false
+        showFavoritesPlaceholder: false
+
+        Component.onCompleted: {
+            favoritesModel.initForClient("com.github.marpogaus.winxpstartmenu.favorites.instance-" + Plasmoid.id);
+            if (!Plasmoid.configuration.favoritesInitialized) {
+                if (favoritesModel.count < 1) {
+                    favoritesModel.portOldFavorites(["preferred://browser", "preferred://mail"]);
+                }
+                Plasmoid.configuration.favoritesInitialized = true;
+            }
+            rootModel.refresh();
+        }
+    }
+
+    Kicker.RecentUsageModel {
+        id: frequentModel
+        favoritesModel: rootModel.favoritesModel
+        ordering: 1 // most used first
+        shownItems: Kicker.RecentUsageModel.OnlyApps
+    }
+
+    Kicker.RecentUsageModel {
+        id: recentDocsModel
+        favoritesModel: rootModel.favoritesModel
+        ordering: 0 // most recent first
+        shownItems: Kicker.RecentUsageModel.OnlyDocs
+    }
+
+    Kicker.RunnerModel {
+        id: runnerModel
+        appletInterface: root
+        favoritesModel: rootModel.favoritesModel
+        mergeResults: true
+        runners: ["krunner_services", "krunner_systemsettings", "krunner_sessions", "krunner_powerdevil",
+                  "calculator", "unitconverter", "locations", "baloosearch", "krunner_recentdocuments"]
+        query: startMenu.searchText
+    }
+
+    Kicker.SystemModel {
+        id: systemModel
+    }
+
+    Instantiator {
+        id: systemActions
+        model: systemModel
+        delegate: QtObject {
+            required property int index
+            required property var model
+            readonly property string actionId: model.favoriteId ?? ""
+        }
+    }
+
+    KCoreAddons.KUser {
+        id: kuser
+    }
+
+    P5Support.DataSource {
+        id: executable
+        engine: "executable"
+        connectedSources: []
+        onNewData: sourceName => disconnectSource(sourceName)
+
+        function exec(command) {
+            if (command && command.length > 0) {
+                connectSource(command);
+            }
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // Windows
+    // ------------------------------------------------------------------
+    PlasmaCore.Dialog {
+        id: menuDialog
+
+        visible: false
+        type: PlasmaCore.Dialog.AppletPopup
+        flags: Qt.WindowStaysOnTopHint
+        location: Plasmoid.location
+        visualParent: root.fullRepresentationItem
+        hideOnWindowDeactivate: false
+
+        onActiveChanged: root.checkActivation()
+        onVisibleChanged: {
+            if (!visible && root.menuOpen) {
+                root.closeMenu();
+            }
+        }
+
+        Component.onCompleted: {
+            if ("backgroundHints" in menuDialog) {
+                menuDialog.backgroundHints = PlasmaCore.Dialog.NoBackground;
+            }
+        }
+
+        mainItem: StartMenu {
+            id: startMenu
+            xp: root.xp
+            controller: root
+            favoritesModel: rootModel.favoritesModel
+            frequentModel: frequentModel
+            searchModel: runnerModel.count > 0 ? runnerModel.modelForRow(0) : null
+            numFrequentApps: Plasmoid.configuration.numFrequentApps
+            showNetworkPlaces: Plasmoid.configuration.showNetworkPlaces
+            userName: kuser.fullName || kuser.loginName
+            userAvatar: kuser.faceIconUrl
+        }
+    }
+
+    Component {
+        id: cascadeComponent
+        CascadeMenu {}
+    }
+
+    Component {
+        id: contextMenuComponent
+        PlasmaExtras.Menu {
+            id: contextMenu
+            onStatusChanged: {
+                if (status === PlasmaExtras.Menu.Closed) {
+                    root.contextMenuOpen = false;
+                    root.checkActivation();
+                    contextMenu.destroy(1000);
+                }
+            }
+        }
+    }
+
+    Component {
+        id: contextMenuItemComponent
+        PlasmaExtras.MenuItem {
+            property var handler: null
+            onClicked: if (handler) handler()
+        }
+    }
+
+    // Close everything once focus has left all of our windows. The check is
+    // deferred so that focus moving between the menu and a cascade does not
+    // count as leaving.
+    Timer {
+        id: activationCheck
+        interval: 150
+        onTriggered: {
+            if (root.menuOpen && !root.anyWindowActive()) {
+                root.closeMenu();
+            }
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // Controller API used by StartButton, StartMenu and CascadeMenu
+    // ------------------------------------------------------------------
+    function anyWindowActive() {
+        if (menuDialog.active || contextMenuOpen) {
+            return true;
+        }
+        return cascades.some(c => c && c.active);
+    }
+
+    function checkActivation() {
+        activationCheck.restart();
+    }
+
+    function menuOpenOrJustClosed() {
+        return menuOpen || (Date.now() - lastClosed) < 300;
+    }
+
+    function openMenu() {
+        if (menuOpen) {
+            return;
+        }
+        startMenu.reset();
+        menuOpen = true;
+        expanded = true;
+        menuDialog.visible = true;
+        menuDialog.requestActivate();
+        startMenu.forceActiveFocus();
+    }
+
+    function closeMenu() {
+        if (!menuOpen) {
+            return;
+        }
+        menuOpen = false;
+        expanded = false;
+        lastClosed = Date.now();
+        closeCascadesFrom(0);
+        menuDialog.visible = false;
+        startMenu.searchText = "";
+    }
+
+    function toggleMenu() {
+        if (menuOpen) {
+            closeMenu();
+        } else {
+            openMenu();
+        }
+    }
+
+    function maxCascadeRows() {
+        // Leave room for the panel; long menus wrap into more columns.
+        const screenHeight = startMenu.screenHeight > 0 ? startMenu.screenHeight : 768;
+        return Math.max(5, Math.floor((screenHeight - 56) / xp.cascadeRowHeight));
+    }
+
+    function openCascade(level, visualParent, model, ownerView, ownerIndex) {
+        closeCascadesFrom(level);
+        if (!model || !visualParent) {
+            return null;
+        }
+        const cascade = cascadeComponent.createObject(root, {
+            xp: root.xp,
+            controller: root,
+            model: model,
+            level: level,
+            maxRows: maxCascadeRows(),
+        });
+        cascade.visualParent = visualParent;
+        cascade.visible = true;
+        const list = cascades.slice(0, level);
+        list[level] = cascade;
+        cascades = list;
+        if (ownerView) {
+            ownerView.openIndex = ownerIndex;
+        }
+        return cascade;
+    }
+
+    function closeCascadesFrom(level) {
+        if (cascades.length <= level) {
+            return;
+        }
+        let hadFocus = false;
+        for (let i = cascades.length - 1; i >= level; --i) {
+            const cascade = cascades[i];
+            if (cascade) {
+                hadFocus = hadFocus || cascade.active;
+                cascade.visible = false;
+                cascade.destroy();
+            }
+        }
+        cascades = cascades.slice(0, level);
+        // Don't let focus fall out of the menu when a focused cascade closes.
+        if (hadFocus && menuOpen) {
+            menuDialog.requestActivate();
+        }
+        if (level === 0) {
+            startMenu.openCascade = "";
+        } else if (cascades[level - 1]) {
+            cascades[level - 1].view.openIndex = -1;
+        }
+    }
+
+    function openAllPrograms(item) {
+        if (openCascade(0, item, rootModel, null, -1)) {
+            startMenu.openCascade = "programs";
+        }
+    }
+
+    function openRecentDocuments(item) {
+        if (openCascade(0, item, recentDocsModel, null, -1)) {
+            startMenu.openCascade = "recent";
+        }
+    }
+
+    function isPinned(favoriteId) {
+        const favorites = rootModel.favoritesModel;
+        return !!favoriteId && !!favorites && favorites.isFavorite(favoriteId);
+    }
+
+    function launchFavorite(index) {
+        rootModel.favoritesModel.trigger(index, "", null);
+        closeMenu();
+    }
+
+    function launchFrequent(row) {
+        frequentModel.trigger(row, "", null);
+        closeMenu();
+    }
+
+    function launchSearchResult(index) {
+        const results = startMenu.searchModel;
+        if (results && index >= 0 && index < results.count) {
+            results.trigger(index, "", null);
+            closeMenu();
+        }
+    }
+
+    function openUrl(url) {
+        Qt.openUrlExternally(url);
+        closeMenu();
+    }
+
+    function runCommand(command) {
+        executable.exec(command);
+        closeMenu();
+    }
+
+    function openPlace(key) {
+        const cfg = Plasmoid.configuration;
+        switch (key) {
+        case "documents":
+            return openUrl(StandardPaths.writableLocation(StandardPaths.DocumentsLocation));
+        case "pictures":
+            return openUrl(StandardPaths.writableLocation(StandardPaths.PicturesLocation));
+        case "music":
+            return openUrl(StandardPaths.writableLocation(StandardPaths.MusicLocation));
+        case "computer":
+            return openUrl(cfg.myComputerUrl);
+        case "network":
+            return openUrl(cfg.networkUrl);
+        case "controlpanel":
+            return runCommand(cfg.controlPanelCommand);
+        case "defaults":
+            return runCommand(cfg.defaultsCommand);
+        case "printers":
+            return runCommand(cfg.printersCommand);
+        case "help":
+            return runCommand(cfg.helpCommand);
+        case "search":
+            return runCommand(cfg.searchCommand);
+        case "run":
+            return runCommand(cfg.runCommand);
+        }
+    }
+
+    function triggerSystemAction(actionId, fallbackCommand) {
+        for (let i = 0; i < systemActions.count; ++i) {
+            const entry = systemActions.objectAt(i);
+            if (entry && entry.actionId === actionId) {
+                closeMenu();
+                systemModel.trigger(entry.index, "", null);
+                return;
+            }
+        }
+        runCommand(fallbackCommand);
+    }
+
+    function logOff() {
+        triggerSystemAction("logout",
+            "dbus-send --session --type=method_call --dest=org.kde.LogoutPrompt /LogoutPrompt org.kde.LogoutPrompt.promptLogout");
+    }
+
+    function turnOff() {
+        triggerSystemAction("shutdown",
+            "dbus-send --session --type=method_call --dest=org.kde.LogoutPrompt /LogoutPrompt org.kde.LogoutPrompt.promptShutDown");
+    }
+
+    function showItemContextMenu(model, index, favoriteId, actionList, visualParent, x, y) {
+        if (!model) {
+            return;
+        }
+        const entries = [];
+        const favorites = rootModel.favoritesModel;
+
+        entries.push({ text: i18n("Open"), icon: "system-run", handler: () => {
+            model.trigger(index, "", null);
+            closeMenu();
+        } });
+
+        if (favoriteId && favorites) {
+            entries.push({ separator: true });
+            if (favorites.isFavorite(favoriteId)) {
+                entries.push({ text: i18n("Unpin from Start menu"), icon: "window-unpin", handler: () => {
+                    favorites.removeFavorite(favoriteId);
+                } });
+            } else {
+                entries.push({ text: i18n("Pin to Start menu"), icon: "window-pin", handler: () => {
+                    favorites.addFavorite(favoriteId, -1);
+                } });
+            }
+        }
+
+        actionList = actionList ? Array.from(actionList) : [];
+        if (actionList.length > 0) {
+            entries.push({ separator: true });
+            actionList.forEach(action => {
+                if (action.type === "separator") {
+                    entries.push({ separator: true });
+                } else if (action.type !== "title" && !action.subActions) {
+                    entries.push({ text: action.text, icon: action.icon, handler: () => {
+                        if (model.trigger(index, action.actionId, action.actionArgument)) {
+                            closeMenu();
+                        }
+                    } });
+                }
+            });
+        }
+
+        const menu = contextMenuComponent.createObject(root, { visualParent: visualParent });
+        entries.forEach(entry => {
+            contextMenuItemComponent.createObject(menu, {
+                text: entry.text ?? "",
+                icon: entry.icon ?? "",
+                separator: entry.separator === true,
+                handler: entry.handler ?? null,
+            });
+        });
+        contextMenuOpen = true;
+        menu.open(x, y);
+    }
+}
