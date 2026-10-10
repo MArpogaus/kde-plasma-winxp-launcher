@@ -23,9 +23,10 @@ and wallpaper are XP's.
    ```
 
 2. Apply the **Windows XP** Global Theme (System Settings → Colors & Themes
-   → Global Theme) with *Use desktop layout from theme* ticked, then log out
-   and back in once. It sets up a 30 px XP taskbar (Start, Quick Launch,
-   task buttons, notification area, clock), XP Alt+Tab and the cursors, on
+   → Global Theme) with *Desktop and window layout* ticked (this replaces
+   your panels and desktop widgets), then log out and back in once. It
+   sets up a 30 px XP taskbar (Start, Quick Launch, task buttons,
+   notification area, clock), XP Alt+Tab and the cursors, on
    the look of [Exposé](https://www.opencode.net/phob1an/expose) by phob1an
    (bundled unmodified): window borders, Plasma theme, colours, Kvantum
    style and wallpaper. [Kvantum](https://github.com/tsujan/Kvantum) is
@@ -41,13 +42,14 @@ desktop icons 32 px in columns from the top left, one virtual desktop, no
 hot corner, no snapping windows to the screen edges, no shake-to-find
 cursor, no zoom when windows open or close (minimizing still squashes into
 the taskbar), animations twice as fast, clicking a scroll bar's track
-pages, the busy cursor instead of a bouncing launch icon, and menus
-without icons (in Plasma and Qt/KDE applications; GTK applications keep
-theirs). Change any
-of them back in System Settings.
+pages (Kvantum styles may keep their own behaviour) and menus without
+icons (in Plasma and Qt/KDE applications; GTK applications keep theirs).
+Change any of them back in System Settings.
 
-Copying overwrites Dolphin's toolbar (`~/.local/share/kxmlgui5/dolphin/dolphinui.rc`),
-Dolphin's default view and the selected Kvantum theme (`~/.config/Kvantum/kvantum.kvconfig`).
+Copying also switches app launch feedback to XP's static busy cursor (no
+bouncing icon, `~/.config/klaunchrc`), and it overwrites Dolphin's toolbar
+(`~/.local/share/kxmlgui5/dolphin/dolphinui.rc`), Dolphin's default view and
+the selected Kvantum theme (`~/.config/Kvantum/kvantum.kvconfig`).
 
 ### Original XP files (optional)
 
@@ -78,6 +80,25 @@ for key in font menuFont toolBarFont smallestReadableFont; do
 done
 kwriteconfig6 --file kdeglobals --group WM --key activeFont --delete
 kwriteconfig6 --file kdeglobals --group Sounds --key Theme --delete
+```
+
+The Global Theme's layout also changed the behaviour settings listed under
+Install; to reset them all:
+
+```sh
+for key in Number Rows; do
+    kwriteconfig6 --file kwinrc --group Desktops --key "$key" --delete
+done
+kwriteconfig6 --file kwinrc --group Effect-overview --key BorderActivate --delete
+for key in ElectricBorderMaximize ElectricBorderTiling; do
+    kwriteconfig6 --file kwinrc --group Windows --key "$key" --delete
+done
+for key in shakecursorEnabled scaleEnabled fadeEnabled squashEnabled magiclampEnabled; do
+    kwriteconfig6 --file kwinrc --group Plugins --key "$key" --delete
+done
+for key in AnimationDurationFactor ScrollbarLeftClickNavigatesByPage ShowIconsInMenuItems; do
+    kwriteconfig6 --file kdeglobals --group KDE --key "$key" --delete
+done
 ```
 
 ## What is in `home/`
@@ -121,7 +142,7 @@ Configure for XP's options: *Show the clock*, an XP style time format
 (`h:mm tt`, `HH:mm`, …) with own AM/PM symbols, the long date shown as
 tooltip and what double-clicking runs.
 
-Quick Launch shows Show Desktop plus up to four launchers as 16 px icons
+Quick Launch shows up to four 16 px icons, Show Desktop plus three launchers
 (browser, file manager and Konsole by default) and puts the rest behind
 a » menu. Drop applications on it (from the start menu, Dolphin or the desktop) to add
 them, drag its icons to reorder them and right-click one (also in the »
@@ -157,8 +178,10 @@ Dolphin with a changed toolbar file ignores it until
 - **All Programs** cascading menus with hover-to-open delay, folder arrows and
   multi-column wrapping for long menus, just like XP.
 - **My Recent Documents** cascade.
-- Right-click on a program: Open, Pin to / Unpin from Start menu, plus the
-  usual application actions (Edit Application, Add to Desktop, …).
+- Right-click on a program: Open, Pin to / Unpin from Start menu, Add to /
+  Remove from Quick Launch, plus the usual application actions (Edit
+  Application, Add to Desktop, …).
+- Drag programs out of the menu onto Quick Launch, the desktop or Dolphin.
 - Type while the menu is open to search (KRunner backends); results replace
   the program list, Up/Down/Enter to launch, Esc to clear.
 - Meta key opens the menu (it can replace Kickoff via *Show Alternatives*).
@@ -187,8 +210,8 @@ Right-click the start button → *Configure Windows XP Start Menu…*
 - `tools/check-qml.py`: finds QML properties that shadow built-in ones
   (needs PySide6).
 - `tools/update-vendored.sh`: refreshes the third-party files in `home/`.
-- `tools/xcursor.py`, `tools/patch-dolphin-ui.py`:
-  helpers used by the two scripts.
+- `tools/xcursor.py`, `tools/patch-dolphin-ui.py`: helpers of
+  `update-vendored.sh`.
 - Edits to widgets: copy `home/` again and restart plasmashell
   (`systemctl --user restart plasma-plasmashell`).
 

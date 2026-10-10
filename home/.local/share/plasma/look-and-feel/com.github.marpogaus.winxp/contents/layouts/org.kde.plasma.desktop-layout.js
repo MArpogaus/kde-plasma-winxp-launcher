@@ -60,7 +60,7 @@ function setConfig(file, group, entries) {
         config.writeEntry(key, entries[key]);
     }
 }
-// One desktop, as XP had
+// One desktop, as XP had (KWin's virtual desktop settings, not in kwin.kcfg)
 setConfig("kwinrc", "Desktops", { Number: 1, Rows: 1 });
 // No hot corner (Overview sits in the top-left one by default; 9 = none)
 setConfig("kwinrc", "Effect-overview", { BorderActivate: 9 });
@@ -68,10 +68,9 @@ setConfig("kwinrc", "Effect-overview", { BorderActivate: 9 });
 // with that), no shake-to-find-cursor, no zoom when windows open or close;
 // minimizing keeps KWin's default squash, like XP's shrink to the taskbar
 setConfig("kwinrc", "Windows", { ElectricBorderMaximize: false, ElectricBorderTiling: false });
-setConfig("kwinrc", "Plugins", { shakecursorEnabled: false, scaleEnabled: false, fadeEnabled: false, squashEnabled: true });
+setConfig("kwinrc", "Plugins", { shakecursorEnabled: false, scaleEnabled: false, fadeEnabled: false,
+                                     squashEnabled: true, magiclampEnabled: false });
 // XP's animations were quick, and its menus had no icons (all Qt/KDE
 // menus, Plasma's included; read by plasma-integration)
 setConfig("kdeglobals", "KDE", { AnimationDurationFactor: 0.5, ScrollbarLeftClickNavigatesByPage: true,
                                  ShowIconsInMenuItems: false });
-// Busy cursor (arrow with hourglass) instead of a bouncing icon at app start
-setConfig("klaunchrc", "BusyCursorSettings", { Bouncing: false });

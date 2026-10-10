@@ -41,7 +41,6 @@ mkdir -p "$D/color-schemes"
 cp "$E/Expose.colors" "$D/color-schemes/Expose.colors"
 printf '[General]\ntheme=Expose\n' > "$H/.config/Kvantum/kvantum.kvconfig"
 
-
 # modernXP cursors (GPL-3.0), rendered at every size their configs use
 C=$SRC/cursors/src
 # shellcheck disable=SC2013 # sizes are single words
