@@ -33,11 +33,9 @@ PlasmoidItem {
 
         Item {
             id: block
-            // horizontal: from here to the right window edge, full height
-            x: 0
-            y: anchorItem.horizontal ? -anchorItem.windowPos.y : 0
+            // From here to the end of the panel, within the panel's height
             width: anchorItem.horizontal ? Window.width - anchorItem.windowPos.x : anchorItem.width
-            height: anchorItem.horizontal ? Window.height : Window.height - anchorItem.windowPos.y
+            height: anchorItem.horizontal ? anchorItem.height : Window.height - anchorItem.windowPos.y
 
             // Sampled from the XP notification area (30 rows)
             Rectangle {

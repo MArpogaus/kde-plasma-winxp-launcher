@@ -48,15 +48,8 @@ PlasmoidItem {
     fullRepresentation: Item {
         id: bar
 
-        // Like the start button, use the full taskbar height regardless of
-        // the panel theme's margins: buttons sit 3 px below the top edge and
-        // 2 px above the bottom edge (25 px on a 30 px taskbar).
-        readonly property point windowPos: {
-            x; y; width; height; Window.width; Window.height;
-            return Window.window ? mapToItem(null, 0, 0) : Qt.point(0, 0);
-        }
-        readonly property real buttonTop: root.horizontal && Window.window ? -windowPos.y + 3 : 2
-        readonly property real buttonHeight: root.horizontal && Window.window ? Window.height - 5 : 25
+        // Buttons fill the height the panel gives us (25 px on XP's 30 px taskbar)
+        readonly property real buttonHeight: root.horizontal ? height : 25
 
         readonly property int count: buttons.count
         readonly property int spacing: 3
@@ -80,7 +73,7 @@ PlasmoidItem {
                 readonly property var modelIndex: tasksModel.makeModelIndex(index)
 
                 x: root.horizontal ? index * (bar.buttonWidth + bar.spacing) : 0
-                y: root.horizontal ? bar.buttonTop : index * (25 + bar.spacing)
+                y: root.horizontal ? 0 : index * (25 + bar.spacing)
                 width: root.horizontal ? bar.buttonWidth : bar.width
                 height: root.horizontal ? bar.buttonHeight : 25
 

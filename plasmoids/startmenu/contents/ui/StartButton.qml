@@ -17,32 +17,11 @@ Item {
     property string text: "start"
     property string iconName: ""
     property bool vertical: false
-    // In a horizontal panel the button ignores the panel theme's margins and
-    // covers the whole taskbar height, flush with the screen's left edge.
-    property bool fillPanel: false
-
-    readonly property int thickness: vertical ? width : face.height
+    readonly property int thickness: vertical ? width : height
     readonly property bool pressedLook: mouseArea.pressed || controller.menuOpen
     readonly property bool hoveredLook: mouseArea.containsMouse && !pressedLook
 
-    // Offset of this item inside its window; re-evaluated when the panel
-    // layout moves or resizes us.
-    readonly property point windowPos: {
-        x;
-        y;
-        width;
-        height;
-        Window.width;
-        Window.height;
-        return Window.window ? mapToItem(null, 0, 0) : Qt.point(0, 0);
-    }
-    readonly property bool fills: fillPanel && !vertical && Window.window !== null
-    readonly property real topOverflow: fills ? windowPos.y : 0
-    readonly property real bottomOverflow: fills ? Window.height - windowPos.y - height : 0
-    // Only stick to the window edge when we are the first widget.
-    readonly property real leftOverflow: fills && windowPos.x < 16 ? windowPos.x : 0
-
-    Layout.minimumWidth: vertical ? -1 : Math.round((height + topOverflow + bottomOverflow) * 3.3) - leftOverflow
+    Layout.minimumWidth: vertical ? -1 : Math.round(height * 3.3)
     Layout.preferredWidth: Layout.minimumWidth
     Layout.maximumWidth: Layout.minimumWidth
     Layout.minimumHeight: vertical ? width : -1
@@ -168,13 +147,9 @@ Item {
         }
     }
 
-    // Everything is drawn in `face`, which may extend beyond our own bounds.
     Item {
         id: face
-        x: -button.leftOverflow
-        y: -button.topOverflow
-        width: button.width + button.leftOverflow
-        height: button.height + button.topOverflow + button.bottomOverflow
+        anchors.fill: parent
 
         Item {
             anchors.fill: parent
