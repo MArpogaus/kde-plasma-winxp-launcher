@@ -246,6 +246,13 @@ PlasmoidItem {
     // ------------------------------------------------------------------
     // Controller API used by StartButton, StartMenu and CascadeMenu
     // ------------------------------------------------------------------
+    // The screen area free of panels, in global coordinates (cascades stay
+    // inside it)
+    readonly property rect availableArea: availableScreenRect.width > 0
+        ? Qt.rect(screenGeometry.x + availableScreenRect.x, screenGeometry.y + availableScreenRect.y,
+                  availableScreenRect.width, availableScreenRect.height)
+        : screenGeometry
+
     function anyWindowActive() {
         if (menuDialog.active || contextMenuOpen) {
             return true;
@@ -309,7 +316,7 @@ PlasmoidItem {
         });
         // Next to the cascade the row is in, or to the start menu itself;
         // All Programs grows up from its button instead
-        cascade.placeAt(visualParent, ownerView ? ownerView.frameItem : bottomAlign ? null : startMenu, bottomAlign === true);
+        cascade.placeAt(visualParent, ownerView ? ownerView.frameItem : bottomAlign ? null : startMenu);
         cascade.visible = true;
         const list = cascades.slice(0, level);
         list[level] = cascade;

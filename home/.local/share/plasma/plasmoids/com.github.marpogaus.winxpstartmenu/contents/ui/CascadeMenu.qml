@@ -24,16 +24,14 @@ Kicker.SubMenu {
     // border lies 1 px left of the menu's right border; mirrored when it
     // opens to the left) and its top border lies 1 px above the row, or,
     // when that runs off the screen, its bottom border 1 px below it. The
-    // All Programs menu (bottomFirst, no parent menu) starts right after
-    // the button, its bottom border right below the button.
+    // All Programs menu (no parent menu) starts right after the button,
+    // its bottom border right below the button.
     property Item anchorItem: null
     property Item parentMenu: null
-    property bool bottomFirst: false
 
-    function placeAt(item, menu, alignBottom) {
+    function placeAt(item, menu) {
         anchorItem = item;
         parentMenu = menu;
-        bottomFirst = alignBottom;
         reposition();
     }
 
@@ -42,8 +40,10 @@ Kicker.SubMenu {
             return;
         }
         const row = anchorItem.mapToGlobal(0, 0);
-        const screen = anchorItem.Window.window.screen;
-        const area = screen ? screen.availableGeometry : Qt.rect(0, 0, 1e6, 1e6);
+        // The screen area free of panels, in global coordinates
+        const area = controller.availableArea;
+        const right = area.x + area.width;
+        const bottom = area.y + area.height;
         const frameWidth = cascadeView.width - cascadeView.shadow;
         const frameHeight = cascadeView.height - cascadeView.shadow;
         const rowTop = Math.round(row.y);
@@ -54,19 +54,25 @@ Kicker.SubMenu {
         if (parentMenu) {
             const menu = parentMenu.mapToGlobal(0, 0);
             x = Math.round(menu.x + parentMenu.width) - 2;
-            if (x + frameWidth > area.x + area.width) {
+            if (x + cascadeView.width > right) {
                 x = Math.round(menu.x) + 2 - frameWidth;
             }
             y = rowTop - 1;
-            if (y + frameHeight > area.y + area.height) {
+            if (y + cascadeView.height > bottom) {
                 y = rowBottom + 1 - frameHeight;
             }
         } else {
-            x = Math.round(row.x + anchorItem.width);
+            x = Math.min(Math.round(row.x + anchorItem.width), right - cascadeView.width);
             y = rowBottom + 1 - frameHeight;
         }
         dialog.x = Math.max(area.x, x);
         dialog.y = Math.max(area.y, y);
+
+        // An open child cascade follows
+        const child = controller.cascades[level + 1];
+        if (child) {
+            child.reposition();
+        }
     }
 
     visible: false
