@@ -45,3 +45,10 @@ trayConfig.writeConfig("hiddenItems", [
     "org.kde.kdeconnect",
 ]);
 panel.addWidget("com.github.marpogaus.winxpclock");
+
+// XP's desktop icons are 32 px, which the XP icon theme has as sharp
+// bitmaps (Plasma's default 64 px would scale them up)
+desktops().forEach(function (desktop) {
+    desktop.currentConfigGroup = ["General"];
+    desktop.writeConfig("iconSize", 1);
+});

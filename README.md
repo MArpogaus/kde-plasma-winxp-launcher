@@ -45,10 +45,12 @@ and switches to the XP icons (with Breeze for names XP has no icon for),
 Tahoma / Trebuchet MS, the XP sounds and Bliss. The start button picks up
 XP's flag automatically.
 
-For a complete scalable XP icon set, the
-[WinXPSVG icon theme](https://store.kde.org/p/1925937) can be used instead:
-extract it to `~/.local/share/icons` and choose it under System Settings →
-Icons.
+XP's icons are bitmaps of up to 48 px, so the Windows XP layout sets the
+desktop to XP's 32 px icons, where they are sharp; larger sizes (Dolphin
+zoomed in, 64 px desktop icons) are scaled up and look soft. For sharp
+icons at every size, use the scalable
+[WinXPSVG icon theme](https://store.kde.org/p/1925937) instead: extract it
+to `~/.local/share/icons` and choose it under System Settings → Icons.
 
 ### Uninstall
 
