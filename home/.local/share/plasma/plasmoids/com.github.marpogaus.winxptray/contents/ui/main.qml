@@ -231,11 +231,11 @@ PlasmoidItem {
             }
         }
 
-        // Centred on the block's left edge, half over the taskbar like XP's;
+        // Centred 3 px left of the block's edge, over the taskbar, like XP's;
         // turns around to point right while the hidden icons are shown
         Image {
             visible: anchorItem.showChevron
-            x: 1 - width / 2
+            x: -2 - width / 2
             y: Math.round(anchorItem.area.y + (anchorItem.area.height - height) / 2)
             width: 22
             height: 22

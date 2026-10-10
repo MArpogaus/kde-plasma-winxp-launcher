@@ -18,11 +18,12 @@ QtObject {
     // Outer frame
     readonly property color frameOutline: "#1854c2"
     readonly property color frame: "#4282d6"
-    readonly property color frameHighlight: "#b4d0f8"
-    readonly property color frameShade: "#3f74cf"
+    // Inner pixel of the 2 px side frame, left and right
+    readonly property color frameInnerLeft: "#7693d3"
+    readonly property color frameInnerRight: "#2476dd"
     readonly property color bodyTopLine: "#2f5aa8"
     readonly property color bodyBottomLine: "#2d73d3"
-    readonly property color orange: "#da884a"
+    readonly property color orange: "#ea9736"
     readonly property int cornerRadius: 6
 
     // Columns
@@ -34,6 +35,8 @@ QtObject {
     readonly property color rightBorder: "#95bdee"
     readonly property color rightText: "#071a4f"
     readonly property color rightSeparator: "#9db8e6"
+    // The right column darkens over its last 3 px
+    readonly property var rightEdgeShade: ["#c5d2ec", "#b9c8eb", "#aec1ec"]
 
     // Cascading (All Programs) menus
     readonly property color cascadeBackground: "#ffffff"
@@ -48,16 +51,16 @@ QtObject {
     readonly property color disabledText: "#aca899"
     readonly property int cascadeRowHeight: 22
 
-    // Metrics (measured on a real XP start menu at 96 DPI)
-    readonly property int frameWidth: 3
-    readonly property int leftWidth: 230
-    readonly property int rightWidth: 229
-    readonly property int menuWidth: frameWidth + leftWidth + 1 + rightWidth + frameWidth // 466
+    // Metrics (measured on a native 1024x768 XP screenshot, 96 DPI)
+    readonly property int frameWidth: 2
+    readonly property int leftWidth: 189
+    readonly property int rightWidth: 188
+    readonly property int menuWidth: frameWidth + leftWidth + 1 + rightWidth + frameWidth // 382
     readonly property int headerHeight: 63
     readonly property int footerHeight: 39
-    readonly property int programRowHeight: 40
+    readonly property int programRowHeight: 36
     readonly property int programIconSize: 32
-    readonly property int placeRowHeight: 32
+    readonly property int placeRowHeight: 30
     readonly property int placeIconSize: 24
     readonly property int separatorHeight: 8
 }

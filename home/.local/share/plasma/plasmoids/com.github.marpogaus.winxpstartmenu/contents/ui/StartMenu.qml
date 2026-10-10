@@ -176,7 +176,7 @@ FocusScope {
         anchors.fill: parent
         clip: true
 
-        // Blue frame behind everything (shows as the 3 px side borders)
+        // Blue frame behind everything (shows as the 2 px side borders)
         Rectangle {
             width: parent.width
             height: parent.height + menu.xp.cornerRadius
@@ -341,7 +341,7 @@ FocusScope {
             Rectangle {
                 id: leftColumn
 
-                readonly property int neededHeight: 9 + leftTop.implicitHeight + allProgramsSeparator.height + allPrograms.height + 4
+                readonly property int neededHeight: 5 + leftTop.implicitHeight + allProgramsSeparator.height + 2 + allPrograms.height + 6
 
                 width: menu.xp.leftWidth
                 height: parent.height
@@ -350,7 +350,7 @@ FocusScope {
                 Column {
                     id: leftTop
                     x: 2
-                    y: 9
+                    y: 5
                     width: parent.width - 4
                     visible: !menu.searching
 
@@ -373,7 +373,7 @@ FocusScope {
                             iconSource: model.decoration
                             iconSize: menu.xp.programIconSize
                             leftPadding: 3
-                            textSpacing: 5
+                            textSpacing: 3
                             title: specialTitle || (model.display ?? "")
                             subtitle: specialTitle ? (model.display ?? "") : ""
                             bold: true
@@ -407,7 +407,7 @@ FocusScope {
                             iconSource: modelData.decoration
                             iconSize: menu.xp.programIconSize
                             leftPadding: 3
-                            textSpacing: 5
+                            textSpacing: 3
                             title: modelData.display
 
                             onHoveredChanged: if (hovered) menu.hovered("", frequent)
@@ -535,6 +535,7 @@ FocusScope {
                     id: allProgramsSeparator
                     x: 2
                     anchors.bottom: allPrograms.top
+                    anchors.bottomMargin: 2
                     width: parent.width - 4
                     height: menu.xp.separatorHeight
                     leftInset: 40
@@ -551,10 +552,11 @@ FocusScope {
                     readonly property bool highlighted: hovered
                         || (menu.openCascade === "programs" && !menu.pointerElsewhere(allPrograms))
 
-                    x: 2
+                    // XP: 4 px from the column's left, 6 px from its right and bottom
+                    x: 4
                     anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 4
-                    width: parent.width - 4
+                    anchors.bottomMargin: 6
+                    width: parent.width - 10
                     height: 24
 
                     Rectangle {
@@ -610,17 +612,32 @@ FocusScope {
             Rectangle {
                 id: rightColumn
 
-                readonly property int neededHeight: 8 + placesColumn.implicitHeight + 6
+                readonly property int neededHeight: 5 + placesColumn.implicitHeight + 6
 
                 x: leftColumn.width + 1
                 width: menu.xp.rightWidth
                 height: parent.height
                 color: menu.xp.rightBackground
 
+                // XP darkens the column's last 3 px towards the frame
+                Row {
+                    anchors.right: parent.right
+                    height: parent.height
+                    Repeater {
+                        model: menu.xp.rightEdgeShade
+                        Rectangle {
+                            required property color modelData
+                            width: 1
+                            height: parent.height
+                            color: modelData
+                        }
+                    }
+                }
+
                 Column {
                     id: placesColumn
                     x: 2
-                    y: 8
+                    y: 5
                     width: parent.width - 4
 
                     Repeater {
@@ -701,9 +718,12 @@ FocusScope {
                 height: 2
                 gradient: Gradient {
                     orientation: Gradient.Horizontal
-                    GradientStop { position: 0.0; color: Qt.rgba(0.855, 0.533, 0.290, 0) }
-                    GradientStop { position: 0.45; color: menu.xp.orange }
-                    GradientStop { position: 1.0; color: Qt.rgba(0.855, 0.533, 0.290, 0) }
+                    // Measured on XP: fades in over 10-30 %, solid to 58 %,
+                    // fades out by 92 %
+                    GradientStop { position: 0.10; color: Qt.rgba(0.918, 0.592, 0.212, 0) }
+                    GradientStop { position: 0.30; color: menu.xp.orange }
+                    GradientStop { position: 0.58; color: menu.xp.orange }
+                    GradientStop { position: 0.92; color: Qt.rgba(0.918, 0.592, 0.212, 0) }
                 }
             }
         }
@@ -777,28 +797,20 @@ FocusScope {
             }
         }
 
-        // Side frame of the body: outline + light blue, slightly darker
-        // next to the outline on the right
+        // Side frame of the body: the outline plus one inner pixel
         Rectangle {
             x: 1
             y: body.y
-            width: 2
-            height: body.height
-            color: menu.xp.frameHighlight
-        }
-        Rectangle {
-            x: parent.width - 3
-            y: body.y
             width: 1
             height: body.height
-            color: menu.xp.frameHighlight
+            color: menu.xp.frameInnerLeft
         }
         Rectangle {
             x: parent.width - 2
             y: body.y
             width: 1
             height: body.height
-            color: menu.xp.frameShade
+            color: menu.xp.frameInnerRight
         }
 
         // 1 px outline around the whole menu
