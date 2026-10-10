@@ -3,8 +3,8 @@
 
     Draws XP's light blue notification area. Widgets that come later in the
     panel are painted on top of earlier ones, so this widget, placed right
-    before the System Tray, paints the block from its own position to the
-    end of the panel and the tray and clock show up on it.
+    before the System Tray, paints the block from just after the chevron's
+    room to the end of the panel and the tray and clock show up on it.
 */
 import QtQuick
 import QtQuick.Layouts
@@ -29,7 +29,7 @@ PlasmoidItem {
 
         // The chevron reaches 11 px left of the block; keep that (plus 3 px)
         // inside this widget so it never covers the task buttons
-        readonly property int blockLeft: horizontal && showChevron ? 14 : 0
+        readonly property int blockLeft: showChevron ? 14 : 0
 
         // Room for the bevel (and the chevron) before the first tray icon
         Layout.minimumWidth: horizontal ? blockLeft + (showChevron ? 14 : 10) : -1
@@ -164,11 +164,13 @@ PlasmoidItem {
             }
         }
         // Plasma's own activation of the tray (shortcut, keyboard) opens
-        // its popup of hidden icons; collapse first so it is not empty
+        // its popup of hidden icons; collapse first so it is not empty.
+        // An icon's own popup (volume, network, …) keeps the row expanded.
         Connections {
             target: anchorItem.tray ? anchorItem.tray.systemTrayState : null
             function onExpandedChanged() {
-                if (anchorItem.tray.systemTrayState.expanded) {
+                const state = anchorItem.tray.systemTrayState;
+                if (state.expanded && !state.activeApplet) {
                     anchorItem.trayExpanded = false;
                 }
             }
@@ -235,9 +237,9 @@ PlasmoidItem {
             }
         }
 
-        // As on XP: starts 11 px left of the block's edge (over the
-        // taskbar), centred on the taskbar's height, drawn 1:1; the arrow
-        // points right while the hidden icons are shown
+        // As on XP: starts 11 px left of the block's edge (in the room this
+        // widget keeps for it), centred on the taskbar's height, drawn 1:1;
+        // the arrow points right while the hidden icons are shown
         Image {
             visible: anchorItem.showChevron
             x: anchorItem.blockLeft - 11

@@ -178,7 +178,14 @@ PlasmoidItem {
             // Otherwise the panel's own drop area (for adding widgets)
             // takes the drop
             preventStealing: true
-            onDragEnter: event => root.dropIndex = event.mimeData.hasUrls ? root.launcherIndexAt(event.x, event.y) : -1
+            // Anything but files (a widget from Add Widgets) goes on to the panel
+            onDragEnter: event => {
+                if (!event.mimeData.hasUrls) {
+                    event.ignore();
+                    return;
+                }
+                root.dropIndex = root.launcherIndexAt(event.x, event.y);
+            }
             onDragMove: event => root.dropIndex = event.mimeData.hasUrls ? root.launcherIndexAt(event.x, event.y) : -1
             onDragLeave: root.dropIndex = -1
             onDrop: event => {
@@ -319,16 +326,32 @@ PlasmoidItem {
                     visible = false;
                     return;
                 }
+                updateTextWidth();
                 visible = true;
                 place();
                 requestActivate();
             }
 
-            // Above the », left edges aligned
+            // Above the », left edges aligned; below the taskbar when it is
+            // at the top of the screen
             function place() {
                 const p = overflowButton.mapToGlobal(0, 0);
                 x = Math.round(p.x);
-                y = Math.round(p.y) - height;
+                y = Plasmoid.location === PlasmaCore.Types.TopEdge
+                    ? Math.round(bar.mapToGlobal(0, bar.area.y + bar.area.height).y)
+                    : Math.round(p.y) - height;
+            }
+
+            // Widest name among the launchers in the menu
+            function updateTextWidth() {
+                let widest = 0;
+                for (let i = 0; i < overflowRows.count; ++i) {
+                    const row = overflowRows.itemAt(i);
+                    if (row && row.visible) {
+                        widest = Math.max(widest, row.textWidth);
+                    }
+                }
+                root.overflowTextWidth = widest;
             }
             onHeightChanged: if (visible) place()
 
@@ -348,9 +371,10 @@ PlasmoidItem {
                     id: overflowList
                     x: 3
                     y: 3
-                    width: Math.max(120, root.overflowTextWidth + 28 + 24)
+                    width: Math.min(400, Math.max(120, root.overflowTextWidth + 28 + 24))
 
                     Repeater {
+                        id: overflowRows
                         model: launchers
 
                         delegate: Rectangle {
@@ -358,6 +382,7 @@ PlasmoidItem {
 
                             required property int index
                             required property var model
+                            readonly property real textWidth: rowText.implicitWidth
 
                             visible: model.IsLauncher === true
                                 && index + (Plasmoid.configuration.showDesktop ? 1 : 0) >= root.shownCount
@@ -374,14 +399,17 @@ PlasmoidItem {
                                 roundToIconSize: false
                             }
                             Text {
+                                id: rowText
                                 x: 28
+                                width: parent.width - x - 6
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: overflowRow.model.display ?? ""
+                                elide: Text.ElideRight
                                 font.family: "Tahoma"
                                 font.pixelSize: 11
                                 renderType: Text.NativeRendering
                                 color: rowMouse.containsMouse ? "#ffffff" : "#000000"
-                                onImplicitWidthChanged: root.overflowTextWidth = Math.max(root.overflowTextWidth, implicitWidth)
+                                onImplicitWidthChanged: if (overflowPopup.visible) overflowPopup.updateTextWidth()
                             }
                             MouseArea {
                                 id: rowMouse

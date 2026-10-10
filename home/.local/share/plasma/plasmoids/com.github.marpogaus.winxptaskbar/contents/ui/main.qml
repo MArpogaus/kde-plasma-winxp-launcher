@@ -61,12 +61,14 @@ PlasmoidItem {
         readonly property int count: buttons.count
         // Overflow: how many buttons of the minimum width fit per row, with
         // and without room for the » at the end
-        readonly property int minimumWidth: Plasmoid.configuration.minimumButtonWidth
+        readonly property int minimumWidth: Math.min(Plasmoid.configuration.minimumButtonWidth,
+                                                     Plasmoid.configuration.maximumButtonWidth)
         readonly property int overflowWidth: 13
         readonly property int fitPerRow: Math.max(1, Math.floor((width + spacing) / (minimumWidth + spacing)))
         readonly property bool overflow: root.horizontal && count > rows * fitPerRow
+        // Each button with its spacing, then the »
         readonly property int shownCount: overflow
-            ? rows * Math.max(1, Math.floor((width - overflowWidth + spacing) / (minimumWidth + spacing)))
+            ? rows * Math.max(1, Math.floor((width - overflowWidth) / (minimumWidth + spacing)))
             : count
         readonly property int perRow: root.horizontal ? Math.max(1, Math.ceil(shownCount / rows)) : 1
         readonly property real buttonWidth: count > 0
@@ -126,14 +128,17 @@ PlasmoidItem {
                 hovered: mouse.containsMouse
                 pressed: mouse.pressed && mouse.pressedButtons === Qt.LeftButton
 
-                // Tell KWin where the button is so minimize animations land on it
+                // Tell KWin where the button is so minimize animations land
+                // on it (on the » for the windows in its menu)
                 function publishGeometry() {
                     if (!Window.window) {
                         return;
                     }
-                    const p = mapToGlobal(0, 0);
-                    tasksModel.requestPublishDelegateGeometry(modelIndex, Qt.rect(p.x, p.y, width, height), task);
+                    const target = visible ? task : overflowButton;
+                    const p = target.mapToGlobal(0, 0);
+                    tasksModel.requestPublishDelegateGeometry(modelIndex, Qt.rect(p.x, p.y, target.width, target.height), task);
                 }
+                onVisibleChanged: geometryTimer.restart()
                 onXChanged: geometryTimer.restart()
                 onYChanged: geometryTimer.restart()
                 onWidthChanged: geometryTimer.restart()
@@ -182,7 +187,7 @@ PlasmoidItem {
         }
 
         // » for the windows that do not fit, at the end of the taskbar,
-        // exactly like Quick Launch's: in the top half of the taskbar, and
+        // drawn like Quick Launch's: 13 px wide at the top of the taskbar,
         // only looking like a button under the pointer
         Rectangle {
             id: overflowButton
@@ -228,16 +233,20 @@ PlasmoidItem {
                     visible = false;
                     return;
                 }
+                bar.updateOverflowTextWidth();
                 visible = true;
                 place();
                 requestActivate();
             }
 
-            // Above the », left edges aligned (as Quick Launch's)
+            // Above the », left edges aligned (as Quick Launch's); below
+            // the taskbar when it is at the top of the screen
             function place() {
                 const p = overflowButton.mapToGlobal(0, 0);
                 x = Math.round(p.x);
-                y = Math.round(p.y) - height;
+                y = Plasmoid.location === PlasmaCore.Types.TopEdge
+                    ? Math.round(bar.mapToGlobal(0, bar.area.y + bar.area.height).y)
+                    : Math.round(p.y) - height;
             }
             onHeightChanged: if (visible) place()
             onWidthChanged: if (visible) place()
@@ -261,6 +270,7 @@ PlasmoidItem {
                     width: Math.min(400, Math.max(160, bar.overflowTextWidth + 28 + 12))
 
                     Repeater {
+                        id: overflowRows
                         model: tasksModel
 
                         delegate: Rectangle {
@@ -269,6 +279,7 @@ PlasmoidItem {
                             required property int index
                             required property var model
                             readonly property var modelIndex: tasksModel.makeModelIndex(index)
+                            readonly property real textWidth: rowText.implicitWidth
 
                             visible: index >= bar.shownCount
                             width: overflowList.width
@@ -284,6 +295,7 @@ PlasmoidItem {
                                 roundToIconSize: false
                             }
                             Text {
+                                id: rowText
                                 x: 28
                                 width: parent.width - x - 6
                                 anchors.verticalCenter: parent.verticalCenter
@@ -294,7 +306,7 @@ PlasmoidItem {
                                 font.bold: overflowRow.model.IsActive === true
                                 renderType: Text.NativeRendering
                                 color: rowMouse.containsMouse ? "#ffffff" : "#000000"
-                                onImplicitWidthChanged: bar.overflowTextWidth = Math.max(bar.overflowTextWidth, implicitWidth)
+                                onImplicitWidthChanged: if (overflowPopup.visible) bar.updateOverflowTextWidth()
                             }
                             MouseArea {
                                 id: rowMouse
@@ -303,7 +315,7 @@ PlasmoidItem {
                                 acceptedButtons: Qt.LeftButton | Qt.RightButton
                                 onClicked: mouse => {
                                     if (mouse.button === Qt.RightButton) {
-                                        windowMenu.show(overflowRow, mouse.x, mouse.y);
+                                        windowMenu.show(overflowRow, mouse.x, mouse.y, true);
                                     } else {
                                         overflowPopup.visible = false;
                                         tasksModel.requestActivate(overflowRow.modelIndex);
@@ -318,10 +330,21 @@ PlasmoidItem {
 
         // Widest window title in the overflow menu
         property real overflowTextWidth: 0
+        function updateOverflowTextWidth() {
+            let widest = 0;
+            for (let i = bar.shownCount; i < overflowRows.count; ++i) {
+                const row = overflowRows.itemAt(i);
+                if (row) {
+                    widest = Math.max(widest, row.textWidth);
+                }
+            }
+            overflowTextWidth = widest;
+        }
 
-        // Keep the popup open (and focused) after its window menu closed;
-        // close it once nothing overflows, checked a moment later because
-        // the model can briefly be empty while it changes
+        // Keep the popup open (and focused) when its window menu closes
+        // without an action; an action (which may activate the window)
+        // closes it. Close it too once nothing overflows, checked a moment
+        // later because the model can briefly be empty while it changes.
         Timer {
             id: refocus
             interval: 200
@@ -329,9 +352,15 @@ PlasmoidItem {
         Connections {
             target: windowMenu
             function onStatusChanged() {
-                if (windowMenu.status === PlasmaExtras.Menu.Closed && overflowPopup.visible) {
+                if (windowMenu.status === PlasmaExtras.Menu.Closed && windowMenu.fromPopup && overflowPopup.visible) {
                     refocus.restart();
                     overflowPopup.requestActivate();
+                }
+            }
+            function onActionTriggered() {
+                if (windowMenu.fromPopup) {
+                    refocus.stop();
+                    overflowPopup.visible = false;
                 }
             }
         }
@@ -359,13 +388,16 @@ PlasmoidItem {
         id: windowMenu
 
         property Item task: null
+        property bool fromPopup: false
+        signal actionTriggered
         readonly property bool minimized: task ? task.model.IsMinimized === true : false
         readonly property bool maximized: task ? task.model.IsMaximized === true : false
 
         // At the pointer like XP's; at the bottom of the screen it opens
         // upwards with its left edge at the pointer
-        function show(item, x, y) {
+        function show(item, x, y, popup) {
             task = item;
+            fromPopup = popup === true;
             visualParent = item;
             open(x, y);
         }
@@ -374,6 +406,7 @@ PlasmoidItem {
             if (task) {
                 action(task.modelIndex);
             }
+            actionTriggered();
         }
 
         PlasmaExtras.MenuItem {

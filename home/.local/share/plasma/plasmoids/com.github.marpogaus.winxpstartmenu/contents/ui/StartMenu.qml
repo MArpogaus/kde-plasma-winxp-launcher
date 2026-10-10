@@ -36,7 +36,6 @@ FocusScope {
 
     property var frequentItems: []
 
-    readonly property int screenHeight: Screen.height
     readonly property int bodyHeight: Math.max(leftColumn.neededHeight, rightColumn.neededHeight, 330)
 
     // header | 1 px line | body | 1 px line | footer
@@ -426,7 +425,7 @@ FocusScope {
                 Item {
                     id: searchPane
                     x: 2
-                    y: 6
+                    y: 5
                     width: parent.width - 4
                     height: allProgramsSeparator.y - y
                     visible: menu.searching

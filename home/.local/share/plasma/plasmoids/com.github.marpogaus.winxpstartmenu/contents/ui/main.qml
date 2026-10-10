@@ -247,8 +247,10 @@ PlasmoidItem {
     // Controller API used by StartButton, StartMenu and CascadeMenu
     // ------------------------------------------------------------------
     // The screen area free of panels, in global coordinates (cascades stay
-    // inside it)
-    readonly property rect availableArea: availableScreenRect.width > 0
+    // inside it). Without a screen Plasma reports the applet's own size.
+    readonly property bool hasAvailableRect: availableScreenRect.width > 0
+        && !(availableScreenRect.width === width && availableScreenRect.height === height)
+    readonly property rect availableArea: hasAvailableRect
         ? Qt.rect(screenGeometry.x + availableScreenRect.x, screenGeometry.y + availableScreenRect.y,
                   availableScreenRect.width, availableScreenRect.height)
         : screenGeometry
@@ -258,6 +260,7 @@ PlasmoidItem {
     Kicker.DragHelper {
         id: dragHelper
         dragIconSize: 32
+        // The drag ended, dropped or not; the menu is already hidden
         onDropped: root.closeMenu()
     }
 
@@ -305,9 +308,9 @@ PlasmoidItem {
     }
 
     function maxCascadeRows() {
-        // Leave room for the panel; long menus wrap into more columns.
-        const screenHeight = startMenu.screenHeight > 0 ? startMenu.screenHeight : 768;
-        return Math.max(5, Math.floor((screenHeight - 56) / xp.cascadeRowHeight));
+        // Fit the screen without its panels (and the cascade's frame and
+        // shadow); long menus wrap into more columns.
+        return Math.max(5, Math.floor((availableArea.height - 5) / xp.cascadeRowHeight));
     }
 
     // bottomAlign: grow upwards from visualParent's bottom edge (All Programs);

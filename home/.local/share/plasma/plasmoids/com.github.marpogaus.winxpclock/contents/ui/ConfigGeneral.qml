@@ -29,6 +29,11 @@ KCM.SimpleKCM {
         longDateFormat.editText = cfg_longDateFormat;
         loaded = true;
     }
+    // Defaults and Reset change the values from outside
+    onCfg_timeFormatChanged: if (loaded && timeFormat.editText !== cfg_timeFormat) timeFormat.editText = cfg_timeFormat
+    onCfg_amSymbolChanged: if (loaded && amSymbol.editText !== cfg_amSymbol) amSymbol.editText = cfg_amSymbol
+    onCfg_pmSymbolChanged: if (loaded && pmSymbol.editText !== cfg_pmSymbol) pmSymbol.editText = cfg_pmSymbol
+    onCfg_longDateFormatChanged: if (loaded && longDateFormat.editText !== cfg_longDateFormat) longDateFormat.editText = cfg_longDateFormat
     property alias cfg_fontFamily: fontFamily.text
     property alias cfg_clickCommand: clickCommand.text
 
