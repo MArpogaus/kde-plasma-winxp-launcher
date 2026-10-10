@@ -27,6 +27,7 @@ Item {
 
     // Kept highlighted by the owner, e.g. while its cascade is open.
     property bool forceHighlight: false
+    property color highlightColor: xp.highlight
     readonly property bool hovered: mouseArea.containsMouse
     readonly property bool highlighted: entry.interactive && (hovered || forceHighlight)
 
@@ -37,7 +38,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: entry.xp.highlight
+        color: entry.highlightColor
         visible: entry.highlighted
     }
 

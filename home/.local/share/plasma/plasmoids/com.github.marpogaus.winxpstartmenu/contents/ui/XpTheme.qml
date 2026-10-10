@@ -40,6 +40,8 @@ QtObject {
     // Cascade frame, sampled from XP: 1 px border (lighter at top and
     // bottom) and a 5 px blue band inside the left border
     readonly property color cascadeBorder: "#418be5"
+    // Cascades highlight in a slightly different blue than the start menu
+    readonly property color cascadeHighlight: "#1664cb"
     readonly property color cascadeBorderLight: "#54a1ff"
     readonly property var cascadeBand: ["#89b4ed", "#2b7ae2", "#2b7ae2", "#307fe4", "#3484e6"]
     readonly property color cascadeSeparator: "#aca899"

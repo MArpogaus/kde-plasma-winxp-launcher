@@ -19,19 +19,16 @@ Kicker.SubMenu {
 
     readonly property alias view: cascadeView
 
-    // The row the cascade belongs to and the menu that row is in. XP puts
-    // the cascade's frame 3 px to the right of that menu (to its left when
-    // there is no room), with its first row level with the row, or, when
-    // that runs off the screen, its last row level with it. The All
-    // Programs menu (bottomFirst, no parent menu) always takes the second
-    // form and touches the left column.
+    // The row the cascade belongs to and the menu that row is in. Measured
+    // on XP: the cascade's frame overlaps that menu by 2 px (its left
+    // border lies 1 px left of the menu's right border; mirrored when it
+    // opens to the left) and its top border lies 1 px above the row, or,
+    // when that runs off the screen, its bottom border 1 px below it. The
+    // All Programs menu (bottomFirst, no parent menu) starts right after
+    // the button, its bottom border right below the button.
     property Item anchorItem: null
     property Item parentMenu: null
     property bool bottomFirst: false
-
-    // The rows start right below the frame's 1 px top border
-    readonly property int inset: 1
-    readonly property int gap: 3
 
     function placeAt(item, menu, alignBottom) {
         anchorItem = item;
@@ -49,21 +46,25 @@ Kicker.SubMenu {
         const area = screen ? screen.availableGeometry : Qt.rect(0, 0, 1e6, 1e6);
         const frameWidth = cascadeView.width - cascadeView.shadow;
         const frameHeight = cascadeView.height - cascadeView.shadow;
+        const rowTop = Math.round(row.y);
+        const rowBottom = Math.round(row.y + anchorItem.height);
 
         let x;
+        let y;
         if (parentMenu) {
             const menu = parentMenu.mapToGlobal(0, 0);
-            x = Math.round(menu.x + parentMenu.width) + gap;
+            x = Math.round(menu.x + parentMenu.width) - 2;
             if (x + frameWidth > area.x + area.width) {
-                x = Math.round(menu.x) - gap - frameWidth;
+                x = Math.round(menu.x) + 2 - frameWidth;
+            }
+            y = rowTop - 1;
+            if (y + frameHeight > area.y + area.height) {
+                y = rowBottom + 1 - frameHeight;
             }
         } else {
-            x = Math.round(row.x + anchorItem.width) - 1;
+            x = Math.round(row.x + anchorItem.width);
+            y = rowBottom + 1 - frameHeight;
         }
-        const rowInset = bottomFirst ? 0 : inset;
-        const below = Math.round(row.y) - rowInset;
-        const above = Math.round(row.y + anchorItem.height) + rowInset - frameHeight;
-        const y = !bottomFirst && below + frameHeight <= area.y + area.height ? below : above;
         dialog.x = Math.max(area.x, x);
         dialog.y = Math.max(area.y, y);
     }

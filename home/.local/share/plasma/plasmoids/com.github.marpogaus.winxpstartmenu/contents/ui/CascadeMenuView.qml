@@ -216,6 +216,7 @@ Item {
                     leftPadding: 4
                     textSpacing: 3
                     showArrow: cell.hasChildren
+                    highlightColor: view.xp.cascadeHighlight
                     forceHighlight: view.openIndex === cell.index
 
                     onHoveredChanged: {
