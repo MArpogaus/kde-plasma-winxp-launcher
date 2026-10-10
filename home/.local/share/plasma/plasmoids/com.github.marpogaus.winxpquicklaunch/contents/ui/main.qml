@@ -240,7 +240,7 @@ PlasmoidItem {
             // taskbar; it only looks like a button under the pointer
             Item {
                 visible: root.overflow
-                width: 16
+                width: 13
                 height: root.cell
 
                 Rectangle {
@@ -261,7 +261,8 @@ PlasmoidItem {
                         font.family: "Tahoma"
                         font.pixelSize: 11
                         font.bold: true
-                        color: "#ffffff"
+                        // XP's » is light blue, white under the pointer
+                        color: overflowMouse.containsMouse ? "#ffffff" : "#70acff"
                     }
                     MouseArea {
                         id: overflowMouse
