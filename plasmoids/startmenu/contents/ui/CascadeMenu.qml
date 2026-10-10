@@ -20,6 +20,27 @@ Kicker.SubMenu {
 
     readonly property alias view: cascadeView
 
+    // When set, the window is placed by hand: left edge at the item's right
+    // edge, bottom edge on the item's bottom edge (the All Programs menu).
+    property Item bottomAnchor: null
+
+    function alignBottomTo(item) {
+        bottomAnchor = item;
+        reposition();
+    }
+
+    function reposition() {
+        if (!bottomAnchor || !bottomAnchor.Window.window) {
+            return;
+        }
+        const corner = bottomAnchor.mapToGlobal(bottomAnchor.width, bottomAnchor.height);
+        const screen = bottomAnchor.Window.window.screen;
+        const top = screen ? screen.availableGeometry.y : 0;
+        // the view's drop shadow hangs below/right of the frame
+        dialog.x = Math.round(corner.x) - 1;
+        dialog.y = Math.max(top, Math.round(corner.y) - (cascadeView.height - cascadeView.shadow));
+    }
+
     visible: false
     // Keyboard focus stays with the start menu window.
     flags: Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus
@@ -44,5 +65,7 @@ Kicker.SubMenu {
         maxRows: dialog.maxRows
 
         Keys.onEscapePressed: dialog.controller.closeCascadesFrom(dialog.level)
+        onHeightChanged: dialog.reposition()
+        onWidthChanged: dialog.reposition()
     }
 }

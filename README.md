@@ -36,7 +36,7 @@ so the menu fits the theme without changes.
 - Type while the menu is open to search (KRunner backends); results replace
   the program list, Up/Down/Enter to launch, Esc to clear.
 - Meta key opens the menu (it can replace Kickoff via *Show Alternatives*).
-- Log Off and Turn Off Computer open Plasma's session dialogs.
+- Log Off and Turn Off Computer open XP style Log Off / Turn Off dialogs.
 
 ## Installation
 
@@ -45,7 +45,7 @@ Requires Plasma 6.
 ```sh
 git clone https://github.com/MArpogaus/kde-plasma-winxp-launcher.git
 cd kde-plasma-winxp-launcher
-./install.sh
+./install-widgets.sh
 ```
 
 Then right-click the existing application launcher → *Show Alternatives…* →
@@ -58,7 +58,7 @@ To remove: `kpackagetool6 --type Plasma/Applet --remove com.github.marpogaus.win
 XP uses **Tahoma** in the menu and **Franklin Gothic Medium** on the start
 button. If they are not installed the widget falls back to bundled look-alikes:
 Wine's metric-compatible Tahoma (LGPL) and Libre Franklin (OFL); see
-`package/contents/fonts`. Installing the original Tahoma gives the authentic
+`plasmoids/startmenu/contents/fonts`. Installing the original Tahoma gives the authentic
 bold weight. Both fonts are configurable in the widget settings.
 
 ## Configuration
@@ -78,7 +78,7 @@ Right-click the start button → *Configure Windows XP Start Menu…*
 - Uses Plasma's private `org.kde.plasma.private.kicker` models (as Kickoff,
   Kicker and many third-party launchers do), so pinned programs and usage
   statistics come from KActivities.
-- All artwork in `package/contents/images` is original and licensed with the
+- All artwork in `plasmoids/startmenu/contents/images` is original and licensed with the
   rest of the project. No Microsoft assets are included.
 
 ## License

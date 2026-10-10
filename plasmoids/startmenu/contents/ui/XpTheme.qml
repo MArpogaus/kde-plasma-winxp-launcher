@@ -37,7 +37,7 @@ QtObject {
 
     // Cascading (All Programs) menus
     readonly property color cascadeBackground: "#ffffff"
-    readonly property color cascadeBorder: "#aca899"
+    readonly property color cascadeBorder: "#5a83d8"
     readonly property color cascadeSeparator: "#aca899"
     readonly property color disabledText: "#aca899"
     readonly property int cascadeRowHeight: 22

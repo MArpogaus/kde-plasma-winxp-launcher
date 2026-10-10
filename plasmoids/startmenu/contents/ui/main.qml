@@ -59,6 +59,7 @@ PlasmoidItem {
         xp: root.xp
         controller: root
         vertical: root.vertical
+        fillPanel: Plasmoid.formFactor === PlasmaCore.Types.Horizontal
         text: Plasmoid.configuration.startText
         iconName: Plasmoid.configuration.startIcon
     }
@@ -131,20 +132,6 @@ PlasmoidItem {
         runners: ["krunner_services", "krunner_systemsettings", "krunner_sessions", "krunner_powerdevil",
                   "calculator", "unitconverter", "locations", "baloosearch", "krunner_recentdocuments"]
         query: startMenu.searchText
-    }
-
-    Kicker.SystemModel {
-        id: systemModel
-    }
-
-    Instantiator {
-        id: systemActions
-        model: systemModel
-        delegate: QtObject {
-            required property int index
-            required property var model
-            readonly property string actionId: model.favoriteId ?? ""
-        }
     }
 
     KCoreAddons.KUser {
@@ -300,7 +287,9 @@ PlasmoidItem {
         return Math.max(5, Math.floor((screenHeight - 56) / xp.cascadeRowHeight));
     }
 
-    function openCascade(level, visualParent, model, ownerView, ownerIndex) {
+    // bottomAlign: grow upwards from visualParent's bottom edge (All Programs);
+    // otherwise the cascade is top-aligned next to it (folders, XP style).
+    function openCascade(level, visualParent, model, ownerView, ownerIndex, bottomAlign) {
         closeCascadesFrom(level);
         if (!model || !visualParent) {
             return null;
@@ -312,7 +301,11 @@ PlasmoidItem {
             level: level,
             maxRows: maxCascadeRows(),
         });
-        cascade.visualParent = visualParent;
+        if (bottomAlign) {
+            cascade.alignBottomTo(visualParent);
+        } else {
+            cascade.visualParent = visualParent;
+        }
         cascade.visible = true;
         const list = cascades.slice(0, level);
         list[level] = cascade;
@@ -349,7 +342,7 @@ PlasmoidItem {
     }
 
     function openAllPrograms(item) {
-        if (openCascade(0, item, rootModel, null, -1)) {
+        if (openCascade(0, item, rootModel, null, -1, true)) {
             startMenu.openCascade = "programs";
         }
     }
@@ -421,26 +414,37 @@ PlasmoidItem {
         }
     }
 
-    function triggerSystemAction(actionId, fallbackCommand) {
-        for (let i = 0; i < systemActions.count; ++i) {
-            const entry = systemActions.objectAt(i);
-            if (entry && entry.actionId === actionId) {
-                closeMenu();
-                systemModel.trigger(entry.index, "", null);
-                return;
-            }
+    // XP's own Turn Off / Log Off dialogs; the actions go straight to the
+    // session manager, so Plasma's confirmation screen is not shown again.
+    SessionDialog {
+        id: sessionDialog
+        xp: root.xp
+        flagIcon: Plasmoid.configuration.startIcon
+        onActivated: action => root.sessionAction(action)
+    }
+
+    readonly property var sessionCommands: ({
+        standby: "dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 org.freedesktop.login1.Manager.Suspend boolean:true",
+        turnoff: "dbus-send --session --type=method_call --dest=org.kde.Shutdown /Shutdown org.kde.Shutdown.logoutAndShutdown",
+        restart: "dbus-send --session --type=method_call --dest=org.kde.Shutdown /Shutdown org.kde.Shutdown.logoutAndReboot",
+        logoff: "dbus-send --session --type=method_call --dest=org.kde.Shutdown /Shutdown org.kde.Shutdown.logout",
+        switchuser: "dbus-send --session --type=method_call --dest=org.kde.ksmserver /KSMServer org.kde.KSMServerInterface.openSwitchUserDialog"
+    })
+
+    function sessionAction(action) {
+        if (sessionCommands[action]) {
+            executable.exec(sessionCommands[action]);
         }
-        runCommand(fallbackCommand);
     }
 
     function logOff() {
-        triggerSystemAction("logout",
-            "dbus-send --session --type=method_call --dest=org.kde.LogoutPrompt /LogoutPrompt org.kde.LogoutPrompt.promptLogout");
+        closeMenu();
+        sessionDialog.open("logoff");
     }
 
     function turnOff() {
-        triggerSystemAction("shutdown",
-            "dbus-send --session --type=method_call --dest=org.kde.LogoutPrompt /LogoutPrompt org.kde.LogoutPrompt.promptShutDown");
+        closeMenu();
+        sessionDialog.open("turnoff");
     }
 
     function showItemContextMenu(model, index, favoriteId, actionList, visualParent, x, y) {

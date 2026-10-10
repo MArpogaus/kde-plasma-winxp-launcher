@@ -1,0 +1,23 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "Marcel Arpogaus"
+            }
+        ],
+        "Category": "Windows and Tasks",
+        "Description": "Windows XP (Luna) style taskbar buttons",
+        "EnabledByDefault": true,
+        "Icon": "preferences-system-windows",
+        "Id": "com.github.marpogaus.winxptaskbar",
+        "License": "GPL-2.0+",
+        "Name": "Windows XP Taskbar",
+        "Version": "1.0.0",
+        "Website": "https://github.com/MArpogaus/kde-plasma-winxp-launcher"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "X-Plasma-Provides": [
+        "org.kde.plasma.multitasking"
+    ]
+}

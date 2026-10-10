@@ -1,0 +1,20 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "Marcel Arpogaus"
+            }
+        ],
+        "Category": "Date and Time",
+        "Description": "Windows XP taskbar clock",
+        "EnabledByDefault": true,
+        "Icon": "preferences-system-time",
+        "Id": "com.github.marpogaus.winxpclock",
+        "License": "GPL-2.0+",
+        "Name": "Windows XP Clock",
+        "Version": "1.0.0",
+        "Website": "https://github.com/MArpogaus/kde-plasma-winxp-launcher"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

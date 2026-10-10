@@ -531,7 +531,9 @@ FocusScope {
                     x: 2
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 4
-                    width: parent.width - 4
+                    // XP sizes the button to its label and arrow; the menu
+                    // opens right after the arrow, over the left column
+                    width: Math.min(parent.width - 4, allProgramsArrow.x + allProgramsArrow.width + 7)
                     height: 24
 
                     Rectangle {
@@ -552,6 +554,7 @@ FocusScope {
                         color: allPrograms.highlighted ? menu.xp.highlightText : menu.xp.leftText
                     }
                     Image {
+                        id: allProgramsArrow
                         anchors.left: allProgramsLabel.right
                         anchors.leftMargin: 12
                         anchors.verticalCenter: parent.verticalCenter
