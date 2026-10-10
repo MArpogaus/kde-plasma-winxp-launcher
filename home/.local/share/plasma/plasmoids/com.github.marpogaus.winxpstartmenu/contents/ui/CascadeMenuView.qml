@@ -23,6 +23,8 @@ Item {
     readonly property int shownRows: Math.max(1, Math.min(itemCount, maxRows))
     readonly property int columns: Math.max(1, Math.ceil(itemCount / Math.max(1, maxRows)))
     readonly property int shadow: 3
+    // The menu itself, without its drop shadow (cascades open next to it)
+    readonly property alias frameItem: frame
     property int columnWidth: 160
 
     width: columns * columnWidth + 4 + shadow

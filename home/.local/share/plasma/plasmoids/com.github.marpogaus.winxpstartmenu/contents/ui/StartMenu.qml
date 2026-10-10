@@ -673,7 +673,9 @@ FocusScope {
                                 onClicked: {
                                     if (place.modelData.key === "recent") {
                                         hoverTimer.stop();
-                                        menu.controller.openRecentDocuments(placeEntry);
+                                        if (menu.openCascade !== "recent") {
+                                            menu.controller.openRecentDocuments(placeEntry);
+                                        }
                                     } else {
                                         menu.controller.openPlace(place.modelData.key);
                                     }

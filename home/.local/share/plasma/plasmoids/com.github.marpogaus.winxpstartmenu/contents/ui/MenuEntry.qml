@@ -22,8 +22,6 @@ Item {
     property int leftPadding: 2
     property int textSpacing: 4
     property color textColor: xp.leftText
-    property color subtitleColor: xp.subtitleText
-    property bool centered: false
     property bool wrap: false
     readonly property real labelsHeight: labels.implicitHeight
 
@@ -45,11 +43,11 @@ Item {
 
     Kirigami.Icon {
         id: icon
-        x: entry.centered ? 0 : entry.leftPadding
+        x: entry.leftPadding
         anchors.verticalCenter: parent.verticalCenter
         width: entry.iconSize
         height: entry.iconSize
-        visible: !entry.centered && entry.iconSize > 0
+        visible: entry.iconSize > 0
         source: entry.iconSource ?? ""
         roundToIconSize: false
         animated: false
@@ -58,8 +56,8 @@ Item {
     Column {
         id: labels
         anchors.verticalCenter: parent.verticalCenter
-        x: entry.centered ? 0 : icon.x + entry.iconSize + entry.textSpacing
-        width: entry.centered ? parent.width : parent.width - x - (entry.showArrow ? 14 : 4)
+        x: icon.x + entry.iconSize + entry.textSpacing
+        width: parent.width - x - (entry.showArrow ? 14 : 4)
         spacing: 0
 
         Text {
@@ -71,7 +69,7 @@ Item {
             wrapMode: entry.wrap ? Text.WordWrap : Text.NoWrap
             maximumLineCount: entry.wrap ? 2 : 1
             elide: Text.ElideRight
-            horizontalAlignment: entry.centered ? Text.AlignHCenter : Text.AlignLeft
+            horizontalAlignment: Text.AlignLeft
             renderType: Text.NativeRendering
             font.family: entry.xp.fontFamily
             font.pixelSize: entry.xp.fontPixelSize
@@ -91,7 +89,7 @@ Item {
             renderType: Text.NativeRendering
             font.family: entry.xp.fontFamily
             font.pixelSize: entry.xp.fontPixelSize
-            color: entry.highlighted ? entry.xp.highlightText : entry.subtitleColor
+            color: entry.highlighted ? entry.xp.highlightText : entry.xp.subtitleText
         }
     }
 

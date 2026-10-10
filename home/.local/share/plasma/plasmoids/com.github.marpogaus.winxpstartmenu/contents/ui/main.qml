@@ -26,24 +26,18 @@ PlasmoidItem {
     }
 
     // Bundled look-alikes for the non-free XP fonts. Tahoma (Wine, LGPL) is
-    // only registered when no real Tahoma is installed; bold is synthesised
-    // because Wine's bold face renders with regular-weight outlines.
-    // Libre Franklin (OFL) stands in for Franklin Gothic Medium.
+    // only registered when no real Tahoma is installed, and only its regular
+    // face (Wine's bold renders with regular-weight outlines, so Qt makes
+    // the bold one up). Libre Franklin (OFL) stands in for Franklin Gothic
+    // Medium.
     readonly property var installedFonts: Qt.fontFamilies()
-    property string tahomaSource: ""
 
     function fontInstalled(family) {
         return installedFonts.indexOf(family) >= 0;
     }
 
-    FontLoader { source: root.tahomaSource }
+    FontLoader { source: root.fontInstalled("Tahoma") ? "" : Qt.resolvedUrl("../fonts/tahoma.ttf") }
     FontLoader { source: Qt.resolvedUrl("../fonts/LibreFranklin-Bold.ttf") }
-
-    Component.onCompleted: {
-        if (!fontInstalled("Tahoma")) {
-            tahomaSource = Qt.resolvedUrl("../fonts/tahoma.ttf");
-        }
-    }
 
     // Start icon: the configured one, else XP's original 20 px flag if
     // get-microsoft-files.sh put it in place, else the bundled flag ("")
@@ -291,14 +285,6 @@ PlasmoidItem {
         startMenu.searchText = "";
     }
 
-    function toggleMenu() {
-        if (menuOpen) {
-            closeMenu();
-        } else {
-            openMenu();
-        }
-    }
-
     function maxCascadeRows() {
         // Leave room for the panel; long menus wrap into more columns.
         const screenHeight = startMenu.screenHeight > 0 ? startMenu.screenHeight : 768;
@@ -321,7 +307,9 @@ PlasmoidItem {
             // keeps it stacked above the menu (or the cascade it came from)
             transientParent: level > 0 && cascades[level - 1] ? cascades[level - 1] : menuDialog,
         });
-        cascade.placeAt(visualParent, bottomAlign === true);
+        // Next to the cascade the row is in, or to the start menu itself;
+        // All Programs grows up from its button instead
+        cascade.placeAt(visualParent, ownerView ? ownerView.frameItem : bottomAlign ? null : startMenu, bottomAlign === true);
         cascade.visible = true;
         const list = cascades.slice(0, level);
         list[level] = cascade;
@@ -441,7 +429,7 @@ PlasmoidItem {
     }
 
     readonly property var sessionCommands: ({
-        standby: "dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 org.freedesktop.login1.Manager.Suspend boolean:true",
+        standby: "dbus-send --system --type=method_call --dest=org.freedesktop.login1 /org/freedesktop/login1 org.freedesktop.login1.Manager.Suspend boolean:true",
         turnoff: "dbus-send --session --type=method_call --dest=org.kde.Shutdown /Shutdown org.kde.Shutdown.logoutAndShutdown",
         restart: "dbus-send --session --type=method_call --dest=org.kde.Shutdown /Shutdown org.kde.Shutdown.logoutAndReboot",
         logoff: "dbus-send --session --type=method_call --dest=org.kde.Shutdown /Shutdown org.kde.Shutdown.logout",

@@ -160,6 +160,11 @@ function paint(ctx, w, h, look, curved) {
             xs.push(w - (offset - 0.5) * scale);
         }
     });
+    // Too short a button (square in a vertical panel) would put the right
+    // samples left of the middle ones; keep the stops in order
+    for (let i = 1; i < xs.length; ++i) {
+        xs[i] = Math.max(xs[i], xs[i - 1]);
+    }
     ctx.clearRect(0, 0, w, h);
     for (let y = 0; y < h; ++y) {
         const samples = rowAt(table, y, h);
