@@ -309,8 +309,10 @@ PlasmoidItem {
             type: PlasmaCore.Dialog.PopupMenu
             flags: Qt.WindowStaysOnTopHint
             location: PlasmaCore.Types.Floating
-            // stay open while its context menu has the focus
-            hideOnWindowDeactivate: overflowContext.status === PlasmaExtras.Menu.Closed
+            // Stay open while its context menu has the focus and right after
+            // it (taking the focus back), so several launchers can be removed
+            // in a row
+            hideOnWindowDeactivate: overflowContext.status === PlasmaExtras.Menu.Closed && !refocus.running
 
             function toggle() {
                 if (visible) {
@@ -412,10 +414,22 @@ PlasmoidItem {
             }
         }
 
+        Timer {
+            id: refocus
+            interval: 200
+        }
+
         PlasmaExtras.Menu {
             id: overflowContext
 
             property int launcherIndex: -1
+
+            onStatusChanged: {
+                if (status === PlasmaExtras.Menu.Closed && overflowPopup.visible) {
+                    refocus.restart();
+                    overflowPopup.requestActivate();
+                }
+            }
 
             PlasmaExtras.MenuItem {
                 text: i18n("Open")
