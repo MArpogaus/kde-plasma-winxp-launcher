@@ -51,7 +51,7 @@ PlasmoidItem {
         // taller taskbar holds more rows of buttons, filled row by row.
         readonly property rect area: root.horizontal ? panelArea.rect : Qt.rect(0, 0, width, height)
         readonly property int spacing: 3
-        readonly property int rows: root.horizontal ? Math.max(1, Math.floor((area.height - 2) / 28)) : buttons.count
+        readonly property int rows: root.horizontal ? Math.max(1, Math.floor((area.height - 2) / 28)) : 1
         readonly property real rowPitch: root.horizontal ? (area.height - 2) / rows : 25 + spacing
         readonly property real buttonHeight: rowPitch - spacing
 
@@ -64,6 +64,22 @@ PlasmoidItem {
         PanelArea {
             id: panelArea
             target: bar
+        }
+
+        // Where the bar is on screen; changes when other widgets or the
+        // panel move it, so the buttons publish their geometry again
+        readonly property point screenPosition: {
+            for (let p = bar; p; p = p.parent) {
+                p.x;
+                p.y;
+            }
+            const window = bar.Window.window;
+            if (!window) {
+                return Qt.point(0, 0);
+            }
+            window.x;
+            window.y;
+            return bar.mapToGlobal(0, 0);
         }
 
         // The applet takes its layout hints from this representation
@@ -109,6 +125,13 @@ PlasmoidItem {
                 onWidthChanged: geometryTimer.restart()
                 onHeightChanged: geometryTimer.restart()
                 Component.onCompleted: geometryTimer.restart()
+
+                Connections {
+                    target: bar
+                    function onScreenPositionChanged() {
+                        geometryTimer.restart();
+                    }
+                }
 
                 Timer {
                     id: geometryTimer

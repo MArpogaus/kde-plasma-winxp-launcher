@@ -82,6 +82,7 @@ PlasmoidItem {
         // immediate. The tray is found in the panel once it has loaded (it
         // comes after this widget) and again whenever it reloads.
         property Item tray: null
+        property Item expander: null
         property bool trayExpanded: false
         property var originalFilters: null
         readonly property bool showChevron: horizontal && tray !== null
@@ -108,6 +109,28 @@ PlasmoidItem {
             }
         }
 
+        // Hands the tray back as Plasma made it: its arrow and its filters
+        // (when this widget goes away or the panel turns vertical)
+        function releaseTray() {
+            if (!tray) {
+                return;
+            }
+            trayExpanded = false;
+            const plasmaTray = tray;
+            if (expander) {
+                expander.visible = Qt.binding(() => plasmaTray.hiddenLayout.itemCount > 0);
+            }
+            tray = null;
+            expander = null;
+        }
+
+        onHorizontalChanged: {
+            if (!horizontal) {
+                releaseTray();
+            }
+        }
+        Component.onDestruction: releaseTray()
+
         function findItem(item, test) {
             if (test(item)) {
                 return item;
@@ -125,7 +148,8 @@ PlasmoidItem {
         Timer {
             interval: 1000
             repeat: true
-            running: !anchorItem.tray && !!anchorItem.Window.window
+            // Vertical panels keep Plasma's own arrow
+            running: anchorItem.horizontal && !anchorItem.tray && !!anchorItem.Window.window
             triggeredOnStart: true
             onTriggered: {
                 const tray = anchorItem.findItem(anchorItem.Window.contentItem,
@@ -136,6 +160,7 @@ PlasmoidItem {
                     expander.visible = false;
                     anchorItem.originalFilters = null;
                     anchorItem.trayExpanded = false;
+                    anchorItem.expander = expander;
                     anchorItem.tray = tray;
                 }
             }

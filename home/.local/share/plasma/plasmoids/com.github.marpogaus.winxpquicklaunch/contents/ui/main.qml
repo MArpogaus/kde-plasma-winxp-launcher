@@ -25,7 +25,10 @@ PlasmoidItem {
     readonly property int spacing: 1
 
     // Entries: Show Desktop (optional) followed by the configured launchers
-    readonly property int launcherCount: Plasmoid.configuration.launchers.length
+    // What the TasksModel kept of the configured launchers: it drops
+    // duplicates, invalid URLs and preferred:// apps that are not set, so
+    // positions are counted and edited on its list
+    readonly property int launcherCount: launchers.launcherCount
     readonly property int entryCount: launcherCount + (Plasmoid.configuration.showDesktop ? 1 : 0)
     readonly property int shownCount: Math.min(entryCount, Plasmoid.configuration.maximumIcons)
     readonly property bool overflow: entryCount > shownCount
@@ -33,8 +36,10 @@ PlasmoidItem {
     preferredRepresentation: fullRepresentation
 
     // TaskManager resolves applications:, preferred:// and .desktop launcher
-    // URLs to names and icons and starts them. Windows are filtered out by
-    // an activity that does not exist; launchers belong to all activities.
+    // URLs to names and icons and starts them. Launchers come first; an
+    // activity that does not exist filters out most windows, and the
+    // delegates skip the rest (windows on all activities or demanding
+    // attention) by IsLauncher.
     TaskManager.TasksModel {
         id: launchers
 
@@ -52,10 +57,18 @@ PlasmoidItem {
         id: executable
         engine: "executable"
         onNewData: sourceName => disconnectSource(sourceName)
+
+        property int launches: 0
+
+        // Reconnecting a source whose process still runs is a no-op, so
+        // make every launch a new source
+        function exec(command) {
+            connectSource(command + "\n# " + (++launches));
+        }
     }
 
     function showDesktop() {
-        executable.connectSource("dbus-send --session --type=method_call --dest=org.kde.kglobalaccel "
+        executable.exec("dbus-send --session --type=method_call --dest=org.kde.kglobalaccel "
             + "/component/kwin org.kde.kglobalaccel.Component.invokeShortcut string:'Show Desktop'");
     }
 
@@ -65,7 +78,7 @@ PlasmoidItem {
 
     // Launcher list editing; the TasksModel follows the configuration
     function editLaunchers(edit) {
-        const list = Array.from(Plasmoid.configuration.launchers);
+        const list = Array.from(launchers.launcherList);
         edit(list);
         Plasmoid.configuration.launchers = list;
     }

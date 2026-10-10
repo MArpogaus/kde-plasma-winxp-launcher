@@ -25,8 +25,7 @@ mkdir -p "$D/fonts/WindowsXP" "$D/wallpapers/WindowsXP" "$D/winxp-kde" "$D/sound
 cp "$W"/fonts/ttf/*.ttf "$D/fonts/WindowsXP/"
 fc-cache -f "$D/fonts" >/dev/null 2>&1 || true
 cp "$W"/wallpapers/common/*.jpg "$D/wallpapers/WindowsXP/"
-# XP's start flag and start button (normal, hover, pressed), used by the start menu widget
-cp "$W"/themes/luna/blue/Resources/start_flag.png "$W"/themes/luna/blue/Resources/start_button*.png "$D/winxp-kde/"
+cp "$W/themes/luna/blue/Resources/start_flag.png" "$D/winxp-kde/start_flag.png"
 rm -rf "$D/icons/WindowsXP-Luna" "$D/sounds/WindowsXP"
 python3 tools/build-icon-theme.py --source "$W/icons/luna" --out "$D/icons/WindowsXP-Luna"
 cp -r "$SRC/sounds" "$D/sounds/WindowsXP"
