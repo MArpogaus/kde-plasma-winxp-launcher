@@ -29,8 +29,8 @@ Kicker.SubMenu {
     property Item parentMenu: null
     property bool bottomFirst: false
 
-    // Frame (1 px border + 1 px padding) around the rows
-    readonly property int inset: 2
+    // The rows start right below the frame's 1 px top border
+    readonly property int inset: 1
     readonly property int gap: 3
 
     function placeAt(item, menu, alignBottom) {

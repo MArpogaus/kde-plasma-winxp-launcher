@@ -27,8 +27,11 @@ Item {
     readonly property alias frameItem: frame
     property int columnWidth: 160
 
-    width: columns * columnWidth + 4 + shadow
-    height: shownRows * rowHeight + 4 + shadow
+    // Frame: left border and band (6 px), rows, right border (1 px); rows
+    // directly below the top border and above the bottom one
+    readonly property int frameLeft: 1 + xp.cascadeBand.length
+    width: frameLeft + columns * columnWidth + 1 + shadow
+    height: 1 + shownRows * rowHeight + 1 + shadow
 
     function computeColumnWidth() {
         let widest = 0;
@@ -44,9 +47,9 @@ Item {
         } else {
             widest = metrics.advanceWidth(emptyLabel.title);
         }
-        // As XP's: the text starts 24 px into the menu (icon at 6 px), and
-        // 25 px follow the longest name (room for the cascade arrow); the
-        // rows sit 2 px inside the frame
+        // As XP's: the text starts 23 px into the row (29 px into the menu,
+        // icon at 10 px) and 23 px follow the longest name (room for the
+        // cascade arrow)
         view.columnWidth = Math.min(Math.max(Math.ceil(widest) + 23 + 23, 130), 380);
     }
 
@@ -126,13 +129,47 @@ Item {
         width: view.width - view.shadow
         height: view.height - view.shadow
         color: view.xp.cascadeBackground
-        border.color: view.xp.cascadeBorder
-        border.width: 1
+
+        Rectangle {
+            width: parent.width
+            height: 1
+            color: view.xp.cascadeBorderLight
+        }
+        Rectangle {
+            y: parent.height - 1
+            width: parent.width
+            height: 1
+            color: view.xp.cascadeBorderLight
+        }
+        Rectangle {
+            width: 1
+            height: parent.height
+            color: view.xp.cascadeBorder
+        }
+        Rectangle {
+            x: parent.width - 1
+            width: 1
+            height: parent.height
+            color: view.xp.cascadeBorder
+        }
+        Row {
+            x: 1
+            y: 1
+            Repeater {
+                model: view.xp.cascadeBand
+                Rectangle {
+                    required property color modelData
+                    width: 1
+                    height: frame.height - 2
+                    color: modelData
+                }
+            }
+        }
 
         GridView {
             id: grid
-            x: 2
-            y: 2
+            x: view.frameLeft
+            y: 1
             width: view.columns * view.columnWidth
             height: view.shownRows * view.rowHeight
             flow: GridView.FlowTopToBottom
@@ -198,8 +235,8 @@ Item {
 
         MenuEntry {
             id: emptyLabel
-            x: 2
-            y: 2
+            x: view.frameLeft
+            y: 1
             width: view.columnWidth
             height: view.rowHeight
             visible: view.itemCount === 0

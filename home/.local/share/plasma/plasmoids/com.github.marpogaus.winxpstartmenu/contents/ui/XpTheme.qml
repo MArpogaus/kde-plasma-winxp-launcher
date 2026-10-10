@@ -37,7 +37,11 @@ QtObject {
 
     // Cascading (All Programs) menus
     readonly property color cascadeBackground: "#ffffff"
-    readonly property color cascadeBorder: "#5a83d8"
+    // Cascade frame, sampled from XP: 1 px border (lighter at top and
+    // bottom) and a 5 px blue band inside the left border
+    readonly property color cascadeBorder: "#418be5"
+    readonly property color cascadeBorderLight: "#54a1ff"
+    readonly property var cascadeBand: ["#89b4ed", "#2b7ae2", "#2b7ae2", "#307fe4", "#3484e6"]
     readonly property color cascadeSeparator: "#aca899"
     readonly property color disabledText: "#aca899"
     readonly property int cascadeRowHeight: 22
