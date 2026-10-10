@@ -1,0 +1,14 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "phobian@tutanota.com",
+                "Name": "Mark Whittaker"
+            }
+        ],
+        "Id": "Bløff",
+        "License": "CC-BY-SA-4.0",
+        "Name": "Bløff"
+    },
+    "X-KDE-PlasmaImageWallpaper-AccentColor": "#326ac4"
+}

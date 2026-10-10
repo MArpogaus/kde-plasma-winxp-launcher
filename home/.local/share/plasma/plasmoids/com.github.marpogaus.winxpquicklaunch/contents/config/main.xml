@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0 http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+  <kcfgfile name=""/>
+  <group name="General">
+    <entry name="launchers" type="StringList">
+      <label>Launcher URLs (applications:NAME.desktop, preferred://browser, file:///...desktop)</label>
+      <default>preferred://browser,preferred://filemanager,applications:org.kde.konsole.desktop</default>
+    </entry>
+    <entry name="showDesktop" type="Bool">
+      <label>Show the "Show Desktop" icon first, like XP</label>
+      <default>true</default>
+    </entry>
+    <entry name="maximumIcons" type="Int">
+      <label>Icons shown before the » button</label>
+      <default>4</default>
+      <min>1</min>
+      <max>20</max>
+    </entry>
+  </group>
+</kcfg>

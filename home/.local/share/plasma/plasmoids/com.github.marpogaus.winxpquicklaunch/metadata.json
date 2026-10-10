@@ -1,0 +1,20 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "Marcel Arpogaus"
+            }
+        ],
+        "Category": "Windows and Tasks",
+        "Description": "Windows XP Quick Launch toolbar: small launcher icons next to the start button",
+        "EnabledByDefault": true,
+        "Icon": "quickopen",
+        "Id": "com.github.marpogaus.winxpquicklaunch",
+        "License": "GPL-2.0+",
+        "Name": "Windows XP Quick Launch",
+        "Version": "1.0.0",
+        "Website": "https://github.com/MArpogaus/kde-plasma-winxp-launcher"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

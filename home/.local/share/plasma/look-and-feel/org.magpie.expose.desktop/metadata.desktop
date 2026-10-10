@@ -1,0 +1,13 @@
+[Desktop Entry]
+Comment=Remembering XP
+Name=Expose
+X-KDE-PluginInfo-Author=Mark Whittaker
+X-KDE-PluginInfo-Category=Plasma Look And Feel
+X-KDE-PluginInfo-Email=phobian@tutanota.com
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-PluginInfo-License=GPL 2+
+X-KDE-PluginInfo-Name=org.magpie.expose.desktop
+X-KDE-PluginInfo-Version=2.6
+X-KDE-PluginInfo-Website=https://www.pling.com/u/phob1an/
+X-KDE-ServiceTypes=Plasma/LookAndFeel
+X-KPackage-Dependencies=kns://aurorae.knsrc/api.kde-look.org/2136095,kns://colorschemes.knsrc/api.kde-look.org/1479057,kns://plasma-themes.knsrc/api.kde-look.org/1479062,kns://wallpaper.knsrc/api.kde-look.org/2150668,kns://icons.knsrc/api.kde-look.org/2142950,kns://sddmtheme.knsrc/api.kde-look.org/1908708

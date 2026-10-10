@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="122"
+   height="53"
+   viewBox="0 0 122 53.000002"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
+   sodipodi:docname="menubaritem.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#d1d1d1"
+     bordercolor="#111111"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     showgrid="true"
+     inkscape:zoom="2.1975776"
+     inkscape:cx="37.541336"
+     inkscape:cy="37.768859"
+     inkscape:current-layer="layer1">
+    <inkscape:grid
+       id="grid1"
+       units="px"
+       originx="-135"
+       originy="-132"
+       spacingx="1"
+       spacingy="1"
+       empcolor="#0099e5"
+       empopacity="0.30196078"
+       color="#0099e5"
+       opacity="0.14901961"
+       empspacing="5"
+       dotted="false"
+       gridanglex="30"
+       gridanglez="30"
+       visible="true" />
+  </sodipodi:namedview>
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-135,-132)">
+    <rect
+       style="fill:none;fill-opacity:1;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="normal-center"
+       width="22"
+       height="22"
+       x="140"
+       y="160" />
+    <rect
+       style="fill:none;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="normal-top"
+       width="22"
+       height="3"
+       x="140"
+       y="157" />
+    <rect
+       style="fill:none;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="normal-topright"
+       width="4.999999"
+       height="3"
+       x="162"
+       y="157" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#normal-top"
+       id="normal-bottom"
+       transform="translate(-8.8499655e-7,24.999999)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#normal-topright"
+       id="normal-topleft"
+       transform="translate(-27.000001)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#normal-topright"
+       id="normal-bottomright"
+       transform="translate(-8.8499655e-7,24.999999)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#normal-topright"
+       id="normal-bottomleft"
+       transform="translate(-27,25)" />
+    <rect
+       style="fill:#149d14;fill-opacity:1;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="hover-center"
+       width="22"
+       height="22"
+       x="185"
+       y="160" />
+    <rect
+       style="fill:none;fill-opacity:1;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="hover-top"
+       width="22"
+       height="3"
+       x="185"
+       y="157" />
+    <rect
+       style="fill:none;fill-opacity:1;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="hover-topright"
+       width="5"
+       height="3"
+       x="207"
+       y="157" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#hover-topright"
+       id="hover-bottomleft"
+       transform="translate(-27.000001,24.999999)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#hover-top"
+       id="hover-bottom"
+       transform="translate(-1.0707299e-6,24.999999)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#hover-topright"
+       id="hover-topleft"
+       transform="translate(-27.000001)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#hover-topright"
+       id="hover-bottomright"
+       transform="translate(0,25)" />
+    <rect
+       style="fill:#008080;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="normal-hint-left-margin"
+       width="5"
+       height="1"
+       x="149"
+       y="135" />
+    <rect
+       style="fill:#008080;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="normal-hint-right-margin"
+       width="5"
+       height="1"
+       x="155"
+       y="135" />
+    <rect
+       style="fill:#008080;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="normal-hint-top-margin"
+       width="1"
+       height="3"
+       x="154"
+       y="132" />
+    <rect
+       style="fill:#008080;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="normal-hint-bottom-margin"
+       width="1"
+       height="3"
+       x="154"
+       y="136" />
+    <rect
+       style="fill:none;fill-opacity:1;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="normal-left"
+       width="5"
+       height="22"
+       x="135"
+       y="160" />
+    <rect
+       style="fill:none;fill-opacity:1;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="normal-right"
+       width="5"
+       height="22"
+       x="162"
+       y="160" />
+    <rect
+       style="fill:#149d14;fill-opacity:1;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="hover-left"
+       width="5"
+       height="22"
+       x="180"
+       y="160" />
+    <rect
+       style="fill:#149d14;fill-opacity:1;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="hover-right"
+       width="5"
+       height="22"
+       x="207"
+       y="160" />
+    <rect
+       style="fill:#008080;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="hover-hint-left-margin"
+       width="5"
+       height="1"
+       x="177"
+       y="135" />
+    <rect
+       style="fill:#008080;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="hover-hint-right-margin"
+       width="5"
+       height="1"
+       x="183"
+       y="135" />
+    <rect
+       style="fill:#008080;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="hover-hint-top-margin"
+       width="1"
+       height="3"
+       x="182"
+       y="132" />
+    <rect
+       style="fill:#008080;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="hover-hint-bottom-margin"
+       width="1"
+       height="3"
+       x="182"
+       y="136" />
+    <rect
+       style="fill:#149d14;fill-opacity:1;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="pressed-center"
+       width="22"
+       height="22"
+       x="230"
+       y="160" />
+    <rect
+       style="fill:#149d14;fill-opacity:1;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="pressed-left"
+       width="5"
+       height="22"
+       x="225"
+       y="160" />
+    <rect
+       style="fill:#149d14;fill-opacity:1;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="pressed-right"
+       width="5"
+       height="22"
+       x="252"
+       y="160" />
+    <rect
+       style="fill:none;fill-opacity:1;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="pressed-top"
+       width="22"
+       height="3"
+       x="230"
+       y="157" />
+    <rect
+       style="fill:none;fill-opacity:1;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="pressed-topright"
+       width="5"
+       height="3"
+       x="252"
+       y="157" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#pressed-top"
+       id="pressed-bottom"
+       transform="translate(-1.3165627e-6,24.999999)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#pressed-topright"
+       id="pressed-topleft"
+       transform="translate(-27)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#pressed-topright"
+       id="pressed-bottomright"
+       transform="translate(-1.3165627e-6,24.999999)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#pressed-topright"
+       id="pressed-bottomleft"
+       transform="translate(-27,25)" />
+    <rect
+       style="fill:#008080;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="pressed-hint-left-margin"
+       width="5"
+       height="1"
+       x="231.5"
+       y="139" />
+    <rect
+       style="fill:#008080;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="pressed-hint-right-margin"
+       width="5"
+       height="1"
+       x="237.5"
+       y="139" />
+    <rect
+       style="fill:#008080;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="pressed-hint-top-margin"
+       width="1"
+       height="3"
+       x="236.5"
+       y="136" />
+    <rect
+       style="fill:#008080;stroke-width:2;stroke-linecap:square;paint-order:markers stroke fill"
+       id="pressed-hint-bottom-margin"
+       width="1"
+       height="3"
+       x="236.5"
+       y="140" />
+  </g>
+</svg>

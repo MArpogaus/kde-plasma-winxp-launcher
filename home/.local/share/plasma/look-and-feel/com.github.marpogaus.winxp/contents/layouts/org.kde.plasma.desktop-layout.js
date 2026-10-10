@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 //
 // Desktop layout of the Windows XP Global Theme: one 30 px taskbar at the
-// bottom with Start, task buttons, the notification area and the clock.
+// bottom with Start, Quick Launch, task buttons, the notification area and the clock.
 // Apply the Exposé Global Theme first for the look of everything else.
 
 var panel = new Panel;
@@ -17,6 +17,8 @@ var start = panel.addWidget("com.github.marpogaus.winxpstartmenu");
 // Meta opens the start menu
 start.currentConfigGroup = ["Shortcuts"];
 start.writeConfig("global", "Alt+F1");
+
+panel.addWidget("com.github.marpogaus.winxpquicklaunch");
 
 panel.addWidget("com.github.marpogaus.winxptaskbar");
 panel.addWidget("com.github.marpogaus.winxptray");

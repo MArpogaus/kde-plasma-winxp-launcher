@@ -1,0 +1,30 @@
+{
+    "KPackageStructure": "Plasma/LookAndFeel",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "phobian@tutanota.com",
+                "Name": "Mark Whittaker"
+            }
+        ],
+        "Category": "Plasma Look And Feel",
+        "Description": "Remembering XP",
+        "EnabledByDefault": true,
+        "Id": "org.magpie.expose.desktop",
+        "License": "GPL 2+",
+        "Name": "Expose",
+        "ServiceTypes": [
+            "Plasma/LookAndFeel"
+        ],
+        "Version": "2.6",
+        "Website": "https://www.pling.com/u/phob1an/"
+    },
+    "X-KPackage-Dependencies": [
+    "kns://aurorae.knsrc/api.kde-look.org/2136095",
+    "kns://colorschemes.knsrc/api.kde-look.org/1479057",
+    "kns://plasma-themes.knsrc/api.kde-look.org/1479062",
+    "kns://wallpaper.knsrc/api.kde-look.org/2150668",
+    "kns://icons.knsrc/api.kde-look.org/2142950",
+    "kns://sddmtheme.knsrc/api.kde-look.org/1908708"
+    ]
+}
