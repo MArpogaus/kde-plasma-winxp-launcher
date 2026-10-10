@@ -299,6 +299,8 @@ PlasmoidItem {
             model: model,
             level: level,
             maxRows: maxCascadeRows(),
+            // keeps it stacked above the menu (or the cascade it came from)
+            transientParent: level > 0 && cascades[level - 1] ? cascades[level - 1] : menuDialog,
         });
         if (bottomAlign) {
             cascade.alignBottomTo(visualParent);
@@ -419,6 +421,7 @@ PlasmoidItem {
         id: sessionDialog
         xp: root.xp
         flagIcon: Plasmoid.configuration.startIcon
+        screenGeometry: Plasmoid.containment.screenGeometry
         onActivated: action => root.sessionAction(action)
     }
 

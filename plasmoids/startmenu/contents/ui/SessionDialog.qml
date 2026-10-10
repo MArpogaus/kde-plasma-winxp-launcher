@@ -24,14 +24,15 @@ PlasmaCore.Dialog {
     location: PlasmaCore.Types.Floating
     hideOnWindowDeactivate: false
 
+    // Global geometry of the screen to centre on (the panel's screen). A
+    // binding, not a one-off assignment, so it also holds once shown.
+    property rect screenGeometry
+
+    x: screenGeometry.x + Math.round((screenGeometry.width - dialogView.width) / 2)
+    y: screenGeometry.y + Math.round((screenGeometry.height - dialogView.height) / 2)
+
     function open(newMode) {
         mode = newMode;
-        // No visual parent: centre on the screen like XP does
-        const area = dialog.screen ? dialog.screen.availableGeometry : null;
-        if (area) {
-            dialog.x = Math.round(area.x + (area.width - dialog.width) / 2);
-            dialog.y = Math.round(area.y + (area.height - dialog.height) / 2);
-        }
         visible = true;
         requestActivate();
         dialogView.forceActiveFocus();

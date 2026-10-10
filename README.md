@@ -27,7 +27,7 @@ so the menu fits the theme without changes.
 | Part | Source |
 | --- | --- |
 | Start menu, taskbar, notification area, clock, Turn Off / Log Off dialogs | this repository (`plasmoids/`) |
-| Grey screen fade behind the dialogs (KWin effect) | this repository (`kwin/sessionfade`) |
+| Grey screen fade behind the dialogs (KWin effect), XP Alt+Tab switcher | this repository (`kwin/`) |
 | Plasma theme, window borders, Kvantum application style, colours, splash, login screen | [Exposé](https://www.opencode.net/phob1an/expose) by phob1an |
 | XP icons (original bitmaps), XP fonts, XP wallpapers, start flag | [xfce-winxp-tc](https://github.com/rozniak/xfce-winxp-tc) |
 | Fallback icons for KDE-only names (traced XP style), Bliss in 4K | [KDE Plasma Luna](https://github.com/klapeto/KDE-Plasma-Luna) |
@@ -75,8 +75,9 @@ pane on the left has no Dolphin counterpart; the Places panel takes its spot.
 ```
 
 installs the four widgets (*Windows XP Start Menu*, *Windows XP Taskbar*,
-*Windows XP Notification Area*, *Windows XP Clock*) and the fade effect
-without changing anything else. For the XP taskbar look, add them in this
+*Windows XP Notification Area*, *Windows XP Clock*), and installs and
+enables the fade effect and the *Windows XP* Alt+Tab switcher
+(`packages.list`), without changing anything else. For the XP taskbar look, add them in this
 order to a 30 px bottom panel: Start Menu, Taskbar, Notification Area,
 System Tray, Clock. The Notification Area paints the light blue block under
 everything to its right.

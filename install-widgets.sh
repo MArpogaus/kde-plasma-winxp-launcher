@@ -1,24 +1,23 @@
 #!/bin/sh
-# Install or upgrade the Windows XP widgets and the KWin session fade effect
-# for the current user.
+# Install or upgrade the Windows XP widgets, the session fade effect and the
+# Alt+Tab switcher (packages.list) for the current user, and enable the
+# latter two. ./install.sh does the full desktop transformation.
 set -e
 cd "$(dirname "$0")"
 
-install_package() { # type dir id
-    if kpackagetool6 --type "$1" --list 2>/dev/null | grep -q "$3"; then
-        kpackagetool6 --type "$1" --upgrade "$2"
+grep -v '^#' packages.list | while read -r type dir id; do
+    [ -n "$id" ] || continue
+    # --list is read fully: grep -q could stop it early (SIGPIPE)
+    if kpackagetool6 --type "$type" --list 2>/dev/null | grep -F "$id" >/dev/null; then
+        kpackagetool6 --type "$type" --upgrade "$dir" >/dev/null
     else
-        kpackagetool6 --type "$1" --install "$2"
+        kpackagetool6 --type "$type" --install "$dir" >/dev/null
     fi
-}
-
-install_package Plasma/Applet plasmoids/startmenu com.github.marpogaus.winxpstartmenu
-install_package Plasma/Applet plasmoids/taskbar com.github.marpogaus.winxptaskbar
-install_package Plasma/Applet plasmoids/tray com.github.marpogaus.winxptray
-install_package Plasma/Applet plasmoids/clock com.github.marpogaus.winxpclock
-install_package KWin/Effect kwin/sessionfade winxp_sessionfade
+    echo "$type $id"
+done
 
 kwriteconfig6 --file kwinrc --group Plugins --key winxp_sessionfadeEnabled true
+kwriteconfig6 --file kwinrc --group TabBox --key LayoutName winxp_alttab
 qdbus6 org.kde.KWin /KWin reconfigure 2>/dev/null || qdbus org.kde.KWin /KWin reconfigure 2>/dev/null || true
 
 echo "Done. Restart plasmashell to load new versions: systemctl --user restart plasma-plasmashell"

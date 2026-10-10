@@ -147,6 +147,13 @@ FocusScope {
         event.accepted = true;
     }
 
+    // Clicking empty space in the menu closes open cascades, like XP. Being
+    // declared first, this area only gets clicks no item above it takes.
+    MouseArea {
+        anchors.fill: parent
+        onPressed: menu.controller.closeCascadesFrom(0)
+    }
+
     // ------------------------------------------------------------------
     // Frame. The window is transparent; the top corners are rounded by
     // clipping rounded rectangles that extend below the bottom edge.

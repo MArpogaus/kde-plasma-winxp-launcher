@@ -1,0 +1,15 @@
+{
+    "KPackageStructure": "KWin/WindowSwitcher",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "Marcel Arpogaus"
+            }
+        ],
+        "Description": "Windows XP style Alt+Tab: a grid of window icons with the title below",
+        "Id": "winxp_alttab",
+        "License": "GPL-2.0+",
+        "Name": "Windows XP"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

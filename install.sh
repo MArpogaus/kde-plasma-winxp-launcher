@@ -266,9 +266,7 @@ fi
 # Every file the later phases rely on
 E=$CACHE/src/expose L=$CACHE/src/luna W=$CACHE/src/wintc
 required=(
-    "$SELF/plasmoids/startmenu/metadata.json" "$SELF/plasmoids/taskbar/metadata.json"
-    "$SELF/plasmoids/tray/metadata.json" "$SELF/plasmoids/clock/metadata.json"
-    "$SELF/kwin/sessionfade/metadata.json" "$SELF/layout/xp-desktop.js"
+    "$SELF/packages.list" "$SELF/install-widgets.sh" "$SELF/layout/xp-desktop.js"
     "$E/desktoptheme/expose" "$E/themes/expose" "$E/Expose.colors" "$E/Kvantum/Expose"
     "$E/look-and-feel/Expose"
     "$L/home/dot-local/icons/Luna/index.theme"
@@ -278,6 +276,9 @@ required=(
     "$CACHE/src/cursors/src/config" "$CACHE/src/cursors/src/cursorList" "$CACHE/src/cursors/src/svg"
     "$CACHE/src/sounds/index.theme"
 )
+while read -r _ dir id; do
+    [ -n "$id" ] && required+=("$SELF/$dir/metadata.json")
+done < <(grep -v '^#' "$SELF/packages.list")
 [ "$WITH_SDDM" = 1 ] && required+=("$E/sddm/themes/expose")
 for path in "${required[@]}"; do
     case "$path" in
@@ -403,23 +404,11 @@ for wp in "$E"/wallpapers/*/; do
     [ -f "$wp/metadata.json" ] && install_dir "$wp" "$DATA/wallpapers/Expose-$(basename "$wp")"
 done
 
-step "Installing the XP widgets and effect"
-install_package() { # type dir id
-    # No grep -q: it exits early, kpackagetool6 gets SIGPIPE and pipefail
-    # turns an installed package into "not installed"
-    if kpackagetool6 --type "$1" --list 2>/dev/null | grep -F "$3" >/dev/null; then
-        kpackagetool6 --type "$1" --upgrade "$2" >/dev/null
-    else
-        kpackagetool6 --type "$1" --install "$2" >/dev/null
-    fi
-    track "kpackage:$1:$3"
-    info "$3"
-}
-install_package Plasma/Applet "$SELF/plasmoids/startmenu" com.github.marpogaus.winxpstartmenu
-install_package Plasma/Applet "$SELF/plasmoids/taskbar" com.github.marpogaus.winxptaskbar
-install_package Plasma/Applet "$SELF/plasmoids/tray" com.github.marpogaus.winxptray
-install_package Plasma/Applet "$SELF/plasmoids/clock" com.github.marpogaus.winxpclock
-install_package KWin/Effect "$SELF/kwin/sessionfade" winxp_sessionfade
+step "Installing the XP widgets, effect and Alt+Tab switcher"
+"$SELF/install-widgets.sh" | sed 's/^/    /'
+grep -v '^#' "$SELF/packages.list" | while read -r type _ id; do
+    [ -n "$id" ] && track "kpackage:$type:$id"
+done
 
 if [ "$WITH_SDDM" = 1 ]; then
     step "Installing the Exposé login screen (sudo)"
@@ -471,7 +460,6 @@ kwrite --file kwinrc --group org.kde.kdecoration2 --key library org.kde.kwin.aur
 kwrite --file kwinrc --group org.kde.kdecoration2 --key theme __aurorae__svg__Expose
 kwrite --file kwinrc --group org.kde.kdecoration2 --key ButtonsOnLeft M
 kwrite --file kwinrc --group org.kde.kdecoration2 --key ButtonsOnRight IAX
-kwrite --file kwinrc --group Plugins --key winxp_sessionfadeEnabled true
 
 kwrite --file ksplashrc --group KSplash --key Engine KSplashQML
 kwrite --file ksplashrc --group KSplash --key Theme org.magpie.expose.desktop

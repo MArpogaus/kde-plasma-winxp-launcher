@@ -1,0 +1,7 @@
+# KPackage type          directory              id
+Plasma/Applet            plasmoids/startmenu    com.github.marpogaus.winxpstartmenu
+Plasma/Applet            plasmoids/taskbar      com.github.marpogaus.winxptaskbar
+Plasma/Applet            plasmoids/tray         com.github.marpogaus.winxptray
+Plasma/Applet            plasmoids/clock        com.github.marpogaus.winxpclock
+KWin/Effect              kwin/sessionfade       winxp_sessionfade
+KWin/WindowSwitcher      kwin/alttab            winxp_alttab
