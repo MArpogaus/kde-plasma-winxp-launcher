@@ -6,9 +6,7 @@ grey screen fade, XP Alt+Tab, XP cursors and Dolphin set up like XP's
 Explorer, on top of the Exposé theme (window borders, Plasma theme,
 application style).
 
-| Start menu | All Programs |
-| --- | --- |
-| ![Start menu](docs/preview-menu.png) | ![All Programs](docs/preview-all-programs.png) |
+![Start menu with All Programs](docs/preview-all-programs.png)
 
 Rendered from the widgets' own QML with stand-in icons and
 Exposé's Bløff wallpaper; with WinXPSVG and `get-microsoft-files.sh` the icons, fonts
