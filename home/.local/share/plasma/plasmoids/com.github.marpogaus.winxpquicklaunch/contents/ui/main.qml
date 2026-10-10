@@ -70,10 +70,24 @@ PlasmoidItem {
         Plasmoid.configuration.launchers = list;
     }
 
+    // The launcher URL for a dropped URL, or "" when the TasksModel would
+    // ignore it (it only takes local files, applications: and preferred://;
+    // anything else would shift the config indices against the model rows).
+    // An installed application's .desktop file becomes the applications: URL
+    // the start menu's "Add to Quick Launch" writes, so both match.
+    function launcherUrl(url) {
+        const text = url.toString();
+        const app = text.match(/^file:\/\/.*\/share\/applications\/([^/]+\.desktop)$/);
+        if (app) {
+            return "applications:" + app[1];
+        }
+        return /^(file|applications|preferred):/.test(text) ? text : "";
+    }
+
     function addLaunchers(urls, position) {
         editLaunchers(list => {
             let at = Math.max(0, Math.min(position, list.length));
-            urls.map(url => url.toString()).forEach(url => {
+            urls.map(launcherUrl).forEach(url => {
                 if (url.length > 0 && !list.includes(url)) {
                     list.splice(at++, 0, url);
                 }
@@ -91,13 +105,13 @@ PlasmoidItem {
         }
     }
 
-    // Launcher position (insertion point) for a point in the icon row
+    // Launcher position (insertion point) for a point in the bar
     property Item iconRow: null
     function launcherIndexAt(x, y) {
         const along = horizontal ? x - iconRow.x : y - iconRow.y;
         const first = Plasmoid.configuration.showDesktop ? 1 : 0;
         const slot = Math.round(along / (cell + spacing)) - first;
-        return Math.max(0, Math.min(slot, Math.min(launcherCount, shownCount - first)));
+        return Math.max(0, Math.min(slot, shownCount - first));
     }
 
     // Insertion marker position while something is dragged over the bar
@@ -138,9 +152,9 @@ PlasmoidItem {
         // Where a dropped or dragged launcher goes
         Rectangle {
             visible: root.dropIndex >= 0
-            readonly property real offset: (root.dropIndex + (Plasmoid.configuration.showDesktop ? 1 : 0)) * (root.cell + root.spacing) - 1
-            x: root.horizontal ? row.x + offset - 1 : 0
-            y: root.horizontal ? row.y : row.y + offset - 1
+            readonly property real offset: (root.dropIndex + (Plasmoid.configuration.showDesktop ? 1 : 0)) * (root.cell + root.spacing) - 2
+            x: root.horizontal ? row.x + offset : 0
+            y: root.horizontal ? row.y : row.y + offset
             width: root.horizontal ? 2 : bar.width
             height: root.horizontal ? root.cell : 2
             color: "#ffffff"
@@ -301,13 +315,15 @@ PlasmoidItem {
 
             anchors.fill: parent
             hoverEnabled: true
-            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            // Show Desktop leaves the right button to the applet's own menu
+            acceptedButtons: button.launcherIndex >= 0 ? Qt.LeftButton | Qt.RightButton : Qt.LeftButton
             onPressed: mouse => {
                 pressPoint = Qt.point(mouse.x, mouse.y);
                 button.dragging = false;
             }
             onPositionChanged: mouse => {
-                if (!pressed || button.launcherIndex < 0) {
+                // only the left button drags
+                if (!(pressedButtons & Qt.LeftButton) || button.launcherIndex < 0) {
                     return;
                 }
                 const moved = Math.abs(mouse.x - pressPoint.x) + Math.abs(mouse.y - pressPoint.y);
@@ -315,8 +331,8 @@ PlasmoidItem {
                     button.dragging = true;
                 }
                 if (button.dragging) {
-                    const p = mapToItem(root.iconRow, mouse.x, mouse.y);
-                    root.dropIndex = root.launcherIndexAt(p.x + root.iconRow.x, p.y + root.iconRow.y);
+                    const p = mapToItem(root.iconRow.parent, mouse.x, mouse.y);
+                    root.dropIndex = root.launcherIndexAt(p.x, p.y);
                 }
             }
             onReleased: mouse => {

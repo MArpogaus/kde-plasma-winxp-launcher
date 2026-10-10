@@ -506,14 +506,17 @@ PlasmoidItem {
             const url = favoriteId.startsWith("/") ? "file://" + favoriteId
                 : favoriteId.includes(":") ? favoriteId : "applications:" + favoriteId;
             const config = quickLaunchApplet.configuration;
-            const launchers = Array.from(config.launchers);
-            if (launchers.includes(url)) {
+            // Handlers re-read the list: it may change while the menu is open
+            if (Array.from(config.launchers).includes(url)) {
                 entries.push({ text: i18n("Remove from Quick Launch"), icon: "list-remove", handler: () => {
-                    config.launchers = launchers.filter(launcher => launcher !== url);
+                    config.launchers = Array.from(config.launchers).filter(launcher => launcher !== url);
                 } });
             } else {
                 entries.push({ text: i18n("Add to Quick Launch"), icon: "list-add", handler: () => {
-                    config.launchers = launchers.concat([url]);
+                    const launchers = Array.from(config.launchers);
+                    if (!launchers.includes(url)) {
+                        config.launchers = launchers.concat([url]);
+                    }
                 } });
             }
         }
