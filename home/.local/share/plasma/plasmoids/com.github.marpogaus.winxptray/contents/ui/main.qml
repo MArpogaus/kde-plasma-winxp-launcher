@@ -116,21 +116,37 @@ PlasmoidItem {
             }
         }
 
-        // Centred on the block's left edge, half over the taskbar like XP's
+        // Centred on the block's left edge, half over the taskbar like XP's;
+        // turns around to point right while the hidden icons are shown
         Image {
             visible: anchorItem.showChevron
             x: 1 - width / 2
             y: Math.round(anchorItem.area.y + (anchorItem.area.height - height) / 2)
             width: 22
             height: 22
-            source: anchorItem.trayExpanded ? "../images/chevron-right.svg" : "../images/chevron-left.svg"
+            source: "../images/chevron-left.svg"
             sourceSize: Qt.size(width, height)
             opacity: chevronMouse.pressed ? 0.8 : 1
+            rotation: anchorItem.trayExpanded ? 180 : 0
+
+            Behavior on rotation {
+                RotationAnimation {
+                    duration: 150
+                    easing.type: Easing.InOutQuad
+                }
+            }
 
             MouseArea {
                 id: chevronMouse
                 anchors.fill: parent
-                onClicked: anchorItem.trayConfig.showAllItems = !anchorItem.trayExpanded
+                onClicked: {
+                    anchorItem.trayConfig.showAllItems = !anchorItem.trayExpanded;
+                    // The tray only reloads its settings once they are saved,
+                    // which otherwise happens seconds later
+                    if (typeof anchorItem.trayConfig.writeConfig === "function") {
+                        anchorItem.trayConfig.writeConfig();
+                    }
+                }
             }
         }
     }

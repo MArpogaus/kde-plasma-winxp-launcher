@@ -8,6 +8,8 @@ import QtQuick
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
 
+import "StartButtonFace.js" as Face
+
 Item {
     id: button
 
@@ -41,70 +43,12 @@ Item {
         ? Qt.matrix4x4(1, -0.14, 0, 0.14 * label.height * 0.75, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
         : Qt.matrix4x4()
 
-    Layout.minimumWidth: vertical ? -1 : Math.round(area.height * 3.3) - leftOverflow
+    Layout.minimumWidth: vertical ? -1 : Math.round(area.height * 3.33) - leftOverflow
     Layout.preferredWidth: Layout.minimumWidth
     Layout.maximumWidth: Layout.minimumWidth
     Layout.minimumHeight: vertical ? width : -1
     Layout.preferredHeight: Layout.minimumHeight
     Layout.maximumHeight: Layout.minimumHeight
-
-    // Sampled row by row from XP's start button between the flag and the
-    // label (30 px tall); hover and pressed are overlays on it
-    Gradient {
-        id: normalGradient
-        GradientStop {
-            position: 0.02
-            color: "#4f9250"
-        }
-        GradientStop {
-            position: 0.08
-            color: "#8bbe8c"
-        }
-        GradientStop {
-            position: 0.15
-            color: "#74af74"
-        }
-        GradientStop {
-            position: 0.22
-            color: "#5aa05a"
-        }
-        GradientStop {
-            position: 0.32
-            color: "#479647"
-        }
-        GradientStop {
-            position: 0.42
-            color: "#3f983f"
-        }
-        GradientStop {
-            position: 0.55
-            color: "#3da63e"
-        }
-        GradientStop {
-            position: 0.68
-            color: "#3eaf3e"
-        }
-        GradientStop {
-            position: 0.78
-            color: "#3dab3d"
-        }
-        GradientStop {
-            position: 0.85
-            color: "#399e39"
-        }
-        GradientStop {
-            position: 0.92
-            color: "#328531"
-        }
-        GradientStop {
-            position: 0.95
-            color: "#2b722b"
-        }
-        GradientStop {
-            position: 0.98
-            color: "#255f2f"
-        }
-    }
 
     Item {
         id: face
@@ -113,63 +57,21 @@ Item {
         width: button.width + button.leftOverflow
         height: button.area.height
 
-        Item {
+        // Square on the left, a shallow curve on the right, shaded in both
+        // directions like XP's (see StartButtonFace.js)
+        Canvas {
             anchors.fill: parent
-            clip: true
-
-            // Rounded on the right only: the left corners are pushed outside.
-            Rectangle {
-                id: shape
-                x: button.vertical ? 0 : -radius
-                width: parent.width + (button.vertical ? 0 : radius)
-                height: parent.height
-                radius: button.vertical ? 3 : Math.round(button.thickness * 0.42)
-                gradient: normalGradient
-
-                // Hover lightens, pressed darkens
-                Rectangle {
-                    anchors.fill: parent
-                    radius: parent.radius
-                    visible: button.hoveredLook || button.pressedLook
-                    color: button.pressedLook ? Qt.rgba(0, 0.1, 0, 0.3) : Qt.rgba(1, 1, 1, 0.12)
+            readonly property string look: button.pressedLook ? "pressed" : button.hoveredLook ? "hover" : "normal"
+            onLookChanged: requestPaint()
+            onWidthChanged: requestPaint()
+            onHeightChanged: requestPaint()
+            onPaint: {
+                const w = Math.round(width);
+                const h = Math.round(height);
+                if (w < 1 || h < 1) {
+                    return;
                 }
-
-                // Darker band along the left edge
-                Rectangle {
-                    x: shape.radius
-                    width: 3
-                    height: parent.height
-                    gradient: Gradient {
-                        orientation: Gradient.Horizontal
-                        GradientStop {
-                            position: 0.0
-                            color: Qt.rgba(0, 0.12, 0, 0.4)
-                        }
-                        GradientStop {
-                            position: 1.0
-                            color: Qt.rgba(0, 0.12, 0, 0.0)
-                        }
-                    }
-                }
-
-                // Shading along the rounded right edge
-                Rectangle {
-                    anchors.right: parent.right
-                    width: shape.radius * 1.4
-                    height: parent.height
-                    radius: shape.radius
-                    gradient: Gradient {
-                        orientation: Gradient.Horizontal
-                        GradientStop {
-                            position: 0.0
-                            color: Qt.rgba(0, 0.1, 0, 0.0)
-                        }
-                        GradientStop {
-                            position: 1.0
-                            color: Qt.rgba(0, 0.1, 0, 0.35)
-                        }
-                    }
-                }
+                Face.paint(getContext("2d"), w, h, look, !button.vertical);
             }
         }
 
