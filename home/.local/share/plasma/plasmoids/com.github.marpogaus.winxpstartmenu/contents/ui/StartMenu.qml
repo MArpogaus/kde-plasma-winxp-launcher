@@ -67,6 +67,13 @@ FocusScope {
     property string hoverKind: ""
     property Item hoverItem: null
 
+    // The row whose cascade is open stays highlighted only while the
+    // pointer is not on another row (XP moves the highlight at once, the
+    // cascade follows after the delay)
+    function pointerElsewhere(item) {
+        return hoverItem !== null && hoverItem !== item && hoverItem.hovered === true;
+    }
+
     function hovered(kind, item) {
         hoverKind = kind;
         hoverItem = item;
@@ -540,7 +547,9 @@ FocusScope {
                 Item {
                     id: allPrograms
 
-                    readonly property bool highlighted: allProgramsMouse.containsMouse || menu.openCascade === "programs"
+                    readonly property bool hovered: allProgramsMouse.containsMouse
+                    readonly property bool highlighted: hovered
+                        || (menu.openCascade === "programs" && !menu.pointerElsewhere(allPrograms))
 
                     x: 2
                     anchors.bottom: parent.bottom
@@ -667,6 +676,7 @@ FocusScope {
                                 textSpacing: 3
                                 textColor: menu.xp.rightText
                                 forceHighlight: place.modelData.key === "recent" && menu.openCascade === "recent"
+                                    && !menu.pointerElsewhere(placeEntry)
 
                                 onHoveredChanged: if (hovered) menu.hovered(place.modelData.key === "recent" ? "recent" : "", placeEntry)
                                 onClicked: {
@@ -805,6 +815,7 @@ FocusScope {
     component FooterButton: Item {
         id: footerButton
 
+        readonly property bool hovered: footerMouse.containsMouse
         property url iconSource
         property string text
 

@@ -54,6 +54,9 @@ Item {
     }
 
     property int hoverIndex: -1
+    // Row under the pointer right now (-1 when none); the row whose
+    // cascade is open stays highlighted only while no other row is
+    property int pointerIndex: -1
     property bool hoverHasChildren: false
     property Item hoverItem: null
 
@@ -218,10 +221,14 @@ Item {
                     showArrow: cell.hasChildren
                     highlightColor: view.xp.cascadeHighlight
                     forceHighlight: view.openIndex === cell.index
+                        && (view.pointerIndex < 0 || view.pointerIndex === cell.index)
 
                     onHoveredChanged: {
                         if (hovered) {
+                            view.pointerIndex = cell.index;
                             view.hoverEntered(cell.index, cell.hasChildren, cellEntry);
+                        } else if (view.pointerIndex === cell.index) {
+                            view.pointerIndex = -1;
                         }
                     }
                     onClicked: view.activate(cell.index, cell.hasChildren, cellEntry)
