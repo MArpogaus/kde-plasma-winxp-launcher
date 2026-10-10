@@ -231,16 +231,18 @@ PlasmoidItem {
             }
         }
 
-        // Centred 3 px left of the block's edge, over the taskbar, like XP's;
-        // turns around to point right while the hidden icons are shown
+        // As on XP: starts 11 px left of the block's edge (over the
+        // taskbar), 3 px below the taskbar's top, drawn 1:1; turns around to
+        // point right while the hidden icons are shown
         Image {
             visible: anchorItem.showChevron
-            x: -2 - width / 2
-            y: Math.round(anchorItem.area.y + (anchorItem.area.height - height) / 2)
-            width: 22
-            height: 22
+            x: -11
+            y: Math.round(anchorItem.area.y) + 3
+            width: 18
+            height: 19
             source: "../images/chevron-left.svg"
             sourceSize: Qt.size(width, height)
+            smooth: false
             opacity: chevronMouse.pressed ? 0.8 : 1
             rotation: anchorItem.trayExpanded ? 180 : 0
 
