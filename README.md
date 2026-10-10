@@ -41,7 +41,9 @@ desktop icons 32 px in columns from the top left, one virtual desktop, no
 hot corner, no snapping windows to the screen edges, no shake-to-find
 cursor, no zoom when windows open or close (minimizing still squashes into
 the taskbar), animations twice as fast, clicking a scroll bar's track
-pages, and the busy cursor instead of a bouncing launch icon. Change any
+pages, the busy cursor instead of a bouncing launch icon, and menus
+without icons (in Plasma and Qt/KDE applications; GTK applications keep
+theirs). Change any
 of them back in System Settings.
 
 Copying overwrites Dolphin's toolbar (`~/.local/share/kxmlgui5/dolphin/dolphinui.rc`),

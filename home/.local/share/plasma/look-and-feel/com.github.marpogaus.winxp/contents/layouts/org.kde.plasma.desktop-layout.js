@@ -69,7 +69,9 @@ setConfig("kwinrc", "Effect-overview", { BorderActivate: 9 });
 // minimizing keeps KWin's default squash, like XP's shrink to the taskbar
 setConfig("kwinrc", "Windows", { ElectricBorderMaximize: false, ElectricBorderTiling: false });
 setConfig("kwinrc", "Plugins", { shakecursorEnabled: false, scaleEnabled: false, fadeEnabled: false, squashEnabled: true });
-// XP's animations were quick
-setConfig("kdeglobals", "KDE", { AnimationDurationFactor: 0.5, ScrollbarLeftClickNavigatesByPage: true });
+// XP's animations were quick, and its menus had no icons (all Qt/KDE
+// menus, Plasma's included; read by plasma-integration)
+setConfig("kdeglobals", "KDE", { AnimationDurationFactor: 0.5, ScrollbarLeftClickNavigatesByPage: true,
+                                 ShowIconsInMenuItems: false });
 // Busy cursor (arrow with hourglass) instead of a bouncing icon at app start
 setConfig("klaunchrc", "BusyCursorSettings", { Bouncing: false });
