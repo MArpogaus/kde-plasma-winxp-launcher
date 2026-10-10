@@ -11,7 +11,7 @@ application style).
 | ![Start menu](docs/preview-menu.png) | ![All Programs](docs/preview-all-programs.png) |
 
 Rendered from the widgets' own QML with stand-in icons and
-Exposé's Bløff wallpaper; with `get-microsoft-files.sh` the icons, fonts
+Exposé's Bløff wallpaper; with WinXPSVG and `get-microsoft-files.sh` the icons, fonts
 and wallpaper are XP's.
 
 ## Install
@@ -31,32 +31,25 @@ and wallpaper are XP's.
    the look of [Exposé](https://www.opencode.net/phob1an/expose) by phob1an
    (bundled unmodified): window borders, Plasma theme, colours, Kvantum
    style and wallpaper. [Kvantum](https://github.com/tsujan/Kvantum) is
-   needed for the application style. Exposé's *ExposeAir* icons and login
-   screen are not bundled; get them with *Get New…* in the Icons and Login
-   Screen settings (or use the XP icons below). Re-applying the Global Theme
-   sets the icons back to ExposeAir; run `./get-microsoft-files.sh` again
-   afterwards if you use the XP icons.
+   needed for the application style.
+3. For XP icons, install the [WinXPSVG](https://store.kde.org/p/1925937)
+   icon theme: System Settings → Icons → *Get New…*, search "WinXPSVG",
+   install and select it. The Global Theme leaves the icon theme alone, so
+   re-applying it keeps your choice. (Exposé's login screen is not bundled
+   either; *Get New…* under Login Screen.)
 
 Copying overwrites Dolphin's toolbar (`~/.local/share/kxmlgui5/dolphin/dolphinui.rc`),
 Dolphin's default view and the selected Kvantum theme (`~/.config/Kvantum/kvantum.kvconfig`).
 
-### Original XP files and icons (optional)
+### Original XP files (optional)
 
-XP's fonts, icons, sounds, Bliss and the original start flag belong to
+XP's fonts, sounds, Bliss and the original start flag belong to
 Microsoft, so they are not part of this repository.
 `./get-microsoft-files.sh` downloads them from
 [xfce-winxp-tc](https://github.com/rozniak/xfce-winxp-tc) and
 [Windows-XP-Sound-Theme-KDE](https://github.com/wonordel/Windows-XP-Sound-Theme-KDE)
-and switches to the XP icons (with Breeze for names XP has no icon for),
-Tahoma / Trebuchet MS, the XP sounds and Bliss. The start button picks up
-XP's flag automatically.
-
-XP's icons are bitmaps of up to 48 px, so the Windows XP layout sets the
-desktop to XP's 32 px icons, where they are sharp; larger sizes (Dolphin
-zoomed in, 64 px desktop icons) are scaled up and look soft. For sharp
-icons at every size, use the scalable
-[WinXPSVG icon theme](https://store.kde.org/p/1925937) instead: extract it
-to `~/.local/share/icons` and choose it under System Settings → Icons.
+and switches to Tahoma / Trebuchet MS, the XP sounds and Bliss. The start
+button picks up XP's flag automatically.
 
 ### Uninstall
 
@@ -67,10 +60,9 @@ remove the copied files (from this repository's directory):
 (cd home && git ls-files -z) | (cd ~ && xargs -0 rm -f)
 ```
 
-Files from `get-microsoft-files.sh` are in `~/.local/share/{fonts,sounds,wallpapers}/WindowsXP`,
-`~/.local/share/icons/WindowsXP-Luna` and `~/.local/share/winxp-kde`. It also
-set fonts, icons and sounds; choose others in System Settings (Text & Fonts,
-Icons, Sounds) or reset its settings:
+Files from `get-microsoft-files.sh` are in `~/.local/share/{fonts,sounds,wallpapers}/WindowsXP`
+and `~/.local/share/winxp-kde`. It also set fonts and sounds; choose others
+in System Settings (Text & Fonts, Sounds) or reset its settings:
 
 ```sh
 for key in font menuFont toolBarFont smallestReadableFont; do
@@ -78,7 +70,6 @@ for key in font menuFont toolBarFont smallestReadableFont; do
 done
 kwriteconfig6 --file kdeglobals --group WM --key activeFont --delete
 kwriteconfig6 --file kdeglobals --group Sounds --key Theme --delete
-kwriteconfig6 --file kdeglobals --group Icons --key Theme --delete
 ```
 
 ## What is in `home/`
@@ -184,7 +175,7 @@ Right-click the start button → *Configure Windows XP Start Menu…*
 - `tools/check-qml.py`: finds QML properties that shadow built-in ones
   (needs PySide6).
 - `tools/update-vendored.sh`: refreshes the third-party files in `home/`.
-- `tools/xcursor.py`, `tools/build-icon-theme.py`, `tools/patch-dolphin-ui.py`:
+- `tools/xcursor.py`, `tools/patch-dolphin-ui.py`:
   helpers used by the two scripts.
 - Edits to widgets: copy `home/` again and restart plasmashell
   (`systemctl --user restart plasma-plasmashell`).

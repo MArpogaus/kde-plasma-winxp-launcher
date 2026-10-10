@@ -4,9 +4,6 @@ cursorTheme=ModernXP
 [kdeglobals][General]
 ColorScheme=Expose
 
-[kdeglobals][Icons]
-Theme=ExposeAir
-
 [kdeglobals][KDE]
 widgetStyle=kvantum
 
