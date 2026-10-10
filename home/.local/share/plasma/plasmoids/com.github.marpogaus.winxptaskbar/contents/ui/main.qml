@@ -3,12 +3,15 @@
 
     Windows XP taskbar: one Luna button per window, equal widths up to
     160 px, click to activate / minimize, XP window menu on right click.
+    Buttons do not get narrower than the minimum width; the windows that
+    do not fit are in a » menu at the end, like Quick Launch's.
 */
 import QtQuick
 import QtQuick.Layouts
 import org.kde.plasma.plasmoid
 import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.extras as PlasmaExtras
+import org.kde.kirigami as Kirigami
 import org.kde.taskmanager as TaskManager
 
 PlasmoidItem {
@@ -56,9 +59,19 @@ PlasmoidItem {
         readonly property real buttonHeight: rowPitch - spacing
 
         readonly property int count: buttons.count
-        readonly property int perRow: root.horizontal ? Math.max(1, Math.ceil(count / rows)) : 1
+        // Overflow: how many buttons of the minimum width fit per row, with
+        // and without room for the » at the end
+        readonly property int minimumWidth: Plasmoid.configuration.minimumButtonWidth
+        readonly property int overflowWidth: 16
+        readonly property int fitPerRow: Math.max(1, Math.floor((width + spacing) / (minimumWidth + spacing)))
+        readonly property bool overflow: root.horizontal && count > rows * fitPerRow
+        readonly property int shownCount: overflow
+            ? rows * Math.max(1, Math.floor((width - overflowWidth + spacing) / (minimumWidth + spacing)))
+            : count
+        readonly property int perRow: root.horizontal ? Math.max(1, Math.ceil(shownCount / rows)) : 1
         readonly property real buttonWidth: count > 0
-            ? Math.max(1, Math.min(Plasmoid.configuration.maximumButtonWidth, Math.floor((width - (perRow - 1) * spacing) / perRow)))
+            ? Math.max(1, Math.min(Plasmoid.configuration.maximumButtonWidth,
+                                   Math.floor((width - (overflow ? overflowWidth + spacing : 0) - (perRow - 1) * spacing) / perRow)))
             : 0
 
         PanelArea {
@@ -99,6 +112,7 @@ PlasmoidItem {
 
                 readonly property var modelIndex: tasksModel.makeModelIndex(index)
 
+                visible: index < bar.shownCount
                 x: root.horizontal ? (index % bar.perRow) * (bar.buttonWidth + bar.spacing) : 0
                 y: Math.round(root.horizontal ? bar.area.y + bar.spacing + Math.floor(index / bar.perRow) * bar.rowPitch : index * bar.rowPitch)
                 width: root.horizontal ? bar.buttonWidth : bar.width
@@ -163,6 +177,177 @@ PlasmoidItem {
                             tasksModel.requestActivate(task.modelIndex);
                         }
                     }
+                }
+            }
+        }
+
+        // » for the windows that do not fit, at the end of the last row;
+        // it only looks like a button under the pointer (as Quick Launch's)
+        Rectangle {
+            id: overflowButton
+            visible: bar.overflow
+            x: bar.width - width
+            y: Math.round(bar.area.y + bar.spacing + (bar.rows - 1) * bar.rowPitch)
+            width: bar.overflowWidth
+            height: Math.round(bar.buttonHeight)
+            radius: 2
+            color: overflowMouse.pressed ? "#1d5fd0" : overflowMouse.containsMouse || overflowPopup.visible ? "#5a9cf8" : "transparent"
+            border.color: overflowMouse.containsMouse || overflowPopup.visible ? Qt.rgba(1, 1, 1, 0.35) : "transparent"
+
+            Text {
+                anchors.centerIn: parent
+                anchors.verticalCenterOffset: -1
+                text: "»"
+                font.family: "Tahoma"
+                font.pixelSize: 11
+                font.bold: true
+                color: overflowMouse.containsMouse ? "#ffffff" : "#70acff"
+            }
+            MouseArea {
+                id: overflowMouse
+                anchors.fill: parent
+                hoverEnabled: true
+                onClicked: overflowPopup.toggle()
+            }
+        }
+
+        // The windows that do not fit: click activates, right-click opens
+        // the window menu
+        PlasmaCore.Dialog {
+            id: overflowPopup
+
+            visible: false
+            type: PlasmaCore.Dialog.PopupMenu
+            flags: Qt.WindowStaysOnTopHint
+            location: PlasmaCore.Types.Floating
+            hideOnWindowDeactivate: windowMenu.status === PlasmaExtras.Menu.Closed && !refocus.running
+
+            function toggle() {
+                if (visible) {
+                    visible = false;
+                    return;
+                }
+                visible = true;
+                place();
+                requestActivate();
+            }
+
+            // Above the », right edges aligned (it sits at the taskbar's end)
+            function place() {
+                const p = overflowButton.mapToGlobal(0, 0);
+                x = Math.round(p.x + overflowButton.width) - width;
+                y = Math.round(p.y) - height;
+            }
+            onHeightChanged: if (visible) place()
+            onWidthChanged: if (visible) place()
+
+            Component.onCompleted: {
+                if ("backgroundHints" in overflowPopup) {
+                    overflowPopup.backgroundHints = PlasmaCore.Dialog.NoBackground;
+                }
+            }
+
+            mainItem: Rectangle {
+                width: overflowList.width + 6
+                height: overflowList.height + 6
+                color: "#ffffff"
+                border.color: "#aca899"
+
+                Column {
+                    id: overflowList
+                    x: 3
+                    y: 3
+                    width: Math.min(400, Math.max(160, bar.overflowTextWidth + 28 + 12))
+
+                    Repeater {
+                        model: tasksModel
+
+                        delegate: Rectangle {
+                            id: overflowRow
+
+                            required property int index
+                            required property var model
+                            readonly property var modelIndex: tasksModel.makeModelIndex(index)
+
+                            visible: index >= bar.shownCount
+                            width: overflowList.width
+                            height: visible ? 22 : 0
+                            color: rowMouse.containsMouse ? "#316ac5" : "transparent"
+
+                            Kirigami.Icon {
+                                x: 4
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: 16
+                                height: 16
+                                source: overflowRow.model.decoration
+                                roundToIconSize: false
+                            }
+                            Text {
+                                x: 28
+                                width: parent.width - x - 6
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: overflowRow.model.display ?? ""
+                                elide: Text.ElideRight
+                                font.family: Plasmoid.configuration.fontFamily
+                                font.pixelSize: 11
+                                font.bold: overflowRow.model.IsActive === true
+                                renderType: Text.NativeRendering
+                                color: rowMouse.containsMouse ? "#ffffff" : "#000000"
+                                onImplicitWidthChanged: bar.overflowTextWidth = Math.max(bar.overflowTextWidth, implicitWidth)
+                            }
+                            MouseArea {
+                                id: rowMouse
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                acceptedButtons: Qt.LeftButton | Qt.RightButton
+                                onClicked: mouse => {
+                                    if (mouse.button === Qt.RightButton) {
+                                        windowMenu.show(overflowRow, mouse.x, mouse.y);
+                                    } else {
+                                        overflowPopup.visible = false;
+                                        tasksModel.requestActivate(overflowRow.modelIndex);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Widest window title in the overflow menu
+        property real overflowTextWidth: 0
+
+        // Keep the popup open (and focused) after its window menu closed;
+        // close it once nothing overflows, checked a moment later because
+        // the model can briefly be empty while it changes
+        Timer {
+            id: refocus
+            interval: 200
+        }
+        Connections {
+            target: windowMenu
+            function onStatusChanged() {
+                if (windowMenu.status === PlasmaExtras.Menu.Closed && overflowPopup.visible) {
+                    refocus.restart();
+                    overflowPopup.requestActivate();
+                }
+            }
+        }
+        Connections {
+            target: bar
+            function onOverflowChanged() {
+                if (!bar.overflow) {
+                    closeIfEmpty.restart();
+                }
+            }
+        }
+        Timer {
+            id: closeIfEmpty
+            interval: 300
+            onTriggered: {
+                if (!bar.overflow) {
+                    overflowPopup.visible = false;
                 }
             }
         }

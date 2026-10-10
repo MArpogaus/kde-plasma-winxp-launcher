@@ -8,6 +8,7 @@ import org.kde.kcmutils as KCM
 
 KCM.SimpleKCM {
     property alias cfg_maximumButtonWidth: maximumButtonWidth.value
+    property alias cfg_minimumButtonWidth: minimumButtonWidth.value
     property alias cfg_showOnlyCurrentScreen: showOnlyCurrentScreen.checked
     property alias cfg_showOnlyCurrentDesktop: showOnlyCurrentDesktop.checked
     property alias cfg_fontFamily: fontFamily.text
@@ -17,6 +18,13 @@ KCM.SimpleKCM {
             id: maximumButtonWidth
             Kirigami.FormData.label: i18n("Widest button:")
             from: 40
+            to: 400
+            textFromValue: value => i18n("%1 px", value)
+        }
+        QQC2.SpinBox {
+            id: minimumButtonWidth
+            Kirigami.FormData.label: i18n("Narrowest button:")
+            from: 24
             to: 400
             textFromValue: value => i18n("%1 px", value)
         }

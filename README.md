@@ -101,8 +101,12 @@ the Dolphin toolbar from upstream.
 The start button, task buttons and notification area are laid out on the
 visible taskbar, not only on the space Plasma gives each widget, so they
 line up like XP's whatever the panel theme's padding. Make the taskbar
-taller (about 28 px per row) to get several rows of task buttons. Right-click a free spot →
-Configure for the widest button and which windows are shown.
+taller (about 28 px per row) to get several rows of task buttons. Like XP's single taskbar
+it shows the windows of all screens. Buttons shrink down to a minimum
+width (80 px); windows that do not fit then are in a » menu at the end of
+the taskbar (click to switch, right-click for the window menu).
+Right-click a free spot → Configure for the button widths and which
+windows are shown.
 
 The notification area uses Plasma's own System Tray (so volume, network,
 battery and app icons all work), on XP's light blue block. Plasma gives

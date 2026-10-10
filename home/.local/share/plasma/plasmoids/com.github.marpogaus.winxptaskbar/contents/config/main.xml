@@ -10,8 +10,12 @@
     <entry name="maximumButtonWidth" type="Int">
       <default>160</default>
     </entry>
+    <entry name="minimumButtonWidth" type="Int">
+      <label>Buttons are not made narrower than this; the rest go into the » menu</label>
+      <default>80</default>
+    </entry>
     <entry name="showOnlyCurrentScreen" type="Bool">
-      <default>true</default>
+      <default>false</default>
     </entry>
     <entry name="showOnlyCurrentDesktop" type="Bool">
       <default>true</default>

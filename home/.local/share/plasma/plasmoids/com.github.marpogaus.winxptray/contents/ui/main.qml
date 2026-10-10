@@ -27,8 +27,12 @@ PlasmoidItem {
             target: anchorItem
         }
 
+        // The chevron reaches 11 px left of the block; keep that (plus 3 px)
+        // inside this widget so it never covers the task buttons
+        readonly property int blockLeft: horizontal && showChevron ? 14 : 0
+
         // Room for the bevel (and the chevron) before the first tray icon
-        Layout.minimumWidth: horizontal ? (showChevron ? 14 : 10) : -1
+        Layout.minimumWidth: horizontal ? blockLeft + (showChevron ? 14 : 10) : -1
         Layout.maximumWidth: Layout.minimumWidth
         Layout.minimumHeight: horizontal ? -1 : 10
         Layout.maximumHeight: horizontal ? -1 : 10
@@ -36,9 +40,9 @@ PlasmoidItem {
         Item {
             id: block
             // From here to the end of the visible taskbar, over its full height
-            x: anchorItem.horizontal ? 0 : anchorItem.area.x
+            x: anchorItem.horizontal ? anchorItem.blockLeft : anchorItem.area.x
             y: anchorItem.horizontal ? anchorItem.area.y : 0
-            width: anchorItem.horizontal ? anchorItem.area.x + anchorItem.area.width : anchorItem.area.width
+            width: anchorItem.horizontal ? anchorItem.area.x + anchorItem.area.width - anchorItem.blockLeft : anchorItem.area.width
             height: anchorItem.horizontal ? anchorItem.area.height : anchorItem.area.y + anchorItem.area.height
 
             // Sampled from the XP notification area (30 rows)
@@ -236,7 +240,7 @@ PlasmoidItem {
         // points right while the hidden icons are shown
         Image {
             visible: anchorItem.showChevron
-            x: -11
+            x: anchorItem.blockLeft - 11
             y: Math.round(anchorItem.area.y + (anchorItem.area.height - height) / 2)
             width: 18
             height: 19
