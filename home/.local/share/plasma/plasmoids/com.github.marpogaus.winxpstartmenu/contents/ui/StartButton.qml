@@ -65,13 +65,21 @@ Item {
             onLookChanged: requestPaint()
             onWidthChanged: requestPaint()
             onHeightChanged: requestPaint()
+            // Painted in device pixels: with fractional scaling, rows one
+            // logical pixel high would fall between them and show as stripes
+            readonly property real ratio: Screen.devicePixelRatio > 0 ? Screen.devicePixelRatio : 1
+            onRatioChanged: requestPaint()
             onPaint: {
-                const w = Math.round(width);
-                const h = Math.round(height);
+                const w = Math.round(width * ratio);
+                const h = Math.round(height * ratio);
                 if (w < 1 || h < 1) {
                     return;
                 }
-                Face.paint(getContext("2d"), w, h, look, !button.vertical);
+                const ctx = getContext("2d");
+                ctx.save();
+                ctx.scale(width / w, height / h);
+                Face.paint(ctx, w, h, look, !button.vertical);
+                ctx.restore();
             }
         }
 
