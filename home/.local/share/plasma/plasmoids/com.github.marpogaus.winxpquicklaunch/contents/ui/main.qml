@@ -149,6 +149,9 @@ PlasmoidItem {
         return Math.max(0, Math.min(slot, shownCount - first));
     }
 
+    // Widest launcher name in the overflow menu
+    property real overflowTextWidth: 0
+
     // Insertion marker position while something is dragged over the bar
     property int dropIndex: -1
 
@@ -264,7 +267,7 @@ PlasmoidItem {
                         id: overflowMouse
                         anchors.fill: parent
                         hoverEnabled: true
-                        onClicked: overflowMenu.openRelative()
+                        onClicked: overflowPopup.toggle()
                     }
                 }
             }
@@ -296,27 +299,136 @@ PlasmoidItem {
             }
         }
 
-        PlasmaExtras.Menu {
-            id: overflowMenu
-            visualParent: overflowButton
+        // The launchers that do not fit, in an XP style menu above the »:
+        // click starts one, right-click offers to remove it
+        PlasmaCore.Dialog {
+            id: overflowPopup
+
+            visible: false
+            type: PlasmaCore.Dialog.PopupMenu
+            flags: Qt.WindowStaysOnTopHint
+            location: PlasmaCore.Types.Floating
+            // stay open while its context menu has the focus
+            hideOnWindowDeactivate: overflowContext.status === PlasmaExtras.Menu.Closed
+
+            function toggle() {
+                if (visible) {
+                    visible = false;
+                    return;
+                }
+                visible = true;
+                place();
+                requestActivate();
+            }
+
             // Above the », left edges aligned
-            placement: PlasmaExtras.Menu.TopPosedLeftAlignedPopup
+            function place() {
+                const p = overflowButton.mapToGlobal(0, 0);
+                x = Math.round(p.x);
+                y = Math.round(p.y) - height;
+            }
+            onHeightChanged: if (visible) place()
+
+            Component.onCompleted: {
+                if ("backgroundHints" in overflowPopup) {
+                    overflowPopup.backgroundHints = PlasmaCore.Dialog.NoBackground;
+                }
+            }
+
+            mainItem: Rectangle {
+                width: overflowList.width + 6
+                height: overflowList.height + 6
+                color: "#ffffff"
+                border.color: "#aca899"
+
+                Column {
+                    id: overflowList
+                    x: 3
+                    y: 3
+                    width: Math.max(120, root.overflowTextWidth + 28 + 24)
+
+                    Repeater {
+                        model: launchers
+
+                        delegate: Rectangle {
+                            id: overflowRow
+
+                            required property int index
+                            required property var model
+
+                            visible: model.IsLauncher === true
+                                && index + (Plasmoid.configuration.showDesktop ? 1 : 0) >= root.shownCount
+                            width: overflowList.width
+                            height: visible ? 22 : 0
+                            color: rowMouse.containsMouse ? "#316ac5" : "transparent"
+
+                            Kirigami.Icon {
+                                x: 4
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: 16
+                                height: 16
+                                source: overflowRow.model.decoration
+                                roundToIconSize: false
+                            }
+                            Text {
+                                x: 28
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: overflowRow.model.display ?? ""
+                                font.family: "Tahoma"
+                                font.pixelSize: 11
+                                renderType: Text.NativeRendering
+                                color: rowMouse.containsMouse ? "#ffffff" : "#000000"
+                                onImplicitWidthChanged: root.overflowTextWidth = Math.max(root.overflowTextWidth, implicitWidth)
+                            }
+                            MouseArea {
+                                id: rowMouse
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                acceptedButtons: Qt.LeftButton | Qt.RightButton
+                                onClicked: mouse => {
+                                    if (mouse.button === Qt.RightButton) {
+                                        overflowContext.launcherIndex = overflowRow.index;
+                                        overflowContext.visualParent = overflowRow;
+                                        overflowContext.open(mouse.x, mouse.y);
+                                    } else {
+                                        overflowPopup.visible = false;
+                                        root.launch(overflowRow.index);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
-        Instantiator {
-            model: launchers
-            delegate: PlasmaExtras.MenuItem {
-                required property int index
-                required property var model
-
-                visible: model.IsLauncher === true
-                    && index + (Plasmoid.configuration.showDesktop ? 1 : 0) >= root.shownCount
-                text: model.display ?? ""
-                icon: model.decoration
-                onClicked: root.launch(index)
+        Connections {
+            target: root
+            function onOverflowChanged() {
+                if (!root.overflow) {
+                    overflowPopup.visible = false;
+                }
             }
-            onObjectAdded: (index, object) => overflowMenu.addMenuItem(object)
-            onObjectRemoved: (index, object) => overflowMenu.removeMenuItem(object)
+        }
+
+        PlasmaExtras.Menu {
+            id: overflowContext
+
+            property int launcherIndex: -1
+
+            PlasmaExtras.MenuItem {
+                text: i18n("Open")
+                icon: "system-run"
+                onClicked: {
+                    overflowPopup.visible = false;
+                    root.launch(overflowContext.launcherIndex);
+                }
+            }
+            PlasmaExtras.MenuItem {
+                text: i18n("Remove from Quick Launch")
+                icon: "list-remove"
+                onClicked: root.removeLauncher(overflowContext.launcherIndex)
+            }
         }
     }
 
