@@ -2,7 +2,7 @@
     SPDX-License-Identifier: GPL-2.0-or-later
 
     Windows XP taskbar: one Luna button per window, equal widths up to
-    160 px, click to activate / minimize, XP window menu on right click.
+    the configured width, click to activate / minimize, XP window menu on right click.
     Buttons do not get narrower than the minimum width; the windows that
     do not fit are in a » menu at the end, like Quick Launch's.
 */
@@ -35,9 +35,6 @@ PlasmoidItem {
 
         groupMode: TaskManager.TasksModel.GroupDisabled
         sortMode: TaskManager.TasksModel.SortManual
-        separateLaunchers: true
-        hideActivatedLaunchers: true
-        launchInPlace: false
         filterByVirtualDesktop: Plasmoid.configuration.showOnlyCurrentDesktop
         filterByScreen: Plasmoid.configuration.showOnlyCurrentScreen
         filterByActivity: true
@@ -233,7 +230,6 @@ PlasmoidItem {
                     visible = false;
                     return;
                 }
-                bar.updateOverflowTextWidth();
                 visible = true;
                 place();
                 requestActivate();
@@ -251,11 +247,7 @@ PlasmoidItem {
             onHeightChanged: if (visible) place()
             onWidthChanged: if (visible) place()
 
-            Component.onCompleted: {
-                if ("backgroundHints" in overflowPopup) {
-                    overflowPopup.backgroundHints = PlasmaCore.Dialog.NoBackground;
-                }
-            }
+            backgroundHints: PlasmaCore.Dialog.NoBackground
 
             mainItem: Rectangle {
                 width: overflowList.width + 6
@@ -263,14 +255,15 @@ PlasmoidItem {
                 color: "#ffffff"
                 border.color: "#aca899"
 
-                Column {
+                // As wide as the longest title (hidden rows do not count)
+                ColumnLayout {
                     id: overflowList
                     x: 3
                     y: 3
-                    width: Math.min(400, Math.max(160, bar.overflowTextWidth + 28 + 12))
+                    width: Math.min(400, Math.max(160, implicitWidth))
+                    spacing: 0
 
                     Repeater {
-                        id: overflowRows
                         model: tasksModel
 
                         delegate: Rectangle {
@@ -279,11 +272,11 @@ PlasmoidItem {
                             required property int index
                             required property var model
                             readonly property var modelIndex: tasksModel.makeModelIndex(index)
-                            readonly property real textWidth: rowText.implicitWidth
 
                             visible: index >= bar.shownCount
-                            width: overflowList.width
-                            height: visible ? 22 : 0
+                            Layout.fillWidth: true
+                            implicitWidth: 28 + rowText.implicitWidth + 12
+                            implicitHeight: 22
                             color: rowMouse.containsMouse ? "#316ac5" : "transparent"
 
                             Kirigami.Icon {
@@ -306,7 +299,6 @@ PlasmoidItem {
                                 font.bold: overflowRow.model.IsActive === true
                                 renderType: Text.NativeRendering
                                 color: rowMouse.containsMouse ? "#ffffff" : "#000000"
-                                onImplicitWidthChanged: if (overflowPopup.visible) bar.updateOverflowTextWidth()
                             }
                             MouseArea {
                                 id: rowMouse
@@ -328,23 +320,9 @@ PlasmoidItem {
             }
         }
 
-        // Widest window title in the overflow menu
-        property real overflowTextWidth: 0
-        function updateOverflowTextWidth() {
-            let widest = 0;
-            for (let i = bar.shownCount; i < overflowRows.count; ++i) {
-                const row = overflowRows.itemAt(i);
-                if (row) {
-                    widest = Math.max(widest, row.textWidth);
-                }
-            }
-            overflowTextWidth = widest;
-        }
-
         // Keep the popup open (and focused) when its window menu closes
         // without an action; an action (which may activate the window)
-        // closes it. Close it too once nothing overflows, checked a moment
-        // later because the model can briefly be empty while it changes.
+        // closes it. Close it too once nothing overflows.
         Timer {
             id: refocus
             interval: 200
@@ -367,15 +345,6 @@ PlasmoidItem {
         Connections {
             target: bar
             function onOverflowChanged() {
-                if (!bar.overflow) {
-                    closeIfEmpty.restart();
-                }
-            }
-        }
-        Timer {
-            id: closeIfEmpty
-            interval: 300
-            onTriggered: {
                 if (!bar.overflow) {
                     overflowPopup.visible = false;
                 }

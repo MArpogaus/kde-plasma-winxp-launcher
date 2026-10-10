@@ -114,9 +114,6 @@ done
 | Cursors | `.local/share/icons/ModernXP` | [modernXP](https://github.com/na0miluv/modernXP-cursor-theme) release, unmodified, GPL-3.0 |
 | Dolphin as XP Explorer | `.local/share/kxmlgui5/dolphin`, `.local/share/dolphin` | toolbar derived from [Dolphin](https://invent.kde.org/system/dolphin), GPL-2.0+ |
 
-`tools/update-vendored.sh` refreshes Exposé and the cursors from
-upstream.
-
 ### Taskbar and notification area
 
 The start button, task buttons and notification area are laid out on the

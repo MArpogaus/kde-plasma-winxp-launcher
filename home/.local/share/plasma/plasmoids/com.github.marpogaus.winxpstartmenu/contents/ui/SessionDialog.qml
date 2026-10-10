@@ -38,11 +38,7 @@ PlasmaCore.Dialog {
         dialogView.forceActiveFocus();
     }
 
-    Component.onCompleted: {
-        if ("backgroundHints" in dialog) {
-            dialog.backgroundHints = PlasmaCore.Dialog.NoBackground;
-        }
-    }
+    backgroundHints: PlasmaCore.Dialog.NoBackground
 
     mainItem: SessionDialogView {
         id: dialogView

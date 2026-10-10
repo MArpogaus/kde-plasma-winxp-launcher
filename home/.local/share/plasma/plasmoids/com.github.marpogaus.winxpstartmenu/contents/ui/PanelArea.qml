@@ -13,8 +13,6 @@
 import QtQuick
 
 QtObject {
-    id: area
-
     required property Item target
 
     function findBackground() {

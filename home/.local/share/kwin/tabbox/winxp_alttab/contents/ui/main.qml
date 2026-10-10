@@ -26,11 +26,7 @@ KWin.TabBoxSwitcher {
         x: tabBox.screenGeometry.x + Math.round((tabBox.screenGeometry.width - frame.width) / 2)
         y: tabBox.screenGeometry.y + Math.round((tabBox.screenGeometry.height - frame.height) / 2)
 
-        Component.onCompleted: {
-            if ("backgroundHints" in dialog) {
-                dialog.backgroundHints = PlasmaCore.Dialog.NoBackground;
-            }
-        }
+        backgroundHints: PlasmaCore.Dialog.NoBackground
 
         mainItem: Rectangle {
             id: frame

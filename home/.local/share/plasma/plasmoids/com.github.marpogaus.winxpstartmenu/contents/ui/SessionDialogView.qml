@@ -175,7 +175,6 @@ FocusScope {
 
         // XP push button
         Rectangle {
-            id: cancelButton
             anchors.right: parent.right
             anchors.rightMargin: 12
             anchors.verticalCenter: parent.verticalCenter

@@ -55,9 +55,7 @@ const sessionFade = {
     },
 
     dialogShown(window) {
-        if (this.dialogs.indexOf(window) < 0) {
-            this.dialogs.push(window);
-        }
+        this.dialogs.push(window);
         effects.stackingOrder.forEach(w => this.fade(w));
     },
 
@@ -83,17 +81,6 @@ const sessionFade = {
                 // set() keeps the window alive until cancelled
                 cancel(this.animations.get(window).id);
                 this.animations.delete(window);
-            }
-        });
-        // Hidden/shown Qt windows may only toggle visibility
-        effects.windowShown && effects.windowShown.connect(window => {
-            if (this.isDialog(window)) {
-                this.dialogShown(window);
-            }
-        });
-        effects.windowHidden && effects.windowHidden.connect(window => {
-            if (this.isDialog(window)) {
-                this.dialogHidden(window);
             }
         });
     }

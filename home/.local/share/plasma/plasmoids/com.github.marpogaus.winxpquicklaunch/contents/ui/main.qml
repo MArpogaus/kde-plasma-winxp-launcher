@@ -53,9 +53,7 @@ PlasmoidItem {
         id: launchers
 
         launcherList: Plasmoid.configuration.launchers
-        separateLaunchers: true
         hideActivatedLaunchers: false
-        launchInPlace: false
         groupMode: TaskManager.TasksModel.GroupDisabled
         sortMode: TaskManager.TasksModel.SortManual
         filterByActivity: true
@@ -149,8 +147,6 @@ PlasmoidItem {
         return Math.max(0, Math.min(slot, shownCount - first));
     }
 
-    // Widest launcher name in the overflow menu
-    property real overflowTextWidth: 0
 
     // Insertion marker position while something is dragged over the bar
     property int dropIndex: -1
@@ -326,7 +322,6 @@ PlasmoidItem {
                     visible = false;
                     return;
                 }
-                updateTextWidth();
                 visible = true;
                 place();
                 requestActivate();
@@ -341,25 +336,9 @@ PlasmoidItem {
                     ? Math.round(bar.mapToGlobal(0, bar.area.y + bar.area.height).y)
                     : Math.round(p.y) - height;
             }
-
-            // Widest name among the launchers in the menu
-            function updateTextWidth() {
-                let widest = 0;
-                for (let i = 0; i < overflowRows.count; ++i) {
-                    const row = overflowRows.itemAt(i);
-                    if (row && row.visible) {
-                        widest = Math.max(widest, row.textWidth);
-                    }
-                }
-                root.overflowTextWidth = widest;
-            }
             onHeightChanged: if (visible) place()
 
-            Component.onCompleted: {
-                if ("backgroundHints" in overflowPopup) {
-                    overflowPopup.backgroundHints = PlasmaCore.Dialog.NoBackground;
-                }
-            }
+            backgroundHints: PlasmaCore.Dialog.NoBackground
 
             mainItem: Rectangle {
                 width: overflowList.width + 6
@@ -367,14 +346,15 @@ PlasmoidItem {
                 color: "#ffffff"
                 border.color: "#aca899"
 
-                Column {
+                // As wide as the longest name (hidden rows do not count)
+                ColumnLayout {
                     id: overflowList
                     x: 3
                     y: 3
-                    width: Math.min(400, Math.max(120, root.overflowTextWidth + 28 + 24))
+                    width: Math.min(400, Math.max(120, implicitWidth))
+                    spacing: 0
 
                     Repeater {
-                        id: overflowRows
                         model: launchers
 
                         delegate: Rectangle {
@@ -382,12 +362,12 @@ PlasmoidItem {
 
                             required property int index
                             required property var model
-                            readonly property real textWidth: rowText.implicitWidth
 
                             visible: model.IsLauncher === true
                                 && index + (Plasmoid.configuration.showDesktop ? 1 : 0) >= root.shownCount
-                            width: overflowList.width
-                            height: visible ? 22 : 0
+                            Layout.fillWidth: true
+                            implicitWidth: 28 + rowText.implicitWidth + 24
+                            implicitHeight: 22
                             color: rowMouse.containsMouse ? "#316ac5" : "transparent"
 
                             Kirigami.Icon {
@@ -409,7 +389,6 @@ PlasmoidItem {
                                 font.pixelSize: 11
                                 renderType: Text.NativeRendering
                                 color: rowMouse.containsMouse ? "#ffffff" : "#000000"
-                                onImplicitWidthChanged: if (overflowPopup.visible) overflowPopup.updateTextWidth()
                             }
                             MouseArea {
                                 id: rowMouse

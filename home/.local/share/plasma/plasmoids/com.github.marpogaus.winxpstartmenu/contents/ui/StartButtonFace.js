@@ -147,7 +147,7 @@ function css(c) {
 // `curved` false draws a square right end (vertical panels).
 function paint(ctx, w, h, look, curved) {
     const scale = h / ROW_COUNT;
-    const table = tables[look] || tables.normal;
+    const table = tables[look];
     // Sample positions from left to right, the middle colour filling the
     // gap between the left and the right samples
     const xs = [];

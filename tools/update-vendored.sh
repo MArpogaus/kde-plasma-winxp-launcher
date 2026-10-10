@@ -3,8 +3,7 @@
 #
 # Maintainer script: refresh the third-party files bundled in home/ (Exposé,
 # modernXP cursors) from their upstream projects. Users do not need this,
-# they copy home/. Needs git and curl. URLs can be overridden with
-# WINXP_*_URL for testing.
+# they copy home/. Needs git and curl.
 set -euo pipefail
 for tool in git curl; do
     command -v "$tool" >/dev/null || { echo "error: $tool is required" >&2; exit 1; }
@@ -14,12 +13,10 @@ ROOT=$PWD
 SRC=$(mktemp -d)
 trap 'rm -rf "$SRC"' EXIT
 
-clone() { git clone --quiet --depth 1 "$@"; }
-clone "${WINXP_EXPOSE_URL:-https://www.opencode.net/phob1an/expose.git}" "$SRC/expose"
-curl -fsSL "${WINXP_CURSORS_URL:-https://github.com/na0miluv/modernXP-cursor-theme/releases/download/final/ModernXP.tar.gz}" \
+git clone --quiet --depth 1 https://www.opencode.net/phob1an/expose.git "$SRC/expose"
+curl -fsSL https://github.com/na0miluv/modernXP-cursor-theme/releases/download/final/ModernXP.tar.gz \
     | tar -xz -C "$SRC"
-curl -fsSL "${WINXP_CURSORS_LICENSE_URL:-https://raw.githubusercontent.com/na0miluv/modernXP-cursor-theme/main/LICENSE}" \
-    -o "$SRC/ModernXP/LICENSE"
+curl -fsSL https://raw.githubusercontent.com/na0miluv/modernXP-cursor-theme/main/LICENSE -o "$SRC/ModernXP/LICENSE"
 
 H=$ROOT/home
 D=$H/.local/share

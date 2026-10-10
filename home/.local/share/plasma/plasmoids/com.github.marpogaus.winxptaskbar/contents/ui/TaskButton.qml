@@ -39,7 +39,6 @@ Item {
     readonly property var colors: palettes[look]
 
     Rectangle {
-        id: frame
         anchors.fill: parent
         radius: 3
         color: button.colors[0]

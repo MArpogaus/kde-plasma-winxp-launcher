@@ -12,8 +12,6 @@ import org.kde.plasma.plasmoid
 import org.kde.plasma.core as PlasmaCore
 
 PlasmoidItem {
-    id: root
-
     preferredRepresentation: fullRepresentation
 
     fullRepresentation: Item {
@@ -213,15 +211,12 @@ PlasmoidItem {
         }
 
         Timer {
-            property int attempts: 0
-            // Every second at first, then rarely when the panel has no tray
-            interval: attempts < 30 ? 1000 : 10000
+            interval: 1000
             repeat: true
             // Vertical panels keep Plasma's own arrow
             running: anchorItem.horizontal && !anchorItem.tray && !!anchorItem.Window.window
             triggeredOnStart: true
             onTriggered: {
-                ++attempts;
                 const tray = anchorItem.findItem(anchorItem.Window.contentItem,
                     i => "systemTrayState" in i && "hiddenLayout" in i && "plasmoid" in i);
                 const expander = tray && anchorItem.findItem(tray,
@@ -232,7 +227,6 @@ PlasmoidItem {
                     anchorItem.trayExpanded = false;
                     anchorItem.expander = expander;
                     anchorItem.tray = tray;
-                    attempts = 0;
                 }
             }
         }

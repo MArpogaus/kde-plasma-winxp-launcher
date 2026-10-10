@@ -2,7 +2,7 @@
     SPDX-License-Identifier: GPL-2.0-or-later
 
     The green Luna "start" button. It scales with the panel thickness;
-    at the classic 30 px taskbar it is 99 x 30 px.
+    at the classic 30 px taskbar it is 100 x 30 px.
 */
 import QtQuick
 import QtQuick.Layouts
@@ -23,7 +23,7 @@ Item {
     // to bottom (not just the applet area inside the panel's padding) and,
     // as the first widget, reaches the taskbar's left edge.
     property bool fillPanel: false
-    readonly property rect area: fillPanel && !vertical ? panelArea.rect : Qt.rect(0, 0, width, height)
+    readonly property rect area: fillPanel ? panelArea.rect : Qt.rect(0, 0, width, height)
     readonly property real leftOverflow: area.x < 0 && area.x > -16 ? -area.x : 0
     // The button as drawn on the taskbar; the menu opens right above it
     readonly property alias faceItem: face

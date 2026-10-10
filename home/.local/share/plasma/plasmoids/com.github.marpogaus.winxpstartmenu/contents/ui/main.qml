@@ -71,7 +71,6 @@ PlasmoidItem {
 
     toolTipMainText: i18n("Click here to begin")
     toolTipSubText: ""
-    Plasmoid.icon: "start-here-kde"
     Plasmoid.status: menuOpen ? PlasmaCore.Types.RequiresAttentionStatus : PlasmaCore.Types.PassiveStatus
 
     // The global shortcut (Meta) toggles `expanded`.
@@ -146,7 +145,6 @@ PlasmoidItem {
     P5Support.DataSource {
         id: executable
         engine: "executable"
-        connectedSources: []
         onNewData: sourceName => disconnectSource(sourceName)
 
         property int launches: 0
@@ -183,11 +181,7 @@ PlasmoidItem {
             }
         }
 
-        Component.onCompleted: {
-            if ("backgroundHints" in menuDialog) {
-                menuDialog.backgroundHints = PlasmaCore.Dialog.NoBackground;
-            }
-        }
+        backgroundHints: PlasmaCore.Dialog.NoBackground
 
         mainItem: StartMenu {
             id: startMenu
@@ -380,8 +374,7 @@ PlasmoidItem {
     }
 
     function isPinned(favoriteId) {
-        const favorites = rootModel.favoritesModel;
-        return !!favoriteId && !!favorites && favorites.isFavorite(favoriteId);
+        return !!favoriteId && rootModel.favoritesModel.isFavorite(favoriteId);
     }
 
     function launchFavorite(index) {
@@ -395,11 +388,8 @@ PlasmoidItem {
     }
 
     function launchSearchResult(index) {
-        const results = startMenu.searchModel;
-        if (results && index >= 0 && index < results.count) {
-            results.trigger(index, "", null);
-            closeMenu();
-        }
+        startMenu.searchModel.trigger(index, "", null);
+        closeMenu();
     }
 
     function openUrl(url) {
@@ -487,9 +477,6 @@ PlasmoidItem {
 
     // XP's context menus have no icons
     function showItemContextMenu(model, index, favoriteId, actionList, visualParent, x, y) {
-        if (!model) {
-            return;
-        }
         const entries = [];
         const favorites = rootModel.favoritesModel;
 
@@ -498,7 +485,7 @@ PlasmoidItem {
             closeMenu();
         } });
 
-        if (favoriteId && favorites) {
+        if (favoriteId) {
             entries.push({ separator: true });
             if (favorites.isFavorite(favoriteId)) {
                 entries.push({ text: i18n("Unpin from Start menu"), handler: () => {

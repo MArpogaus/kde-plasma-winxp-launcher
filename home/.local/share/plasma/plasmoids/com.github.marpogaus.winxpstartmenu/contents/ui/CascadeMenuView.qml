@@ -36,16 +36,12 @@ Item {
     function computeColumnWidth() {
         let widest = 0;
         const m = view.model;
-        if (m && m.rowCount) {
-            const n = m.rowCount();
-            for (let i = 0; i < n; ++i) {
-                const text = m.data(m.index(i, 0), Qt.DisplayRole);
-                if (text) {
-                    widest = Math.max(widest, metrics.advanceWidth(text));
-                }
+        const n = m ? m.rowCount() : 0;
+        for (let i = 0; i < n; ++i) {
+            const text = m.data(m.index(i, 0), Qt.DisplayRole);
+            if (text) {
+                widest = Math.max(widest, metrics.advanceWidth(text));
             }
-        } else {
-            widest = metrics.advanceWidth(emptyLabel.title);
         }
         // As XP's: the text starts 23 px into the row (29 px into the menu,
         // icon at 10 px) and 23 px follow the longest name (room for the
@@ -73,9 +69,7 @@ Item {
             openChild(index, item);
             return;
         }
-        if (view.model && view.model.trigger) {
-            view.model.trigger(index, "", null);
-        }
+        view.model.trigger(index, "", null);
         view.controller.closeMenu();
     }
 
@@ -242,7 +236,6 @@ Item {
         }
 
         MenuEntry {
-            id: emptyLabel
             x: view.frameLeft
             y: 1
             width: view.columnWidth

@@ -446,7 +446,6 @@ FocusScope {
 
                 // Search results replace the program lists while typing
                 Item {
-                    id: searchPane
                     x: 2
                     y: 5
                     width: parent.width - 4
