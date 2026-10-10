@@ -10,7 +10,7 @@ application style).
 | --- | --- |
 | ![Start menu](docs/preview-menu.png) | ![All Programs](docs/preview-all-programs.png) |
 
-Rendered from the widgets' own QML with Breeze-like stand-in icons and
+Rendered from the widgets' own QML with stand-in icons and
 Exposé's Bløff wallpaper; with `get-microsoft-files.sh` the icons, fonts
 and wallpaper are XP's.
 
