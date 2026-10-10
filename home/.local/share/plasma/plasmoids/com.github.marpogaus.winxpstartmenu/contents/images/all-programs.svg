@@ -8,6 +8,8 @@
       <stop offset="0" stop-color="#fff" stop-opacity="0.7"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
     </linearGradient>
   </defs>
+  <g transform="translate(0,11) scale(1,1.081) translate(0,-11)">
   <path d="M2.4,1.7 Q1.4,1.1 1.4,2.3 L1.4,19.7 Q1.4,20.9 2.4,20.3 L15.4,11.9 Q16.4,11 15.4,10.1 Z" fill="url(#g)" stroke="#1d6e15" stroke-width="0.9" stroke-linejoin="round"/>
   <path d="M2.9,3.6 L2.9,10.6 L12.8,10.6 Z" fill="url(#h)"/>
+  </g>
 </svg>

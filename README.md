@@ -170,7 +170,7 @@ Dolphin with a changed toolbar file ignores it until it is updated.
   frame): rounded blue header with user picture and name, orange divider,
   white program column, light blue places column, Log Off / Turn Off Computer footer.
 - Geometry and colours measured from a native XP screenshot: 382 px wide,
-  63 px header, 39 px footer, 36 px program rows with 32 px icons, 30 px place
+  64 px header, 40 px footer, 36 px program rows with 32 px icons, 30 px place
   rows with 24 px icons. Header/footer gradients are sampled row by row.
 - **Pinned programs** at the top (Internet and E-mail by default, using your
   preferred browser and mail client) and **most frequently used programs** below.

@@ -22,7 +22,7 @@ Item {
     readonly property int itemCount: grid.count
     readonly property int shownRows: Math.max(1, Math.min(itemCount, maxRows))
     readonly property int columns: Math.max(1, Math.ceil(itemCount / Math.max(1, maxRows)))
-    readonly property int shadow: 3
+    readonly property int shadow: 4
     // The menu itself, without its drop shadow (cascades open next to it)
     readonly property alias frameItem: frame
     property int columnWidth: 160
@@ -111,20 +111,19 @@ Item {
         }
     }
 
-    // Drop shadow (right and bottom), as drawn by XP for menus.
-    Rectangle {
-        x: view.shadow
-        y: view.shadow
-        width: frame.width
-        height: frame.height
-        color: Qt.rgba(0, 0, 0, 0.18)
-    }
-    Rectangle {
-        x: view.shadow - 1
-        y: view.shadow - 1
-        width: frame.width
-        height: frame.height
-        color: Qt.rgba(0, 0, 0, 0.12)
+    // Drop shadow (right and bottom), as drawn by XP for menus: stacked
+    // so it falls off as measured, 0.45 / 0.32 / 0.16 / 0.07 outwards
+    Repeater {
+        model: [0.07, 0.097, 0.19, 0.19]
+        Rectangle {
+            required property int index
+            required property real modelData
+            x: view.shadow - index
+            y: view.shadow - index
+            width: frame.width
+            height: frame.height
+            color: Qt.rgba(0, 0, 0, modelData)
+        }
     }
 
     Rectangle {
@@ -199,7 +198,6 @@ Item {
                     anchors.rightMargin: 2
                     visible: cell.isSeparator
                     color: view.xp.cascadeSeparator
-                    fade: false
 
                     MouseArea {
                         anchors.fill: parent

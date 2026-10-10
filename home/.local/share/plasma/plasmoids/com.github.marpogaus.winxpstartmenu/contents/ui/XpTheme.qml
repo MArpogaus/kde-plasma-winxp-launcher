@@ -21,8 +21,8 @@ QtObject {
     // Inner pixel of the 2 px side frame, left and right
     readonly property color frameInnerLeft: "#7693d3"
     readonly property color frameInnerRight: "#2476dd"
-    readonly property color bodyTopLine: "#2f5aa8"
-    readonly property color bodyBottomLine: "#2d73d3"
+    readonly property color bodyTopLine: "#1768cf"
+    readonly property color bodyBottomLine: "#1664cb"
     readonly property color orange: "#ea9736"
     readonly property int cornerRadius: 6
 
@@ -47,7 +47,7 @@ QtObject {
     readonly property color cascadeHighlight: "#1664cb"
     readonly property color cascadeBorderLight: "#54a1ff"
     readonly property var cascadeBand: ["#89b4ed", "#2b7ae2", "#2b7ae2", "#307fe4", "#3484e6"]
-    readonly property color cascadeSeparator: "#aca899"
+    readonly property color cascadeSeparator: "#d6d6d3"
     readonly property color disabledText: "#aca899"
     readonly property int cascadeRowHeight: 22
 
@@ -56,8 +56,8 @@ QtObject {
     readonly property int leftWidth: 189
     readonly property int rightWidth: 188
     readonly property int menuWidth: frameWidth + leftWidth + 1 + rightWidth + frameWidth // 382
-    readonly property int headerHeight: 63
-    readonly property int footerHeight: 39
+    readonly property int headerHeight: 64
+    readonly property int footerHeight: 40
     readonly property int programRowHeight: 36
     readonly property int programIconSize: 32
     readonly property int placeRowHeight: 30

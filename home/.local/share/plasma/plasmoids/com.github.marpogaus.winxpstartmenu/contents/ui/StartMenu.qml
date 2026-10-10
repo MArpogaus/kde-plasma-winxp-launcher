@@ -197,23 +197,23 @@ FocusScope {
                 width: parent.width
                 height: parent.height + menu.xp.cornerRadius
                 radius: menu.xp.cornerRadius
-                // 63 rows + 6 hidden rows: position = row / 69
+                // 64 rows + 6 hidden rows: position = row / 70
                 gradient: Gradient {
-                    GradientStop { position: 0 / 69; color: "#225cc5" }
-                    GradientStop { position: 1 / 69; color: "#67a2e7" }
-                    GradientStop { position: 2 / 69; color: "#75abe8" }
-                    GradientStop { position: 3 / 69; color: "#397fd9" }
-                    GradientStop { position: 4 / 69; color: "#1a69d2" }
-                    GradientStop { position: 6 / 69; color: "#1464cd" }
-                    GradientStop { position: 9 / 69; color: "#0e60cb" }
-                    GradientStop { position: 11 / 69; color: "#0c5fcb" }
-                    GradientStop { position: 14 / 69; color: "#0d60cb" }
-                    GradientStop { position: 20 / 69; color: "#1164ce" }
-                    GradientStop { position: 30 / 69; color: "#1b6cd3" }
-                    GradientStop { position: 40 / 69; color: "#2577dc" }
-                    GradientStop { position: 50 / 69; color: "#3383e5" }
-                    GradientStop { position: 56 / 69; color: "#3d8ae8" }
-                    GradientStop { position: 62 / 69; color: "#4792ec" }
+                    GradientStop { position: 0 / 70; color: "#225cc5" }
+                    GradientStop { position: 1 / 70; color: "#67a2e7" }
+                    GradientStop { position: 2 / 70; color: "#75abe8" }
+                    GradientStop { position: 3 / 70; color: "#397fd9" }
+                    GradientStop { position: 4 / 70; color: "#1a69d2" }
+                    GradientStop { position: 6 / 70; color: "#1464cd" }
+                    GradientStop { position: 9 / 70; color: "#0e60cb" }
+                    GradientStop { position: 11 / 70; color: "#0c5fcb" }
+                    GradientStop { position: 14 / 70; color: "#0d60cb" }
+                    GradientStop { position: 20 / 70; color: "#1164ce" }
+                    GradientStop { position: 30 / 70; color: "#1b6cd3" }
+                    GradientStop { position: 40 / 70; color: "#2577dc" }
+                    GradientStop { position: 50 / 70; color: "#3383e5" }
+                    GradientStop { position: 56 / 70; color: "#3d8ae8" }
+                    GradientStop { position: 59 / 70; color: "#4692eb" }
                     GradientStop { position: 1.0; color: "#4792ec" }
                 }
             }
@@ -252,17 +252,26 @@ FocusScope {
             }
         }
 
-        // User picture: 48 x 48 in a light rounded frame
+        // User picture: 48 x 48 in a 2 px light rounded frame with a soft
+        // shadow to the right and below
+        Rectangle {
+            x: avatarFrame.x + 2
+            y: avatarFrame.y + 2
+            width: avatarFrame.width
+            height: avatarFrame.height
+            radius: avatarFrame.radius
+            color: Qt.rgba(0, 0.05, 0.25, 0.3)
+        }
         Rectangle {
             id: avatarFrame
             x: 7
-            y: 6
+            y: 7
             width: 52
             height: 52
             radius: 4
-            color: "#dfe8f6"
+            color: "#c5d2ec"
             border.width: 1
-            border.color: Qt.rgba(0.05, 0.2, 0.5, 0.45)
+            border.color: "#d5dcea"
 
             Item {
                 x: 2
@@ -293,7 +302,7 @@ FocusScope {
         Text {
             x: avatarFrame.x + avatarFrame.width + 8 + 1
             anchors.verticalCenter: avatarFrame.verticalCenter
-            anchors.verticalCenterOffset: 1
+            anchors.verticalCenterOffset: 2
             width: parent.width - x - 10
             text: menu.userName
             textFormat: Text.PlainText
@@ -302,7 +311,7 @@ FocusScope {
             font.family: menu.xp.fontFamily
             font.pixelSize: 18
             font.bold: true
-            color: Qt.rgba(0, 0, 0, 0.6)
+            color: Qt.rgba(0, 0, 0, 0.4)
         }
         Text {
             x: avatarFrame.x + avatarFrame.width + 8
@@ -347,6 +356,17 @@ FocusScope {
                 height: parent.height
                 color: menu.xp.leftBackground
 
+                // XP's faint blue tint along the left edge (4 px)
+                Rectangle {
+                    width: 4
+                    height: parent.height
+                    gradient: Gradient {
+                        orientation: Gradient.Horizontal
+                        GradientStop { position: 0.0; color: "#e6edf8" }
+                        GradientStop { position: 1.0; color: "#f1f4f9" }
+                    }
+                }
+
                 Column {
                     id: leftTop
                     x: 2
@@ -388,9 +408,9 @@ FocusScope {
 
                     MenuSeparator {
                         width: parent.width
-                        height: menu.xp.separatorHeight - 2
-                        leftInset: 40
-                        rightInset: 41
+                        height: menu.xp.separatorHeight
+                        leftInset: 2
+                        rightInset: 6
                         color: menu.xp.leftSeparator
                         visible: menu.frequentItems.length > 0
                     }
@@ -413,6 +433,9 @@ FocusScope {
                             leftPadding: 3
                             textSpacing: 3
                             title: modelData.display
+                            // XP breaks long names onto two lines at about 105 px
+                            wrap: true
+                            wrapWidth: 105
 
                             onHoveredChanged: if (hovered) menu.hovered("", frequent)
                             onClicked: menu.controller.launchFrequent(modelData.row)
@@ -482,8 +505,8 @@ FocusScope {
                         anchors.top: searchHeader.bottom
                         width: parent.width
                         height: menu.xp.separatorHeight
-                        leftInset: 40
-                        rightInset: 41
+                        leftInset: 2
+                        rightInset: 6
                         color: menu.xp.leftSeparator
                     }
 
@@ -542,8 +565,8 @@ FocusScope {
                     anchors.bottomMargin: 2
                     width: parent.width - 4
                     height: menu.xp.separatorHeight
-                    leftInset: 40
-                    rightInset: 41
+                    leftInset: 2
+                    rightInset: 6
                     color: menu.xp.leftSeparator
                 }
 
@@ -571,7 +594,7 @@ FocusScope {
 
                     Text {
                         id: allProgramsLabel
-                        x: Math.round((allPrograms.width - width - 12 - allProgramsArrow.width) / 2)
+                        x: Math.round((allPrograms.width - width - 18 - allProgramsArrow.width) / 2)
                         anchors.verticalCenter: parent.verticalCenter
                         text: i18n("All Programs")
                         renderType: Text.NativeRendering
@@ -583,7 +606,7 @@ FocusScope {
                     Image {
                         id: allProgramsArrow
                         anchors.left: allProgramsLabel.right
-                        anchors.leftMargin: 12
+                        anchors.leftMargin: 18
                         anchors.verticalCenter: parent.verticalCenter
                         source: "../images/all-programs.svg"
                         sourceSize: Qt.size(17, 22)
@@ -723,11 +746,12 @@ FocusScope {
                 gradient: Gradient {
                     orientation: Gradient.Horizontal
                     // Measured on XP: fades in over 10-30 %, solid to 58 %,
-                    // fades out by 92 %
+                    // then turns grey by 87 %
                     GradientStop { position: 0.10; color: Qt.rgba(0.918, 0.592, 0.212, 0) }
                     GradientStop { position: 0.30; color: menu.xp.orange }
                     GradientStop { position: 0.58; color: menu.xp.orange }
-                    GradientStop { position: 0.92; color: Qt.rgba(0.918, 0.592, 0.212, 0) }
+                    GradientStop { position: 0.87; color: "#d6d6d3" }
+                    GradientStop { position: 1.0; color: "#d6d6d3" }
                 }
             }
         }
@@ -750,16 +774,16 @@ FocusScope {
             width: parent.width
             height: menu.xp.footerHeight
             gradient: Gradient {
-                GradientStop { position: 0 / 38; color: "#438be3" }
-                GradientStop { position: 3 / 38; color: "#438be4" }
-                GradientStop { position: 6 / 38; color: "#3e89e4" }
-                GradientStop { position: 10 / 38; color: "#3683e4" }
-                GradientStop { position: 15 / 38; color: "#2d7de2" }
-                GradientStop { position: 20 / 38; color: "#2274de" }
-                GradientStop { position: 25 / 38; color: "#196ddb" }
-                GradientStop { position: 30 / 38; color: "#1568d6" }
-                GradientStop { position: 35 / 38; color: "#1062cf" }
-                GradientStop { position: 37 / 38; color: "#0d5bc7" }
+                GradientStop { position: 0 / 39; color: "#438be3" }
+                GradientStop { position: 3 / 39; color: "#438be4" }
+                GradientStop { position: 6 / 39; color: "#3e89e4" }
+                GradientStop { position: 10 / 39; color: "#3683e4" }
+                GradientStop { position: 15 / 39; color: "#2d7de2" }
+                GradientStop { position: 20 / 39; color: "#2274de" }
+                GradientStop { position: 25 / 39; color: "#196ddb" }
+                GradientStop { position: 30 / 39; color: "#1568d6" }
+                GradientStop { position: 35 / 39; color: "#1062cf" }
+                GradientStop { position: 37 / 39; color: "#0d5bc7" }
                 GradientStop { position: 1.0; color: "#0c56c0" }
             }
 
@@ -786,7 +810,7 @@ FocusScope {
                 anchors.right: parent.right
                 anchors.rightMargin: 5
                 anchors.verticalCenter: parent.verticalCenter
-                spacing: 4
+                spacing: 8
 
                 FooterButton {
                     iconSource: "../images/log-off.svg"
@@ -852,7 +876,7 @@ FocusScope {
             x: 3
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: footerMouse.pressed ? 1 : 0
-            spacing: 3
+            spacing: 6
 
             Image {
                 anchors.verticalCenter: parent.verticalCenter

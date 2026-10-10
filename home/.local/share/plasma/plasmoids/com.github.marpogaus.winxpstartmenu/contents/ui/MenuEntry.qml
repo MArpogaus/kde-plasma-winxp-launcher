@@ -23,6 +23,8 @@ Item {
     property int textSpacing: 4
     property color textColor: xp.leftText
     property bool wrap: false
+    // Wrapped titles break at this width (0: the full row)
+    property int wrapWidth: 0
     readonly property real labelsHeight: labels.implicitHeight
 
     // Kept highlighted by the owner, e.g. while its cascade is open.
@@ -66,7 +68,7 @@ Item {
         spacing: 0
 
         Text {
-            width: parent.width
+            width: entry.wrap && entry.wrapWidth > 0 ? Math.min(entry.wrapWidth, parent.width) : parent.width
             text: entry.title
             textFormat: Text.PlainText
             lineHeightMode: Text.FixedHeight
@@ -101,10 +103,12 @@ Item {
     Image {
         anchors.right: parent.right
         anchors.rightMargin: 6
-        anchors.verticalCenter: parent.verticalCenter
+        // On whole pixels, so the arrow stays crisp
+        y: Math.floor((parent.height - height) / 2)
         visible: entry.showArrow
         source: entry.highlighted ? "../images/arrow-white.svg" : "../images/arrow.svg"
         sourceSize: Qt.size(4, 7)
+        smooth: false
     }
 
     DragHandler {

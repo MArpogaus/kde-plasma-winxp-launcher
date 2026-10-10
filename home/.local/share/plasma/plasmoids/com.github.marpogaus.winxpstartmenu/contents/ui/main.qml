@@ -310,7 +310,7 @@ PlasmoidItem {
     function maxCascadeRows() {
         // Fit the screen without its panels (and the cascade's frame and
         // shadow); long menus wrap into more columns.
-        return Math.max(5, Math.floor((availableArea.height - 5) / xp.cascadeRowHeight));
+        return Math.max(5, Math.floor((availableArea.height - 6) / xp.cascadeRowHeight));
     }
 
     // bottomAlign: grow upwards from visualParent's bottom edge (All Programs);
