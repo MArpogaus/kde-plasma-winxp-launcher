@@ -240,7 +240,7 @@ PlasmoidItem {
             // taskbar; it only looks like a button under the pointer
             Item {
                 visible: root.overflow
-                width: 13
+                width: 16
                 height: root.cell
 
                 Rectangle {
