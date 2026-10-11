@@ -1,8 +1,9 @@
 /*
     SPDX-License-Identifier: GPL-2.0-or-later
 
-    The "start" button, drawn with the Plasma theme's button frames
-    (widgets/button) and text colour. It scales with the panel thickness;
+    The "start" button: XP's green button from the Plasma theme
+    (widgets/winxp, startbutton-*), or the theme's button frames
+    (widgets/button) when it has none. It scales with the panel thickness;
     at the classic 30 px taskbar it is 100 x 30 px.
 */
 import QtQuick
@@ -57,10 +58,25 @@ Item {
         width: button.width + button.leftOverflow
         height: button.area.height
 
+        readonly property string look: button.pressedLook ? "pressed" : button.hoveredLook ? "hover" : "normal"
+
+        KSvg.Svg {
+            id: winxp
+            imagePath: "widgets/winxp"
+        }
+        readonly property bool xpButton: winxp.hasElement("startbutton-normal")
+
+        KSvg.SvgItem {
+            anchors.fill: parent
+            visible: face.xpButton
+            svg: winxp
+            elementId: "startbutton-" + face.look
+        }
         KSvg.FrameSvgItem {
             anchors.fill: parent
+            visible: !face.xpButton
             imagePath: "widgets/button"
-            prefix: button.pressedLook ? "pressed" : button.hoveredLook ? "hover" : "normal"
+            prefix: face.look
         }
 
         // XP's flag is 20 px at x = 10 on a 30 px taskbar
@@ -73,6 +89,27 @@ Item {
             roundToIconSize: false
         }
 
+        // XP's label shadow (two steps)
+        Text {
+            visible: !button.vertical && face.xpButton
+            x: label.x + 2
+            y: label.y + 2
+            text: label.text
+            font: label.font
+            renderType: label.renderType
+            transform: Matrix4x4 { matrix: button.labelSlant }
+            color: Qt.rgba(0, 0, 0, 0.22)
+        }
+        Text {
+            visible: !button.vertical && face.xpButton
+            x: label.x + 1
+            y: label.y + 1
+            text: label.text
+            font: label.font
+            renderType: label.renderType
+            transform: Matrix4x4 { matrix: button.labelSlant }
+            color: Qt.rgba(0, 0.08, 0, 0.7)
+        }
         Text {
             id: label
             visible: !button.vertical

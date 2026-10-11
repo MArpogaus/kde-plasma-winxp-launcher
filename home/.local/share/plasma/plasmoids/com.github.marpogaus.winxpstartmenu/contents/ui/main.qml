@@ -239,6 +239,8 @@ PlasmoidItem {
                 root.closeMenu();
             }
         }
+        // XP's start menu draws its own frame when the theme has it
+        backgroundHints: !root.classic && startMenu.xpChrome ? PlasmaCore.Dialog.NoBackground : PlasmaCore.Dialog.StandardBackground
 
         mainItem: Item {
             width: root.activeMenu.width

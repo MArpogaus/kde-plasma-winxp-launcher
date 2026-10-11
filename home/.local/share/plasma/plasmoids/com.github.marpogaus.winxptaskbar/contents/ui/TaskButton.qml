@@ -28,6 +28,7 @@ Item {
         imagePath: "widgets/tasks"
         // Like Plasma's task manager; themes without a state fall back to normal
         prefix: button.attention && !button.active ? ["attention", "normal"]
+              : button.down && button.hovered ? ["focus-hover", "focus", "normal"]
               : button.down ? ["focus", "normal"]
               : button.hovered ? ["hover", "normal"]
               : button.minimized ? ["minimized", "normal"]

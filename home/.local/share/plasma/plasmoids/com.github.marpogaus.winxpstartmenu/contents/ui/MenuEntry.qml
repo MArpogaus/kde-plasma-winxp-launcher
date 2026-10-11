@@ -112,8 +112,9 @@ Item {
 
     KSvg.SvgItem {
         anchors.right: parent.right
-        anchors.rightMargin: 4
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.rightMargin: 6
+        // On whole pixels, so the arrow stays crisp
+        y: Math.floor((parent.height - height) / 2)
         width: naturalSize.width
         height: naturalSize.height
         visible: entry.showArrow

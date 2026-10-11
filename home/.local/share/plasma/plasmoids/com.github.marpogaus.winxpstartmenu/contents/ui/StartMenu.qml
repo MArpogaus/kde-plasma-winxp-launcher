@@ -41,8 +41,18 @@ FocusScope {
 
     readonly property int bodyHeight: Math.max(leftColumn.neededHeight, rightColumn.neededHeight, 330)
 
+    // XP's own frame from the Plasma theme (widgets/winxp, startmenu-*):
+    // header, columns and footer with a 2 px frame. Without it the window
+    // shows the theme's dialog frame and lines separate the parts.
+    KSvg.Svg {
+        id: winxp
+        imagePath: "widgets/winxp"
+    }
+    readonly property bool xpChrome: winxp.hasElement("startmenu-header")
+    readonly property int frameWidth: xpChrome ? 2 : 0
+
     // header | 1 px line | body | 1 px line | footer
-    width: xp.leftWidth + 1 + xp.rightWidth
+    width: frameWidth + xp.leftWidth + 1 + xp.rightWidth + frameWidth
     height: xp.headerHeight + 1 + bodyHeight + 1 + xp.footerHeight
 
     onSearchTextChanged: searchIndex = 0
@@ -181,26 +191,51 @@ FocusScope {
     }
 
     // ------------------------------------------------------------------
-    // The window draws the Plasma theme's dialog frame; inside it the
-    // header, the two columns and the footer are separated by the
-    // theme's lines, and all text uses the theme's colours.
+    // XP's frame (header with the orange line, the columns' background
+    // and the footer) or, without it, the theme's lines between the parts
     // ------------------------------------------------------------------
     Item {
         anchors.fill: parent
 
+        KSvg.SvgItem {
+            visible: menu.xpChrome
+            width: parent.width
+            height: naturalSize.height
+            svg: winxp
+            elementId: "startmenu-header"
+        }
+        KSvg.SvgItem {
+            visible: menu.xpChrome
+            y: menu.xp.headerHeight + 3
+            width: parent.width
+            height: menu.bodyHeight - 2
+            svg: winxp
+            elementId: "startmenu-body"
+        }
+        KSvg.SvgItem {
+            visible: menu.xpChrome
+            anchors.bottom: parent.bottom
+            width: parent.width
+            height: naturalSize.height
+            svg: winxp
+            elementId: "startmenu-footer"
+        }
+
         // --------------------------------------------------------------
         // Header: user picture and name
         // --------------------------------------------------------------
+        // XP's frame around the picture is part of the header
         Item {
             id: avatarFrame
             x: 7
             y: 7
-            width: 48
-            height: 48
+            width: 52
+            height: 52
 
             Image {
                 id: avatar
                 anchors.fill: parent
+                anchors.margins: 2
                 source: menu.userAvatar
                 sourceSize: Qt.size(96, 96)
                 fillMode: Image.PreserveAspectCrop
@@ -210,13 +245,29 @@ FocusScope {
 
             Kirigami.Icon {
                 anchors.fill: parent
+                anchors.margins: 2
                 visible: avatar.status !== Image.Ready
                 source: "user-identity"
                 roundToIconSize: false
             }
         }
 
+        // On XP's blue header: white with a soft shadow
         Text {
+            visible: menu.xpChrome
+            x: userName.x + 1
+            anchors.verticalCenter: avatarFrame.verticalCenter
+            anchors.verticalCenterOffset: 2
+            width: userName.width
+            text: userName.text
+            textFormat: Text.PlainText
+            elide: Text.ElideRight
+            renderType: Text.NativeRendering
+            font: userName.font
+            color: Qt.rgba(0, 0, 0, 0.4)
+        }
+        Text {
+            id: userName
             x: avatarFrame.x + avatarFrame.width + 8
             anchors.verticalCenter: avatarFrame.verticalCenter
             width: parent.width - x - 10
@@ -227,10 +278,13 @@ FocusScope {
             font.family: menu.xp.fontFamily
             font.pixelSize: 18
             font.bold: true
+            Kirigami.Theme.colorSet: menu.xpChrome ? Kirigami.Theme.Complementary : Kirigami.Theme.Window
+            Kirigami.Theme.inherit: false
             color: Kirigami.Theme.textColor
         }
 
         MenuSeparator {
+            visible: !menu.xpChrome
             y: menu.xp.headerHeight - height / 2
             width: parent.width
             height: 1
@@ -241,8 +295,9 @@ FocusScope {
         // --------------------------------------------------------------
         Item {
             id: body
+            x: menu.frameWidth
             y: menu.xp.headerHeight + 1
-            width: parent.width
+            width: parent.width - 2 * menu.frameWidth
             height: menu.bodyHeight
 
             // ---------------- left column: programs ----------------
@@ -295,6 +350,7 @@ FocusScope {
                     }
 
                     MenuSeparator {
+                        xpElement: "startmenu-separator"
                         width: parent.width
                         height: menu.xp.separatorHeight
                         leftInset: 2
@@ -387,6 +443,7 @@ FocusScope {
                     }
 
                     MenuSeparator {
+                        xpElement: "startmenu-separator"
                         id: searchSeparator
                         anchors.top: searchHeader.bottom
                         width: parent.width
@@ -444,6 +501,7 @@ FocusScope {
                 }
 
                 MenuSeparator {
+                    xpElement: "startmenu-separator"
                     id: allProgramsSeparator
                     x: 2
                     anchors.bottom: allPrograms.top
@@ -477,26 +535,34 @@ FocusScope {
                         visible: allPrograms.highlighted
                     }
 
+                    // XP's green arrow from the theme, else its plain arrow
+                    readonly property bool xpArrow: winxp.hasElement("startmenu-allprograms-arrow")
+                    readonly property int arrowGap: xpArrow ? 18 : 8
+
                     Text {
                         id: allProgramsLabel
-                        x: Math.round((allPrograms.width - width - 8 - allProgramsArrow.width) / 2)
+                        x: Math.round((allPrograms.width - width - allPrograms.arrowGap - allProgramsArrow.width) / 2)
                         anchors.verticalCenter: parent.verticalCenter
                         text: i18n("All Programs")
                         renderType: Text.NativeRendering
                         font.family: menu.xp.fontFamily
                         font.pixelSize: menu.xp.fontPixelSize
                         font.bold: true
-                        color: Kirigami.Theme.textColor
+                        color: allPrograms.highlighted ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
                     }
                     KSvg.SvgItem {
                         id: allProgramsArrow
                         anchors.left: allProgramsLabel.right
-                        anchors.leftMargin: 8
+                        anchors.leftMargin: allPrograms.arrowGap
                         anchors.verticalCenter: parent.verticalCenter
-                        width: 10
-                        height: 10
+                        width: allPrograms.xpArrow ? naturalSize.width : 10
+                        height: allPrograms.xpArrow ? naturalSize.height : 10
+                        svg: allPrograms.xpArrow ? winxp : arrowsSvg
+                        elementId: allPrograms.xpArrow ? "startmenu-allprograms-arrow" : "right-arrow"
+                    }
+                    KSvg.Svg {
+                        id: arrowsSvg
                         imagePath: "widgets/arrows"
-                        elementId: "right-arrow"
                     }
 
                     MouseArea {
@@ -514,8 +580,9 @@ FocusScope {
                 }
             }
 
-            // Divider between the columns
+            // Divider between the columns (part of XP's frame)
             KSvg.SvgItem {
+                visible: !menu.xpChrome
                 x: leftColumn.width
                 width: naturalSize.width
                 height: parent.height
@@ -535,6 +602,9 @@ FocusScope {
 
                 Column {
                     id: placesColumn
+                    // XP writes the places in dark blue: the theme's header colours
+                    Kirigami.Theme.colorSet: menu.xpChrome ? Kirigami.Theme.Header : Kirigami.Theme.Window
+                    Kirigami.Theme.inherit: false
                     x: 2
                     y: 5
                     width: parent.width - 4
@@ -574,6 +644,7 @@ FocusScope {
                             visible: !hidden
 
                             MenuSeparator {
+                                xpElement: "startmenu-places-separator"
                                 anchors.fill: parent
                                 visible: place.modelData.separator === true
                                 leftInset: 52
@@ -616,6 +687,7 @@ FocusScope {
         }
 
         MenuSeparator {
+            visible: !menu.xpChrome
             y: body.y + body.height - height / 2
             width: parent.width
             height: 1
@@ -637,12 +709,12 @@ FocusScope {
                 spacing: 8
 
                 FooterButton {
-                    iconSource: "system-log-out"
+                    iconSource: Qt.resolvedUrl("../images/log-off.svg")
                     text: i18n("Log Off")
                     onClicked: menu.controller.logOff()
                 }
                 FooterButton {
-                    iconSource: "system-shutdown"
+                    iconSource: Qt.resolvedUrl("../images/turn-off.svg")
                     text: i18n("Turn Off Computer")
                     onClicked: menu.controller.turnOff()
                 }
@@ -662,11 +734,13 @@ FocusScope {
         width: footerRow.width + 6
         height: 30
 
+        // XP's lighter box on the blue footer, else the theme's tool button
         KSvg.FrameSvgItem {
             anchors.fill: parent
             visible: footerMouse.containsMouse
-            imagePath: "widgets/button"
-            prefix: footerMouse.pressed ? "toolbutton-pressed" : "toolbutton-hover"
+            imagePath: menu.xpChrome ? "widgets/winxp" : "widgets/button"
+            prefix: menu.xpChrome ? (footerMouse.pressed ? "startmenu-footer-pressed" : "startmenu-footer-hover")
+                                  : (footerMouse.pressed ? "toolbutton-pressed" : "toolbutton-hover")
         }
 
         Row {
@@ -688,6 +762,8 @@ FocusScope {
                 renderType: Text.NativeRendering
                 font.family: menu.xp.fontFamily
                 font.pixelSize: menu.xp.fontPixelSize
+                Kirigami.Theme.colorSet: menu.xpChrome ? Kirigami.Theme.Complementary : Kirigami.Theme.Window
+                Kirigami.Theme.inherit: false
                 color: Kirigami.Theme.textColor
             }
         }
