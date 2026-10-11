@@ -27,15 +27,15 @@ KWin.TabBoxSwitcher {
 
         location: PlasmaCore.Types.Floating
         visible: tabBox.visible
-        // A popup, as KWin's own switchers, so the keys KWin passes on reach it
+        // As KWin's own switchers (on Wayland the popup flag gives the
+        // switcher the focus for the keys KWin passes on)
         flags: Qt.Popup | Qt.X11BypassWindowManagerHint
         x: tabBox.screenGeometry.x + Math.round((tabBox.screenGeometry.width - width) / 2)
         y: tabBox.screenGeometry.y + Math.round((tabBox.screenGeometry.height - height) / 2)
 
         backgroundHints: tabBox.xpBox ? PlasmaCore.Dialog.NoBackground : PlasmaCore.Dialog.StandardBackground
 
-        mainItem: FocusScope {
-            focus: true
+        mainItem: Item {
             // XP's box keeps 12 px around the icons and the title
             readonly property real pad: tabBox.xpBox ? box.margins.left : 0
 

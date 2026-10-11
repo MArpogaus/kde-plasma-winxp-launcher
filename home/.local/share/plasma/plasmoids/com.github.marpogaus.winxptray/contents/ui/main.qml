@@ -137,7 +137,7 @@ PlasmoidItem {
                 // the label. As Plasma, no tooltip over an open applet
                 if (!item.mainText) {
                     item.mainText = Qt.binding(() => item.text);
-                    item.active = Qt.binding(() => item.mainText !== "" && !(item.applet && item.applet.expanded));
+                    item.active = Qt.binding(() => (item.mainText !== "" || item.subText.length > 0) && !(item.applet && item.applet.expanded));
                 }
                 const icon = item.iconContainer;
                 const row = icon.parent;

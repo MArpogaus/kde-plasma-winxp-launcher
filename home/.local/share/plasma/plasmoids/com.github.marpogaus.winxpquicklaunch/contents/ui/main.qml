@@ -366,7 +366,7 @@ PlasmoidItem {
                     const left = location === PlasmaCore.Types.LeftEdge;
                     const edge = bar.mapToGlobal(left ? bar.width : 0, 0).x;
                     x = left ? Math.round(edge) : Math.round(edge) - width;
-                    y = Math.round(Math.min(p.y, bar.Screen.virtualY + bar.Screen.height - height));
+                    y = Math.round(Math.max(bar.Screen.virtualY, Math.min(p.y, bar.Screen.virtualY + bar.Screen.height - height)));
                     return;
                 }
                 x = Math.round(p.x);
@@ -375,6 +375,7 @@ PlasmoidItem {
                     : Math.round(p.y) - height;
             }
             onHeightChanged: if (visible) place()
+            onWidthChanged: if (visible) place()
 
             // As wide as the longest name (hidden rows do not count)
             mainItem: ColumnLayout {

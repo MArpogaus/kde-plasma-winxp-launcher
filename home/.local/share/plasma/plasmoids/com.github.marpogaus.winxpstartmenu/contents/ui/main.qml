@@ -456,7 +456,9 @@ PlasmoidItem {
         const model = placeModel(key);
         if (!model) {
             // No folder view plugin or no such category: a click opens it instead
-            if (!fromHover) {
+            if (fromHover) {
+                closeCascadesFrom(0);
+            } else {
                 openPlace(key);
             }
             return;
@@ -617,11 +619,12 @@ PlasmoidItem {
                 return key;
             }
         }
-        const name = String(url || favoriteId || "").replace(/^applications:/, "").split("/").pop();
-        if (name.endsWith(".desktop")) {
+        const id = String(favoriteId || "");
+        const name = String(url || id).replace(/^applications:/, "").split("/").pop();
+        if (name.endsWith(".desktop") && !id.startsWith("file:") && !id.startsWith("/")) {
             for (let i = 0; i < pinnedRows.count; ++i) {
                 const row = pinnedRows.objectAt(i);
-                if (row && row.fileName === name) {
+                if (row && row.favoriteId.startsWith("preferred:") && row.fileName === name) {
                     return row.favoriteId;
                 }
             }
