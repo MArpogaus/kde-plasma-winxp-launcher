@@ -39,13 +39,14 @@ PlasmoidItem {
         }
         readonly property bool xpArea: winxp.present
 
-        // XP's chevron reaches 11 px left of the block; keep that (plus
-        // 3 px) inside this widget so it never covers the task buttons
-        readonly property int blockLeft: xpArea && showChevron ? 14 : 0
+        // XP's chevron sits centred on the block's edge, so it reaches 8 px
+        // left of it; keep that (plus 3 px) inside this widget so it never
+        // covers the task buttons
+        readonly property int blockLeft: xpArea && showChevron ? 11 : 0
         // Room for the block's edge and the chevron, or just the chevron;
         // on a vertical taskbar a strip at the block's top
         Layout.minimumWidth: !horizontal ? -1
-                           : xpArea ? blockLeft + (showChevron ? 14 : 10)
+                           : xpArea ? blockLeft + (showChevron ? 17 : 10)
                            : showChevron ? chevron.width + 2 : 0
         Layout.maximumWidth: Layout.minimumWidth
         Layout.minimumHeight: horizontal ? -1 : xpArea ? 10 : 0
@@ -234,12 +235,12 @@ PlasmoidItem {
         }
 
         // Centred on the taskbar's height; the arrow points right while the
-        // hidden icons are shown. XP's starts 11 px left of the block's edge
-        // and is drawn 1:1.
+        // hidden icons are shown. XP's is centred on the block's 2 px edge
+        // line and drawn 1:1.
         Item {
             id: chevron
             visible: anchorItem.showChevron
-            x: anchorItem.xpArea ? anchorItem.blockLeft - 11 : 0
+            x: anchorItem.xpArea ? anchorItem.blockLeft + 1 - width / 2 : 0
             y: Math.round(anchorItem.area.y + (anchorItem.area.height - height) / 2)
             width: 18
             height: anchorItem.xpArea ? 19 : 18
