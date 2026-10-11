@@ -67,10 +67,17 @@ FocusScope {
     }
 
     function rebuildFrequent() {
+        // As XP: only as many as fit on the screen with the rest of the menu
+        const area = controller.availableArea;
+        const row = xp.programRowHeight;
+        const fixed = leftColumn.neededHeight - frequentItems.length * row;
+        const room = area && area.height > 0
+            ? Math.floor((area.height - 8 - xp.headerHeight - 2 - xp.footerHeight - fixed) / row) : numFrequentApps;
+        const limit = Math.max(0, Math.min(numFrequentApps, room));
         const items = [];
-        for (let i = 0; i < frequentCollector.count && items.length < numFrequentApps; ++i) {
+        for (let i = 0; i < frequentCollector.count && items.length < limit; ++i) {
             const o = frequentCollector.objectAt(i);
-            if (!o || controller.isPinned(o.favoriteId)) {
+            if (!o || controller.isPinned(o.favoriteId, o.url)) {
                 continue;
             }
             items.push({ row: i, display: o.display, decoration: o.decoration, favoriteId: o.favoriteId, actionList: o.actionList, url: o.url });
@@ -109,6 +116,11 @@ FocusScope {
         id: hoverTimer
         interval: 350
         onTriggered: {
+            // Only for the row still under the pointer (not one the pointer
+            // crossed on its way into a cascade), and only while the menu is open
+            if (!menu.controller.menuOpen || (menu.hoverItem && menu.hoverItem.hovered === false)) {
+                return;
+            }
             if (menu.hoverKind === menu.openCascade && menu.hoverKind !== "") {
                 return;
             }

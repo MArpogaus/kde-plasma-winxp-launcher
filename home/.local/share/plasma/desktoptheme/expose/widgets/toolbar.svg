@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Tool bars in Plasma's popups: flat, as on XP's white menus.
+     Part of the Windows XP pack, replacing Exposé's. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="47" height="9" viewBox="0 0 47 9">
+<g id="topleft"><rect x="0" y="0" width="2" height="2" fill="#000" fill-opacity="0"/></g>
+<g id="top"><rect x="4" y="0" width="1" height="2" fill="#000" fill-opacity="0"/></g>
+<g id="topright"><rect x="7" y="0" width="2" height="2" fill="#000" fill-opacity="0"/></g>
+<g id="left"><rect x="11" y="0" width="2" height="1" fill="#000" fill-opacity="0"/></g>
+<g id="center"><rect x="15" y="0" width="1" height="1" fill="#000" fill-opacity="0"/></g>
+<g id="right"><rect x="18" y="0" width="2" height="1" fill="#000" fill-opacity="0"/></g>
+<g id="bottomleft"><rect x="22" y="0" width="2" height="2" fill="#000" fill-opacity="0"/></g>
+<g id="bottom"><rect x="26" y="0" width="1" height="2" fill="#000" fill-opacity="0"/></g>
+<g id="bottomright"><rect x="29" y="0" width="2" height="2" fill="#000" fill-opacity="0"/></g>
+<rect id="hint-left-margin" x="33" y="0" width="2" height="1" fill="#000" fill-opacity="0"/>
+<rect id="hint-top-margin" x="37" y="0" width="1" height="2" fill="#000" fill-opacity="0"/>
+<rect id="hint-right-margin" x="40" y="0" width="2" height="1" fill="#000" fill-opacity="0"/>
+<rect id="hint-bottom-margin" x="44" y="0" width="1" height="2" fill="#000" fill-opacity="0"/>
+</svg>

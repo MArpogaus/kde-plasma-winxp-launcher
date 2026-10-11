@@ -116,6 +116,7 @@ PlasmoidItem {
         showRecentDocs: false
         showPowerSession: false
         showFavoritesPlaceholder: false
+        highlightNewlyInstalledApps: root.highlightNew
 
         Component.onCompleted: {
             favoritesModel.initForClient("com.github.marpogaus.winxpstartmenu.favorites.instance-" + Plasmoid.id);
@@ -385,7 +386,7 @@ PlasmoidItem {
     // otherwise the cascade's first row is level with visualParent.
     function openCascade(level, visualParent, model, ownerView, ownerIndex, bottomAlign) {
         closeCascadesFrom(level);
-        if (!model || !visualParent) {
+        if (!model || !visualParent || !menuOpen) {
             return null;
         }
         const cascade = cascadeComponent.createObject(root, {
@@ -459,6 +460,8 @@ PlasmoidItem {
         }
         if (openCascade(0, item, model, null, -1)) {
             startMenu.openCascade = key;
+        } else if (model.isStaticMenu || isFolderModel(model)) {
+            model.destroy();
         }
     }
 
@@ -467,6 +470,8 @@ PlasmoidItem {
         const model = key === "programs" ? rootModel : classicSubmenu(key);
         if (openCascade(0, item, model, null, -1)) {
             classicMenu.openCascade = key;
+        } else if (model !== rootModel) {
+            model.destroy();
         }
     }
 
@@ -596,8 +601,21 @@ PlasmoidItem {
         return model.modelForRow(index);
     }
 
-    function isPinned(favoriteId) {
-        return !!favoriteId && rootModel.favoritesModel.isFavorite(favoriteId);
+    // The key a program is pinned under, or "": the recently used list
+    // names programs by their .desktop file, the pinned list as
+    // "applications:" plus that (or by URL)
+    function pinnedKey(favoriteId, url) {
+        const favorites = rootModel.favoritesModel;
+        for (const key of [favoriteId, favoriteId ? "applications:" + favoriteId : "", url ? String(url) : ""]) {
+            if (key && favorites.isFavorite(key)) {
+                return key;
+            }
+        }
+        return "";
+    }
+
+    function isPinned(favoriteId, url) {
+        return pinnedKey(favoriteId, url) !== "";
     }
 
     function launchFavorite(index) {
@@ -629,16 +647,14 @@ PlasmoidItem {
         const cfg = Plasmoid.configuration;
         switch (key) {
         case "documents":
-            return openUrl(StandardPaths.writableLocation(StandardPaths.DocumentsLocation));
         case "pictures":
-            return openUrl(StandardPaths.writableLocation(StandardPaths.PicturesLocation));
         case "music":
-            return openUrl(StandardPaths.writableLocation(StandardPaths.MusicLocation));
         case "computer":
-            return openUrl(cfg.myComputerUrl);
+            return openUrl(folderUrl(key));
         case "network":
             return openUrl(cfg.networkUrl);
         case "controlpanel":
+        case "admintools": // without KDE's System category: Control Panel
             return runCommand(cfg.controlPanelCommand);
         case "defaults":
             return runCommand(cfg.defaultsCommand);
@@ -712,9 +728,10 @@ PlasmoidItem {
 
         if (favoriteId) {
             entries.push({ separator: true });
-            if (favorites.isFavorite(favoriteId)) {
+            const pinnedAs = pinnedKey(favoriteId);
+            if (pinnedAs !== "") {
                 entries.push({ text: i18n("Unpin from Start menu"), handler: () => {
-                    favorites.removeFavorite(favoriteId);
+                    favorites.removeFavorite(pinnedAs);
                 } });
             } else {
                 entries.push({ text: i18n("Pin to Start menu"), handler: () => {

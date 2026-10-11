@@ -132,6 +132,11 @@ PlasmoidItem {
                 if (!item || !item.inHiddenLayout || !item.iconContainer) {
                     continue;
                 }
+                // Plasma leaves a hidden item's tooltip title out when its
+                // label shows the name; the row hides the label
+                if (!item.mainText) {
+                    item.mainText = Qt.binding(() => item.text);
+                }
                 const icon = item.iconContainer;
                 const row = icon.parent;
                 icon.implicitWidth = Qt.binding(() => plasmaTray.itemSize);
@@ -192,6 +197,14 @@ PlasmoidItem {
             expander = null;
         }
 
+        onTrayChanged: if (!tray) trayFinder.attempts = 0
+        Connections {
+            target: Plasmoid.containment
+            function onAppletAdded() {
+                trayFinder.attempts = 0;
+            }
+        }
+
         onHorizontalChanged: {
             if (!horizontal) {
                 releaseTray();
@@ -213,15 +226,23 @@ PlasmoidItem {
             return null;
         }
 
+        // Looks for the tray for a minute, and again when a widget is added
+        // to the panel or the tray goes away (it reloads)
         Timer {
+            id: trayFinder
+            property int attempts: 0
             interval: 1000
             repeat: true
             // Vertical panels keep Plasma's own arrow
-            running: anchorItem.horizontal && !anchorItem.tray && !!anchorItem.Window.window
+            running: anchorItem.horizontal && !anchorItem.tray && !!anchorItem.Window.window && attempts < 60
             triggeredOnStart: true
             onTriggered: {
+                ++attempts;
+                // everything of the tray used here, so a Plasma without it
+                // keeps its own arrow
                 const tray = anchorItem.findItem(anchorItem.Window.contentItem,
-                    i => "systemTrayState" in i && "hiddenLayout" in i && "plasmoid" in i);
+                    i => "systemTrayState" in i && "hiddenLayout" in i && "plasmoid" in i
+                         && "hiddenModel" in i && "visibleLayout" in i && "itemSize" in i);
                 const expander = tray && anchorItem.findItem(tray,
                     i => "wasExpanded" in i && "arrowAnimationDuration" in i);
                 if (expander) {

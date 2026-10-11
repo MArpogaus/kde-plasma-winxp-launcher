@@ -57,8 +57,9 @@ FocusScope {
         return list;
     }
 
-    // As wide as the longest title needs (plus room for the arrows)
-    width: rowsLeft + iconLeft + iconSize + textSpacing + Math.ceil(widestTitle) + 32
+    // As wide as the longest title needs (plus room for the arrows), at
+    // most as wide as the cascades get (longer names are elided)
+    width: rowsLeft + iconLeft + iconSize + textSpacing + Math.min(Math.ceil(widestTitle), 380) + 32
     height: rows.implicitHeight
 
     property real widestTitle: 0
@@ -108,6 +109,11 @@ FocusScope {
         id: hoverTimer
         interval: 350
         onTriggered: {
+            // Only for the row still under the pointer (not one the pointer
+            // crossed on its way into a cascade), and only while the menu is open
+            if (!menu.controller.menuOpen || (menu.hoverItem && menu.hoverItem.hovered === false)) {
+                return;
+            }
             if (menu.hoverKind !== "" && menu.hoverKind === menu.openCascade) {
                 return;
             }

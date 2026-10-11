@@ -23,8 +23,11 @@ Item {
 
     readonly property int rowHeight: xp.cascadeRowHeight
     readonly property int itemCount: grid.count
-    // Scrolling menus keep one column and show arrows at both ends
-    readonly property bool scroll: controller.scrollPrograms
+    // Scrolling menus keep one column and show arrows at both ends; menus
+    // that would wrap into more columns than the screen holds scroll too
+    readonly property int maxColumns: controller.availableArea && controller.availableArea.width > 0
+        ? Math.max(1, Math.floor(controller.availableArea.width / columnWidth)) : 99
+    readonly property bool scroll: controller.scrollPrograms || Math.ceil(itemCount / Math.max(1, maxRows)) > maxColumns
     readonly property bool scrolling: scroll && itemCount > maxRows
     readonly property int stripHeight: scrolling ? 16 : 0
     readonly property int shownRows: scrolling ? Math.max(1, maxRows - 2) : Math.max(1, Math.min(itemCount, maxRows))
@@ -106,7 +109,9 @@ Item {
         id: hoverTimer
         interval: 350
         onTriggered: {
-            if (view.hoverIndex < 0) {
+            // Only for the row still under the pointer, not one crossed on
+            // the way into the submenu
+            if (view.hoverIndex < 0 || view.pointerIndex !== view.hoverIndex) {
                 return;
             }
             if (view.hoverHasChildren) {

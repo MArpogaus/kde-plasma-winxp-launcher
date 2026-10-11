@@ -75,11 +75,13 @@ PlasmoidItem {
                                                      Plasmoid.configuration.maximumButtonWidth)
         readonly property int overflowWidth: 13
         readonly property int fitPerRow: Math.max(1, Math.floor((width + spacing) / (minimumWidth + spacing)))
-        readonly property bool overflow: root.horizontal && count > rows * fitPerRow
-        // Each button with its spacing, then the »
-        readonly property int shownCount: overflow
-            ? rows * Math.max(1, Math.floor((width - overflowWidth) / (minimumWidth + spacing)))
-            : count
+        // On a vertical taskbar: how many buttons fit in the column
+        readonly property int fitPerColumn: Math.max(1, Math.floor((height + spacing) / rowPitch))
+        readonly property bool overflow: root.horizontal ? count > rows * fitPerRow : count > fitPerColumn
+        // Each button with its spacing, then the » (below them when vertical)
+        readonly property int shownCount: !overflow ? count
+            : root.horizontal ? rows * Math.max(1, Math.floor((width - overflowWidth) / (minimumWidth + spacing)))
+            : Math.max(1, fitPerColumn - 1)
         readonly property int perRow: root.horizontal ? Math.max(1, Math.ceil(shownCount / rows)) : 1
         readonly property real buttonWidth: count > 0
             ? Math.max(1, Math.min(Plasmoid.configuration.maximumButtonWidth,
@@ -141,14 +143,15 @@ PlasmoidItem {
                 pressed: mouse.pressed && mouse.pressedButtons === Qt.LeftButton
 
                 // Tell KWin where the button is so minimize animations land
-                // on it (on the » for the windows in its menu)
+                // on it (on the » for the windows in its menu); on Wayland
+                // the item given counts, not the rectangle
                 function publishGeometry() {
                     if (!Window.window) {
                         return;
                     }
                     const target = visible ? task : overflowButton;
                     const p = target.mapToGlobal(0, 0);
-                    tasksModel.requestPublishDelegateGeometry(modelIndex, Qt.rect(p.x, p.y, target.width, target.height), task);
+                    tasksModel.requestPublishDelegateGeometry(modelIndex, Qt.rect(p.x, p.y, target.width, target.height), target);
                 }
                 onVisibleChanged: geometryTimer.restart()
                 onXChanged: geometryTimer.restart()
@@ -204,8 +207,8 @@ PlasmoidItem {
         Item {
             id: overflowButton
             visible: bar.overflow
-            x: bar.width - width
-            y: Math.round(bar.area.y + 3)
+            x: root.horizontal ? bar.width - width : Math.round((bar.width - width) / 2)
+            y: root.horizontal ? Math.round(bar.area.y + 3) : Math.round(bar.shownCount * bar.rowPitch + (bar.rowPitch - height) / 2)
             width: bar.overflowWidth
             height: 12
 
@@ -269,8 +272,17 @@ PlasmoidItem {
             // the taskbar when it is at the top of the screen
             function place() {
                 const p = overflowButton.mapToGlobal(0, 0);
+                const location = Plasmoid.location;
+                if (location === PlasmaCore.Types.LeftEdge || location === PlasmaCore.Types.RightEdge) {
+                    // Beside a vertical taskbar, top edges aligned
+                    const left = location === PlasmaCore.Types.LeftEdge;
+                    const edge = bar.mapToGlobal(left ? bar.width : 0, 0).x;
+                    x = left ? Math.round(edge) : Math.round(edge) - width;
+                    y = Math.round(p.y);
+                    return;
+                }
                 x = Math.round(p.x);
-                y = Plasmoid.location === PlasmaCore.Types.TopEdge
+                y = location === PlasmaCore.Types.TopEdge
                     ? Math.round(bar.mapToGlobal(0, bar.area.y + bar.area.height).y)
                     : Math.round(p.y) - height;
             }
@@ -387,6 +399,10 @@ PlasmoidItem {
         signal actionTriggered
         readonly property bool minimized: task ? task.model.IsMinimized === true : false
         readonly property bool maximized: task ? task.model.IsMaximized === true : false
+        // What the window allows (greyed out otherwise, as XP's)
+        function can(role) {
+            return !task || task.model[role] !== false;
+        }
 
         // At the pointer like XP's; at the bottom of the screen it opens
         // upwards with its left edge at the pointer
@@ -407,32 +423,32 @@ PlasmoidItem {
         PlasmaExtras.MenuItem {
             text: i18n("Restore")
             icon: "window-restore"
-            enabled: windowMenu.minimized || windowMenu.maximized
+            enabled: windowMenu.minimized || (windowMenu.maximized && windowMenu.can("IsMaximizable"))
             onClicked: windowMenu.request(index => windowMenu.minimized
                 ? tasksModel.requestActivate(index) : tasksModel.requestToggleMaximized(index))
         }
         PlasmaExtras.MenuItem {
             text: i18n("Move")
             icon: "transform-move"
-            enabled: !windowMenu.minimized
+            enabled: !windowMenu.minimized && windowMenu.can("IsMovable")
             onClicked: windowMenu.request(index => tasksModel.requestMove(index))
         }
         PlasmaExtras.MenuItem {
             text: i18n("Size")
             icon: "transform-scale"
-            enabled: !windowMenu.minimized && !windowMenu.maximized
+            enabled: !windowMenu.minimized && !windowMenu.maximized && windowMenu.can("IsResizable")
             onClicked: windowMenu.request(index => tasksModel.requestResize(index))
         }
         PlasmaExtras.MenuItem {
             text: i18n("Minimize")
             icon: "window-minimize"
-            enabled: !windowMenu.minimized
+            enabled: !windowMenu.minimized && windowMenu.can("IsMinimizable")
             onClicked: windowMenu.request(index => tasksModel.requestToggleMinimized(index))
         }
         PlasmaExtras.MenuItem {
             text: i18n("Maximize")
             icon: "window-maximize"
-            enabled: !windowMenu.maximized
+            enabled: !windowMenu.maximized && windowMenu.can("IsMaximizable")
             onClicked: windowMenu.request(index => tasksModel.requestToggleMaximized(index))
         }
         PlasmaExtras.MenuItem {
@@ -441,6 +457,7 @@ PlasmoidItem {
         PlasmaExtras.MenuItem {
             text: i18n("Close")
             icon: "window-close"
+            enabled: windowMenu.can("IsClosable")
             onClicked: windowMenu.request(index => tasksModel.requestClose(index))
         }
     }

@@ -359,8 +359,17 @@ PlasmoidItem {
             // at the top of the screen
             function place() {
                 const p = overflowButton.mapToGlobal(0, 0);
+                const location = Plasmoid.location;
+                if (location === PlasmaCore.Types.LeftEdge || location === PlasmaCore.Types.RightEdge) {
+                    // Beside a vertical taskbar, top edges aligned
+                    const left = location === PlasmaCore.Types.LeftEdge;
+                    const edge = bar.mapToGlobal(left ? bar.width : 0, 0).x;
+                    x = left ? Math.round(edge) : Math.round(edge) - width;
+                    y = Math.round(p.y);
+                    return;
+                }
                 x = Math.round(p.x);
-                y = Plasmoid.location === PlasmaCore.Types.TopEdge
+                y = location === PlasmaCore.Types.TopEdge
                     ? Math.round(bar.mapToGlobal(0, bar.area.y + bar.area.height).y)
                     : Math.round(p.y) - height;
             }

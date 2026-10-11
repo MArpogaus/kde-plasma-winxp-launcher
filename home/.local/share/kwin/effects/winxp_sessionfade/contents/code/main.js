@@ -23,6 +23,11 @@ const sessionFade = {
         if (this.isDialog(window) || this.animations.has(window) || window.deleted) {
             return;
         }
+        // An animation paints its window, so leave out the ones not shown
+        // (minimized, on another desktop or activity)
+        if (window.minimized || window.visible === false) {
+            return;
+        }
         const id = set({
             window: window,
             duration: fadeIn,

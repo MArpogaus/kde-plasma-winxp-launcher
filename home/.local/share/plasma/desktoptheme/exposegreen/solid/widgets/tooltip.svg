@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Windows XP tooltip: pale yellow, 1 px black border, shadow on the right
-     and bottom. Part of the Windows XP pack (XP's Olive Green scheme), replacing Exposé's. -->
+<!-- Plasma draws its in-window menus and combo box lists (and controls'
+     tooltips) with this: Windows XP's menu, as dialogs/background.
+     Part of the Windows XP pack (XP's Olive Green scheme). -->
 <svg xmlns="http://www.w3.org/2000/svg" width="80" height="70" viewBox="0 0 80 70">
-<g id="topleft"><rect x="0" y="0" width="3" height="3" fill="#ffffe1"/><rect x="0" y="0" width="3" height="1" fill="#000000"/><rect x="0" y="0" width="1" height="3" fill="#000000"/></g>
-<g id="top"><rect x="3" y="0" width="10" height="3" fill="#ffffe1"/><rect x="3" y="0" width="10" height="1" fill="#000000"/></g>
-<g id="topright"><rect x="13" y="0" width="3" height="3" fill="#ffffe1"/><rect x="13" y="0" width="3" height="1" fill="#000000"/><rect x="15" y="0" width="1" height="3" fill="#000000"/></g>
-<g id="left"><rect x="0" y="3" width="3" height="10" fill="#ffffe1"/><rect x="0" y="3" width="1" height="10" fill="#000000"/></g>
-<g id="center"><rect x="3" y="3" width="10" height="10" fill="#ffffe1"/></g>
-<g id="right"><rect x="13" y="3" width="3" height="10" fill="#ffffe1"/><rect x="15" y="3" width="1" height="10" fill="#000000"/></g>
-<g id="bottomleft"><rect x="0" y="13" width="3" height="3" fill="#ffffe1"/><rect x="0" y="15" width="3" height="1" fill="#000000"/><rect x="0" y="13" width="1" height="3" fill="#000000"/></g>
-<g id="bottom"><rect x="3" y="13" width="10" height="3" fill="#ffffe1"/><rect x="3" y="15" width="10" height="1" fill="#000000"/></g>
-<g id="bottomright"><rect x="13" y="13" width="3" height="3" fill="#ffffe1"/><rect x="13" y="15" width="3" height="1" fill="#000000"/><rect x="15" y="13" width="1" height="3" fill="#000000"/></g>
+<g id="topleft"><rect x="0" y="0" width="3" height="3" fill="#ffffff"/><rect x="0" y="0" width="3" height="1" fill="#aca899"/><rect x="0" y="0" width="1" height="3" fill="#aca899"/></g>
+<g id="top"><rect x="3" y="0" width="10" height="3" fill="#ffffff"/><rect x="3" y="0" width="10" height="1" fill="#aca899"/></g>
+<g id="topright"><rect x="13" y="0" width="3" height="3" fill="#ffffff"/><rect x="13" y="0" width="3" height="1" fill="#aca899"/><rect x="15" y="0" width="1" height="3" fill="#aca899"/></g>
+<g id="left"><rect x="0" y="3" width="3" height="10" fill="#ffffff"/><rect x="0" y="3" width="1" height="10" fill="#aca899"/></g>
+<g id="center"><rect x="3" y="3" width="10" height="10" fill="#ffffff"/></g>
+<g id="right"><rect x="13" y="3" width="3" height="10" fill="#ffffff"/><rect x="15" y="3" width="1" height="10" fill="#aca899"/></g>
+<g id="bottomleft"><rect x="0" y="13" width="3" height="3" fill="#ffffff"/><rect x="0" y="15" width="3" height="1" fill="#aca899"/><rect x="0" y="13" width="1" height="3" fill="#aca899"/></g>
+<g id="bottom"><rect x="3" y="13" width="10" height="3" fill="#ffffff"/><rect x="3" y="15" width="10" height="1" fill="#aca899"/></g>
+<g id="bottomright"><rect x="13" y="13" width="3" height="3" fill="#ffffff"/><rect x="13" y="15" width="3" height="1" fill="#aca899"/><rect x="15" y="13" width="1" height="3" fill="#aca899"/></g>
 <rect id="hint-top-margin" x="40" y="0" width="1" height="3" fill="#00ff00" fill-opacity="0"/>
 <rect id="hint-bottom-margin" x="50" y="0" width="1" height="3" fill="#00ff00" fill-opacity="0"/>
 <rect id="hint-left-margin" x="60" y="0" width="3" height="1" fill="#00ff00" fill-opacity="0"/>

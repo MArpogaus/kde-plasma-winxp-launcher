@@ -60,8 +60,6 @@ PlasmoidItem {
     }
 
     preferredRepresentation: fullRepresentation
-    toolTipMainText: dateText
-    toolTipSubText: ""
 
     // Like Plasma's Digital Clock: wake up once a minute, on the minute,
     // unless the format shows seconds
@@ -123,9 +121,17 @@ PlasmoidItem {
             color: Kirigami.Theme.textColor
         }
 
-        MouseArea {
+        // The long date as tooltip (Plasma shows an applet's own tooltip
+        // only for compact representations)
+        PlasmaCore.ToolTipArea {
             anchors.fill: parent
-            onDoubleClicked: executable.exec(Plasmoid.configuration.clickCommand)
+            mainText: root.dateText
+            location: Plasmoid.location
+
+            MouseArea {
+                anchors.fill: parent
+                onDoubleClicked: executable.exec(Plasmoid.configuration.clickCommand)
+            }
         }
     }
 }

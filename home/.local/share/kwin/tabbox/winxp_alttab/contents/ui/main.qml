@@ -68,6 +68,10 @@ KWin.TabBoxSwitcher {
                 interactive: false
                 highlightMoveDuration: 0
                 model: tabBox.model
+                // Arrow keys move the selection (KWin passes them on)
+                focus: true
+                keyNavigationEnabled: true
+                keyNavigationWraps: true
 
                 highlight: KSvg.FrameSvgItem {
                     imagePath: tabBox.xpBox ? "widgets/winxp" : "widgets/viewitem"
