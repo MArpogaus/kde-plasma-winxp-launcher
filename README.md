@@ -1,18 +1,25 @@
 # Windows XP for KDE Plasma 6
 
-Turns a Plasma 6 desktop into Windows XP (Luna, blue): start button and
-start menu, taskbar, notification area, Turn Off / Log Off dialogs with the
-grey screen fade, XP Alt+Tab, XP cursors and Dolphin set up like XP's
+Turns a Plasma 6 desktop into Windows XP: start button and start menu,
+taskbar, notification area, Turn Off / Log Off dialogs with the grey
+screen fade, XP Alt+Tab, XP cursors and Dolphin set up like XP's
 Explorer, on top of the Exposé theme (window borders, Plasma theme,
 application style).
+
+The widgets take their look from the Plasma theme, as Plasma's own do:
+task buttons from its task frames, the start button and the tool buttons
+from its button frames, menus and cascades from its dialog frame, the
+highlight, lines and arrows from its view item, line and arrow images,
+and all text colours from its colour scheme. So they follow whatever
+Plasma theme is chosen, Exposé or another one.
 
 ![Start menu with All Programs](docs/preview-all-programs.png)
 
 ![Classic Start menu with Programs](docs/preview-classic.png)
 
-Rendered from the widgets' own QML with stand-in icons and
-Exposé's Bløff wallpaper; with WinXPSVG and `get-microsoft-files.sh` the icons, fonts
-and wallpaper are XP's.
+Rendered from the widgets' own QML with Exposé's Plasma theme, stand-in
+icons and Exposé's Bløff wallpaper; with WinXPSVG and
+`get-microsoft-files.sh` the icons, fonts and wallpaper are XP's.
 
 ## Install
 
@@ -129,12 +136,13 @@ Right-click a free spot → Configure for the button widths and which
 windows are shown.
 
 The notification area uses Plasma's own System Tray (so volume, network,
-battery and app icons all work), on XP's light blue block. Plasma gives
+battery and app icons all work). Plasma gives
 every panel widget at least 22 px, so tray icons are 22 px where XP had
 16 px. Like XP's *Hide inactive icons*, clipboard, brightness, Bluetooth,
 notifications and similar status icons start out hidden (System Tray
-settings → Entries to change that); XP's round chevron on the left shows
-them in the notification area itself instead of Plasma's popup.
+settings → Entries to change that); the arrow on the left shows them in
+the notification area itself, as XP's chevron did, instead of Plasma's
+popup.
 
 The clock follows System Settings → Region & Language. Right-click →
 Configure for XP's options: *Show the clock*, an XP style time format
@@ -163,14 +171,13 @@ Dolphin with a changed toolbar file ignores it until it is updated.
 
 ## Start menu features
 
-- Green **start** button with flag, hover and pressed states, sized to the
-  panel (100 × 30 px on a 30 px panel). Tooltip: "Click here to begin".
-- Menu drawn pixel by pixel in its own frameless window (no Plasma dialog
-  frame): rounded blue header with user picture and name, orange divider,
-  white program column, light blue places column, Log Off / Turn Off Computer footer.
-- Geometry and colours measured from a native XP screenshot: 382 px wide,
-  64 px header, 40 px footer, 36 px program rows with 32 px icons, 30 px place
-  rows with 24 px icons. Header/footer gradients are sampled row by row.
+- **start** button with the start icon (XP's flag once downloaded), hover
+  and pressed states, sized to the panel (100 × 30 px on a 30 px panel).
+  Tooltip: "Click here to begin".
+- XP's layout: header with user picture and name, programs on the left,
+  places on the right, Log Off / Turn Off Computer footer. Geometry measured
+  from a native XP screenshot: 378 px wide, 64 px header, 40 px footer,
+  36 px program rows with 32 px icons, 30 px place rows with 24 px icons.
 - **Pinned programs** at the top (Internet and E-mail by default, using your
   preferred browser and mail client) and **most frequently used programs** below.
 - **All Programs** cascading menus with hover-to-open delay, folder arrows and
@@ -184,7 +191,7 @@ Dolphin with a changed toolbar file ignores it until it is updated.
   the program list, Up/Down/Enter to launch, Esc to clear.
 - Meta key opens the menu (it can replace Kickoff via *Show Alternatives*).
 - Log Off and Turn Off Computer open XP style Log Off / Turn Off dialogs.
-- **Classic Start menu** as an option, as XP draws it with Luna: pinned
+- **Classic Start menu** as an option: pinned
   programs, Programs, Documents, Settings, Search, Help and Support, Run,
   Log Off, Turn Off Computer, and the "Windows XP Professional" banner
   (text configurable; hidden with small icons).
@@ -201,7 +208,7 @@ see the widget's `contents/fonts`. Both fonts are configurable.
 Right-click the start button → *Configure Windows XP Start Menu…*
 
 **General:** button label, icon (empty = XP's flag if downloaded, else the
-built-in one) and fonts, and the location or command behind My Computer,
+theme's start icon) and fonts, and the location or command behind My Computer,
 Network, Control Panel, Set Program Access and Defaults, Network
 Connections, Printers and Faxes, Help and Support, Search and Run (My
 Documents, Pictures and Music follow the XDG folders).

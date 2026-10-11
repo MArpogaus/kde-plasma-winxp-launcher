@@ -10,7 +10,7 @@
       <default>start</default>
     </entry>
     <entry name="startIcon" type="String">
-      <label>Icon of the start button; empty uses XP's flag if get-microsoft-files.sh installed it, else the bundled flag</label>
+      <label>Icon of the start button; empty uses XP's flag if get-microsoft-files.sh installed it, else the theme's start icon</label>
       <default></default>
     </entry>
     <entry name="startFontFamily" type="String">

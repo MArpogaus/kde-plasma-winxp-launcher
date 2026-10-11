@@ -14,6 +14,7 @@ import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.extras as PlasmaExtras
 import org.kde.plasma.plasma5support as P5Support
 import org.kde.kirigami as Kirigami
+import org.kde.ksvg as KSvg
 import org.kde.taskmanager as TaskManager
 import org.kde.draganddrop as DragAndDrop
 
@@ -200,7 +201,7 @@ PlasmoidItem {
             y: root.horizontal ? row.y : row.y + offset
             width: root.horizontal ? 2 : bar.width
             height: root.horizontal ? root.cell : 2
-            color: "#ffffff"
+            color: Kirigami.Theme.textColor
             z: 1
         }
 
@@ -240,23 +241,26 @@ PlasmoidItem {
             }
 
             // XP's » for the icons that do not fit, in the top half of the
-            // taskbar; it only looks like a button under the pointer
+            // taskbar; a tool button (theme's widgets/button) only under the pointer
             Item {
                 visible: root.overflow
                 width: 13
                 height: root.cell
 
-                Rectangle {
+                Item {
                     id: overflowButton
                     // the row is centred on the taskbar; XP's button starts
                     // 3 px below the taskbar's top
                     y: root.horizontal ? Math.round(bar.area.y + 3 - row.y) : 0
                     width: parent.width
                     height: 12
-                    radius: 2
-                    color: overflowMouse.pressed ? "#1d5fd0" : overflowMouse.containsMouse ? "#5a9cf8" : "transparent"
-                    border.color: overflowMouse.containsMouse ? Qt.rgba(1, 1, 1, 0.35) : "transparent"
 
+                    KSvg.FrameSvgItem {
+                        anchors.fill: parent
+                        visible: overflowMouse.containsMouse
+                        imagePath: "widgets/button"
+                        prefix: overflowMouse.pressed ? "toolbutton-pressed" : "toolbutton-hover"
+                    }
                     Text {
                         anchors.centerIn: parent
                         anchors.verticalCenterOffset: -1
@@ -264,8 +268,7 @@ PlasmoidItem {
                         font.family: "Tahoma"
                         font.pixelSize: 11
                         font.bold: true
-                        // XP's » is light blue, white under the pointer
-                        color: overflowMouse.containsMouse ? "#ffffff" : "#70acff"
+                        color: Kirigami.Theme.textColor
                     }
                     MouseArea {
                         id: overflowMouse
@@ -277,7 +280,7 @@ PlasmoidItem {
             }
         }
 
-        // Etched separator towards the task buttons
+        // Separator towards the task buttons: the theme's line
         Item {
             id: separator
 
@@ -287,19 +290,12 @@ PlasmoidItem {
             width: root.horizontal ? 4 : bar.width
             height: root.horizontal ? bar.area.height - 6 : 4
 
-            Rectangle {
-                x: root.horizontal ? 1 : 0
-                y: root.horizontal ? 0 : 1
-                width: root.horizontal ? 1 : parent.width
-                height: root.horizontal ? parent.height : 1
-                color: Qt.rgba(0, 0.05, 0.3, 0.5)
-            }
-            Rectangle {
-                x: root.horizontal ? 2 : 0
-                y: root.horizontal ? 0 : 2
-                width: root.horizontal ? 1 : parent.width
-                height: root.horizontal ? parent.height : 1
-                color: Qt.rgba(1, 1, 1, 0.3)
+            KSvg.SvgItem {
+                anchors.centerIn: parent
+                imagePath: "widgets/line"
+                elementId: root.horizontal ? "vertical-line" : "horizontal-line"
+                width: root.horizontal ? naturalSize.width : parent.width
+                height: root.horizontal ? parent.height : naturalSize.height
             }
         }
 
@@ -338,72 +334,67 @@ PlasmoidItem {
             }
             onHeightChanged: if (visible) place()
 
-            backgroundHints: PlasmaCore.Dialog.NoBackground
+            // As wide as the longest name (hidden rows do not count)
+            mainItem: ColumnLayout {
+                id: overflowList
+                width: Math.min(400, Math.max(120, implicitWidth))
+                spacing: 0
 
-            mainItem: Rectangle {
-                width: overflowList.width + 6
-                height: overflowList.height + 6
-                color: "#ffffff"
-                border.color: "#aca899"
+                Repeater {
+                    model: launchers
 
-                // As wide as the longest name (hidden rows do not count)
-                ColumnLayout {
-                    id: overflowList
-                    x: 3
-                    y: 3
-                    width: Math.min(400, Math.max(120, implicitWidth))
-                    spacing: 0
+                    delegate: Item {
+                        id: overflowRow
 
-                    Repeater {
-                        model: launchers
+                        required property int index
+                        required property var model
 
-                        delegate: Rectangle {
-                            id: overflowRow
+                        visible: model.IsLauncher === true
+                            && index + (Plasmoid.configuration.showDesktop ? 1 : 0) >= root.shownCount
+                        Layout.fillWidth: true
+                        implicitWidth: 28 + rowText.implicitWidth + 24
+                        implicitHeight: 22
 
-                            required property int index
-                            required property var model
+                        KSvg.FrameSvgItem {
+                            anchors.fill: parent
+                            visible: rowMouse.containsMouse
+                            imagePath: "widgets/viewitem"
+                            prefix: "hover"
+                        }
 
-                            visible: model.IsLauncher === true
-                                && index + (Plasmoid.configuration.showDesktop ? 1 : 0) >= root.shownCount
-                            Layout.fillWidth: true
-                            implicitWidth: 28 + rowText.implicitWidth + 24
-                            implicitHeight: 22
-                            color: rowMouse.containsMouse ? "#316ac5" : "transparent"
-
-                            Kirigami.Icon {
-                                x: 4
-                                anchors.verticalCenter: parent.verticalCenter
-                                width: 16
-                                height: 16
-                                source: overflowRow.model.decoration
-                                roundToIconSize: false
-                            }
-                            Text {
-                                id: rowText
-                                x: 28
-                                width: parent.width - x - 6
-                                anchors.verticalCenter: parent.verticalCenter
-                                text: overflowRow.model.display ?? ""
-                                elide: Text.ElideRight
-                                font.family: "Tahoma"
-                                font.pixelSize: 11
-                                renderType: Text.NativeRendering
-                                color: rowMouse.containsMouse ? "#ffffff" : "#000000"
-                            }
-                            MouseArea {
-                                id: rowMouse
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                acceptedButtons: Qt.LeftButton | Qt.RightButton
-                                onClicked: mouse => {
-                                    if (mouse.button === Qt.RightButton) {
-                                        overflowContext.launcherIndex = overflowRow.index;
-                                        overflowContext.visualParent = overflowRow;
-                                        overflowContext.open(mouse.x, mouse.y);
-                                    } else {
-                                        overflowPopup.visible = false;
-                                        root.launch(overflowRow.index);
-                                    }
+                        Kirigami.Icon {
+                            x: 4
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 16
+                            height: 16
+                            source: overflowRow.model.decoration
+                            roundToIconSize: false
+                        }
+                        Text {
+                            id: rowText
+                            x: 28
+                            width: parent.width - x - 6
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: overflowRow.model.display ?? ""
+                            elide: Text.ElideRight
+                            font.family: "Tahoma"
+                            font.pixelSize: 11
+                            renderType: Text.NativeRendering
+                            color: Kirigami.Theme.textColor
+                        }
+                        MouseArea {
+                            id: rowMouse
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            acceptedButtons: Qt.LeftButton | Qt.RightButton
+                            onClicked: mouse => {
+                                if (mouse.button === Qt.RightButton) {
+                                    overflowContext.launcherIndex = overflowRow.index;
+                                    overflowContext.visualParent = overflowRow;
+                                    overflowContext.open(mouse.x, mouse.y);
+                                } else {
+                                    overflowPopup.visible = false;
+                                    root.launch(overflowRow.index);
                                 }
                             }
                         }
@@ -479,13 +470,11 @@ PlasmoidItem {
         width: root.cell
         height: root.cell
 
-        Rectangle {
+        KSvg.FrameSvgItem {
             anchors.fill: parent
-            radius: 2
             visible: mouse.containsMouse
-            color: mouse.pressed ? Qt.rgba(0, 0.05, 0.3, 0.25) : Qt.rgba(1, 1, 1, 0.18)
-            border.width: 1
-            border.color: mouse.pressed ? Qt.rgba(0, 0.05, 0.3, 0.5) : Qt.rgba(1, 1, 1, 0.45)
+            imagePath: "widgets/button"
+            prefix: mouse.pressed ? "toolbutton-pressed" : "toolbutton-hover"
         }
 
         Kirigami.Icon {

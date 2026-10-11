@@ -7,7 +7,7 @@
             }
         ],
         "Category": "Application Launchers",
-        "Description": "A Windows XP (Luna) style start button and start menu",
+        "Description": "A Windows XP style start button and start menu",
         "EnabledByDefault": true,
         "Icon": "start-here-kde",
         "Id": "com.github.marpogaus.winxpstartmenu",

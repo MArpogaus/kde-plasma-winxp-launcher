@@ -34,7 +34,7 @@ KCM.SimpleKCM {
         QQC2.TextField {
             id: startIcon
             Kirigami.FormData.label: i18n("Icon:")
-            placeholderText: i18n("XP flag if downloaded, else built-in")
+            placeholderText: i18n("XP flag if downloaded, else the theme's")
         }
         QQC2.TextField {
             id: startFontFamily

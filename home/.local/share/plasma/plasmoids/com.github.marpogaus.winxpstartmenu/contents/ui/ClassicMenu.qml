@@ -1,12 +1,13 @@
 /*
     SPDX-License-Identifier: GPL-2.0-or-later
 
-    XP's Classic Start menu, as XP draws it with Luna's flat menus: the
-    pinned programs, Programs, Documents, Settings, Search, Help and
-    Support, Run, Log Off and Turn Off Computer, with the "Windows XP
-    Professional" banner on the left (not with small icons). Geometry
-    measured on a native XP screenshot (large icons: 32 px rows, 9 px
-    separators, banner 21 px wide, text 66 px from the left).
+    XP's Classic Start menu: the pinned programs, Programs, Documents,
+    Settings, Search, Help and Support, Run, Log Off and Turn Off
+    Computer, with the "Windows XP Professional" banner on the left (not
+    with small icons; XP drew it the same in every colour scheme).
+    Geometry measured on a native XP screenshot (large icons: 32 px rows,
+    9 px separators, banner 21 px wide). Frame, lines and colours come
+    from the Plasma theme.
 
     All behaviour is delegated to `controller` (main.qml).
 */
@@ -31,11 +32,9 @@ FocusScope {
 
     readonly property bool smallIcons: xp.classicSmallIcons
     readonly property int rowHeight: xp.classicRowHeight
-    // Border (1 px) and padding (2 px) on every side
-    readonly property int inset: 3
     // Rows start after the banner; the icon and text positions inside a
     // row follow from XP's 30 px icon and 66 px text offsets
-    readonly property int rowsLeft: inset + (smallIcons ? 0 : xp.classicBannerWidth)
+    readonly property int rowsLeft: smallIcons ? 0 : xp.classicBannerWidth
     readonly property int iconLeft: smallIcons ? 3 : 6
     readonly property int iconSize: smallIcons ? 16 : 32
     readonly property int textSpacing: smallIcons ? 6 : 4
@@ -53,15 +52,15 @@ FocusScope {
         }
         list.push({ separator: true });
         if (showLogOff) {
-            list.push({ key: "logoff", icon: Qt.resolvedUrl("../images/log-off.svg"), title: i18n("Log Off %1...", userName) });
+            list.push({ key: "logoff", icon: "system-log-out", title: i18n("Log Off %1...", userName) });
         }
-        list.push({ key: "turnoff", icon: Qt.resolvedUrl("../images/turn-off.svg"), title: i18n("Turn Off Computer...") });
+        list.push({ key: "turnoff", icon: "system-shutdown", title: i18n("Turn Off Computer...") });
         return list;
     }
 
     // As wide as the longest title needs (plus room for the arrows)
-    width: rowsLeft + iconLeft + iconSize + textSpacing + Math.ceil(widestTitle) + 32 + inset
-    height: inset + rows.implicitHeight + inset
+    width: rowsLeft + iconLeft + iconSize + textSpacing + Math.ceil(widestTitle) + 32
+    height: rows.implicitHeight
 
     property real widestTitle: 0
     function measure() {
@@ -135,21 +134,12 @@ FocusScope {
         onPressed: menu.controller.closeCascadesFrom(0)
     }
 
-    Rectangle {
-        anchors.fill: parent
-        color: menu.xp.classicBackground
-        border.width: 1
-        border.color: menu.xp.classicBorder
-    }
-
     // Banner: black, turning blue behind the text towards the bottom
     // (sampled from XP, measured from the bottom: blue from 217 px up)
     Rectangle {
         id: banner
-        x: menu.inset
-        y: menu.inset
         width: menu.xp.classicBannerWidth
-        height: menu.height - 2 * menu.inset
+        height: menu.height
         visible: !menu.smallIcons
         color: "#000000"
         clip: true
@@ -207,8 +197,7 @@ FocusScope {
     Column {
         id: rows
         x: menu.rowsLeft
-        y: menu.inset
-        width: menu.width - menu.rowsLeft - menu.inset
+        width: menu.width - menu.rowsLeft
 
         // Pinned programs at the top, like the shortcuts XP keeps there
         Repeater {
@@ -239,7 +228,9 @@ FocusScope {
             }
         }
 
-        ClassicSeparator {
+        MenuSeparator {
+            width: rows.width
+            height: menu.xp.classicSeparatorHeight
             visible: pinnedRepeater.count > 0
         }
 
@@ -254,7 +245,8 @@ FocusScope {
                 width: rows.width
                 height: modelData.separator ? menu.xp.classicSeparatorHeight : menu.rowHeight
 
-                ClassicSeparator {
+                MenuSeparator {
+                    anchors.fill: parent
                     visible: row.modelData.separator === true
                 }
 
@@ -290,20 +282,6 @@ FocusScope {
                     }
                 }
             }
-        }
-    }
-
-    // Luna's menu separator: one line, 4 px below the top of its 9 px
-    component ClassicSeparator: Item {
-        width: rows.width
-        height: visible ? menu.xp.classicSeparatorHeight : 0
-
-        Rectangle {
-            x: 1
-            y: 4
-            width: parent.width - 2
-            height: 1
-            color: menu.xp.classicSeparator
         }
     }
 }

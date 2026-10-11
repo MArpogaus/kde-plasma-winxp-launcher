@@ -9,6 +9,7 @@ import QtQuick
 import QtQuick.Layouts
 import org.kde.plasma.plasmoid
 import org.kde.plasma.core as PlasmaCore
+import org.kde.kirigami as Kirigami
 import org.kde.plasma.plasma5support as P5Support
 
 PlasmoidItem {
@@ -104,7 +105,7 @@ PlasmoidItem {
             renderType: Text.NativeRendering
             font.family: Plasmoid.configuration.fontFamily
             font.pixelSize: 11
-            color: "#ffffff"
+            color: Kirigami.Theme.textColor
         }
 
         MouseArea {

@@ -1,15 +1,15 @@
 /*
     SPDX-License-Identifier: GPL-2.0-or-later
 
-    Draws XP's light blue notification area. Widgets that come later in the
-    panel are painted on top of earlier ones, so this widget, placed right
-    before the System Tray, paints the block from just after the chevron's
-    room to the end of the panel and the tray and clock show up on it.
+    XP's chevron for Plasma's System Tray, placed right before it: instead
+    of Plasma's popup it shows the hidden icons in the tray itself. Drawn
+    with the Plasma theme's arrows and tool button.
 */
 import QtQuick
 import QtQuick.Layouts
 import org.kde.plasma.plasmoid
 import org.kde.plasma.core as PlasmaCore
+import org.kde.ksvg as KSvg
 
 PlasmoidItem {
     preferredRepresentation: fullRepresentation
@@ -25,56 +25,9 @@ PlasmoidItem {
             target: anchorItem
         }
 
-        // The chevron reaches 11 px left of the block; keep that (plus 3 px)
-        // inside this widget so it never covers the task buttons
-        readonly property int blockLeft: showChevron ? 14 : 0
-
-        // Room for the bevel (and the chevron) before the first tray icon
-        Layout.minimumWidth: horizontal ? blockLeft + (showChevron ? 14 : 10) : -1
+        // Room for the chevron only while there is something to show
+        Layout.minimumWidth: showChevron ? chevron.width + 2 : 0
         Layout.maximumWidth: Layout.minimumWidth
-        Layout.minimumHeight: horizontal ? -1 : 10
-        Layout.maximumHeight: horizontal ? -1 : 10
-
-        Item {
-            id: block
-            // From here to the end of the visible taskbar, over its full height
-            x: anchorItem.horizontal ? anchorItem.blockLeft : anchorItem.area.x
-            y: anchorItem.horizontal ? anchorItem.area.y : 0
-            width: anchorItem.horizontal ? anchorItem.area.x + anchorItem.area.width - anchorItem.blockLeft : anchorItem.area.width
-            height: anchorItem.horizontal ? anchorItem.area.height : anchorItem.area.y + anchorItem.area.height
-
-            // Sampled from the XP notification area (30 rows)
-            Rectangle {
-                anchors.fill: parent
-                gradient: Gradient {
-                    GradientStop { position: 0.00; color: "#0c59b9" }
-                    GradientStop { position: 0.04; color: "#149eed" }
-                    GradientStop { position: 0.08; color: "#1399eb" }
-                    GradientStop { position: 0.12; color: "#1290e8" }
-                    GradientStop { position: 0.35; color: "#118fe9" }
-                    GradientStop { position: 0.50; color: "#0d8dea" }
-                    GradientStop { position: 0.66; color: "#0d93ed" }
-                    GradientStop { position: 0.80; color: "#0d9cf0" }
-                    GradientStop { position: 0.93; color: "#0fa0ef" }
-                    GradientStop { position: 1.00; color: "#1583db" }
-                }
-            }
-            // Left edge: dark shadow, then a light line
-            Rectangle {
-                width: 1
-                height: parent.height
-                color: "#0a3e98"
-            }
-            Rectangle {
-                x: 1
-                width: 1
-                height: parent.height
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: "#1fb6e8" }
-                    GradientStop { position: 1.0; color: "#18b4f3" }
-                }
-            }
-        }
 
         // XP's round chevron. Plasma's own "show hidden icons" arrow opens a
         // popup; XP instead widens the notification area in place. So hide
@@ -231,23 +184,32 @@ PlasmoidItem {
             }
         }
 
-        // As on XP: starts 11 px left of the block's edge (in the room this
-        // widget keeps for it), centred on the taskbar's height, drawn 1:1;
-        // the arrow points right while the hidden icons are shown
-        Image {
+        // Centred on the taskbar's height; the arrow points right while the
+        // hidden icons are shown
+        Item {
+            id: chevron
             visible: anchorItem.showChevron
-            x: anchorItem.blockLeft - 11
             y: Math.round(anchorItem.area.y + (anchorItem.area.height - height) / 2)
             width: 18
-            height: 19
-            source: anchorItem.trayExpanded ? "../images/chevron-right.svg" : "../images/chevron-left.svg"
-            sourceSize: Qt.size(width, height)
-            smooth: false
-            opacity: chevronMouse.pressed ? 0.8 : 1
+            height: 18
 
+            KSvg.FrameSvgItem {
+                anchors.fill: parent
+                visible: chevronMouse.containsMouse
+                imagePath: "widgets/button"
+                prefix: chevronMouse.pressed ? "toolbutton-pressed" : "toolbutton-hover"
+            }
+            KSvg.SvgItem {
+                anchors.centerIn: parent
+                width: 10
+                height: 10
+                imagePath: "widgets/arrows"
+                elementId: anchorItem.trayExpanded ? "right-arrow" : "left-arrow"
+            }
             MouseArea {
                 id: chevronMouse
                 anchors.fill: parent
+                hoverEnabled: true
                 onClicked: anchorItem.trayExpanded = !anchorItem.trayExpanded
             }
         }

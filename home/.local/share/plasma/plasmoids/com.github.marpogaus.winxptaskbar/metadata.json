@@ -7,7 +7,7 @@
             }
         ],
         "Category": "Windows and Tasks",
-        "Description": "Windows XP (Luna) style taskbar buttons",
+        "Description": "Windows XP style taskbar buttons",
         "EnabledByDefault": true,
         "Icon": "preferences-system-windows",
         "Id": "com.github.marpogaus.winxptaskbar",

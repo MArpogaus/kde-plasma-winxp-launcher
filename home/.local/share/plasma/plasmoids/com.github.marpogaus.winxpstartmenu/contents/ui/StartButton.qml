@@ -1,14 +1,14 @@
 /*
     SPDX-License-Identifier: GPL-2.0-or-later
 
-    The green Luna "start" button. It scales with the panel thickness;
+    The "start" button, drawn with the Plasma theme's button frames
+    (widgets/button) and text colour. It scales with the panel thickness;
     at the classic 30 px taskbar it is 100 x 30 px.
 */
 import QtQuick
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
-
-import "StartButtonFace.js" as Face
+import org.kde.ksvg as KSvg
 
 Item {
     id: button
@@ -57,77 +57,22 @@ Item {
         width: button.width + button.leftOverflow
         height: button.area.height
 
-        // Square on the left, a shallow curve on the right, shaded in both
-        // directions like XP's (see StartButtonFace.js)
-        Canvas {
+        KSvg.FrameSvgItem {
             anchors.fill: parent
-            readonly property string look: button.pressedLook ? "pressed" : button.hoveredLook ? "hover" : "normal"
-            onLookChanged: requestPaint()
-            onWidthChanged: requestPaint()
-            onHeightChanged: requestPaint()
-            // Painted in device pixels: with fractional scaling, rows one
-            // logical pixel high would fall between them and show as stripes
-            readonly property real ratio: Screen.devicePixelRatio > 0 ? Screen.devicePixelRatio : 1
-            onRatioChanged: requestPaint()
-            onPaint: {
-                const w = Math.round(width * ratio);
-                const h = Math.round(height * ratio);
-                if (w < 1 || h < 1) {
-                    return;
-                }
-                const ctx = getContext("2d");
-                ctx.save();
-                ctx.scale(width / w, height / h);
-                Face.paint(ctx, w, h, look, !button.vertical);
-                ctx.restore();
-            }
+            imagePath: "widgets/button"
+            prefix: button.pressedLook ? "pressed" : button.hoveredLook ? "hover" : "normal"
         }
 
-        Item {
-            id: flag
-            // The built-in flag fills ~75 % of its box. A custom icon (XP's 20 px
-            // start_flag.png) fills its box: 20 px at x = 10 on a 30 px taskbar.
-            readonly property bool custom: button.iconName.length > 0
-            x: button.vertical ? Math.round((parent.width - width) / 2) : Math.round(button.thickness * (custom ? 0.34 : 0.23))
+        // XP's flag is 20 px at x = 10 on a 30 px taskbar
+        Kirigami.Icon {
+            x: button.vertical ? Math.round((parent.width - width) / 2) : Math.round(button.thickness * 0.34)
             anchors.verticalCenter: parent.verticalCenter
-            width: Math.round(button.thickness * (custom ? 0.667 : 0.84))
+            width: Math.round(button.thickness * 0.667)
             height: width
-
-            Image {
-                anchors.fill: parent
-                visible: button.iconName.length === 0
-                source: "../images/start-flag.svg"
-                sourceSize: Qt.size(width, height)
-                smooth: true
-            }
-            Kirigami.Icon {
-                anchors.fill: parent
-                visible: button.iconName.length > 0
-                source: button.iconName
-                roundToIconSize: false
-            }
+            source: button.iconName
+            roundToIconSize: false
         }
 
-        Text {
-            visible: !button.vertical
-            x: label.x + 2
-            y: label.y + 2
-            text: label.text
-            font: label.font
-            renderType: label.renderType
-            transform: Matrix4x4 { matrix: button.labelSlant }
-            color: Qt.rgba(0, 0, 0, 0.22)
-        }
-        Text {
-            visible: !button.vertical
-            x: label.x + 1
-            y: label.y + 1
-            text: label.text
-            font: label.font
-            renderType: label.renderType
-            transform: Matrix4x4 { matrix: button.labelSlant }
-            color: Qt.rgba(0, 0.08, 0, 0.7)
-        }
         Text {
             id: label
             visible: !button.vertical
@@ -143,7 +88,7 @@ Item {
             font.italic: !button.libreFranklin
             font.weight: button.libreFranklin ? Font.Bold : Font.Medium
             transform: Matrix4x4 { matrix: button.labelSlant }
-            color: "#ffffff"
+            color: Kirigami.Theme.textColor
         }
 
         MouseArea {

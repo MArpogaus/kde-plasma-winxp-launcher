@@ -1,8 +1,8 @@
 /*
     SPDX-License-Identifier: GPL-2.0-or-later
 
-    A cascading menu window, placed next to the row it belongs to like
-    XP's (see placeAt()).
+    A cascading menu window with the Plasma theme's dialog frame, placed
+    next to the row it belongs to like XP's (see placeAt()).
 */
 import QtQuick
 import org.kde.plasma.core as PlasmaCore
@@ -15,19 +15,20 @@ Kicker.SubMenu {
     property QtObject controller
     property var model: null
     property int level: 0
-    property int maxRows: 30
+    // Long menus wrap into more columns (or scroll) to fit the screen
+    // without its panels, inside the theme's dialog frame
+    readonly property int maxRows: Math.max(5, Math.floor(
+        (controller.availableArea.height - margins.top - margins.bottom) / xp.cascadeRowHeight))
 
     readonly property alias view: cascadeView
 
-    // The row the cascade belongs to and the menu that row is in. Measured
-    // on XP: the cascade's frame overlaps that menu by 2 px (its left
-    // border lies 1 px left of the menu's right border; mirrored when it
-    // opens to the left) and its top border lies 1 px above the row, or,
-    // when that runs off the screen, its bottom border 1 px below it. The
-    // All Programs menu (no parent menu) starts right after the button,
-    // its bottom border right below the button.
+    // The row the cascade belongs to and the menu window that row is in.
+    // The cascade opens beside that menu (mirrored when there is no room)
+    // with its first row level with the row, or, when that runs off the
+    // screen, ending level with it. All Programs (no parent menu) starts
+    // right after its button and ends level with the button's bottom.
     property Item anchorItem: null
-    property Item parentMenu: null
+    property var parentMenu: null
 
     function placeAt(item, menu) {
         anchorItem = item;
@@ -44,27 +45,23 @@ Kicker.SubMenu {
         const area = controller.availableArea;
         const right = area.x + area.width;
         const bottom = area.y + area.height;
-        const frameWidth = cascadeView.width - cascadeView.shadow;
-        const frameHeight = cascadeView.height - cascadeView.shadow;
         const rowTop = Math.round(row.y);
         const rowBottom = Math.round(row.y + anchorItem.height);
 
         let x;
         let y;
         if (parentMenu) {
-            const menu = parentMenu.mapToGlobal(0, 0);
-            x = Math.round(menu.x + parentMenu.width) - 2;
-            if (x + cascadeView.width > right) {
-                x = Math.round(menu.x) + 2 - frameWidth;
+            x = parentMenu.x + parentMenu.width;
+            if (x + width > right) {
+                x = parentMenu.x - width;
             }
-            // The first row level with the row it belongs to
-            y = rowTop - cascadeView.frameTop;
-            if (y + cascadeView.height > bottom) {
-                y = rowBottom + cascadeView.frameTop - frameHeight;
+            y = rowTop - margins.top;
+            if (y + height > bottom) {
+                y = rowBottom + margins.bottom - height;
             }
         } else {
-            x = Math.min(Math.round(row.x + anchorItem.width), right - cascadeView.width);
-            y = rowBottom + 1 - frameHeight;
+            x = Math.min(Math.round(row.x + anchorItem.width), right - width);
+            y = rowBottom + margins.bottom - height;
         }
         dialog.x = Math.max(area.x, x);
         dialog.y = Math.max(area.y, y);
@@ -76,6 +73,9 @@ Kicker.SubMenu {
         }
     }
 
+    onWidthChanged: reposition()
+    onHeightChanged: reposition()
+
     visible: false
     // Keyboard focus stays with the start menu window.
     flags: Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus
@@ -83,8 +83,6 @@ Kicker.SubMenu {
     hideOnWindowDeactivate: false
 
     onActiveChanged: controller.checkActivation()
-
-    backgroundHints: PlasmaCore.Dialog.NoBackground
 
     mainItem: CascadeMenuView {
         id: cascadeView
@@ -95,7 +93,5 @@ Kicker.SubMenu {
         maxRows: dialog.maxRows
 
         Keys.onEscapePressed: dialog.controller.closeCascadesFrom(dialog.level)
-        onHeightChanged: dialog.reposition()
-        onWidthChanged: dialog.reposition()
     }
 }

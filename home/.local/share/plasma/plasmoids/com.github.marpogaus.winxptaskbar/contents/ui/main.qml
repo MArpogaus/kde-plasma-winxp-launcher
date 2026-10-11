@@ -1,7 +1,7 @@
 /*
     SPDX-License-Identifier: GPL-2.0-or-later
 
-    Windows XP taskbar: one Luna button per window, equal widths up to
+    Windows XP taskbar: one button per window, equal widths up to
     the configured width, click to activate / minimize, XP window menu on right click.
     Buttons do not get narrower than the minimum width; the windows that
     do not fit are in a » menu at the end, like Quick Launch's.
@@ -12,6 +12,7 @@ import org.kde.plasma.plasmoid
 import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.extras as PlasmaExtras
 import org.kde.kirigami as Kirigami
+import org.kde.ksvg as KSvg
 import org.kde.taskmanager as TaskManager
 
 PlasmoidItem {
@@ -122,6 +123,7 @@ PlasmoidItem {
                 fontFamily: Plasmoid.configuration.fontFamily
                 active: model.IsActive === true && model.IsMinimized !== true
                 attention: model.IsDemandingAttention === true
+                minimized: model.IsMinimized === true
                 hovered: mouse.containsMouse
                 pressed: mouse.pressed && mouse.pressedButtons === Qt.LeftButton
 
@@ -185,18 +187,21 @@ PlasmoidItem {
 
         // » for the windows that do not fit, at the end of the taskbar,
         // drawn like Quick Launch's: 13 px wide at the top of the taskbar,
-        // only looking like a button under the pointer
-        Rectangle {
+        // a tool button (theme's widgets/button) only under the pointer
+        Item {
             id: overflowButton
             visible: bar.overflow
             x: bar.width - width
             y: Math.round(bar.area.y + 3)
             width: bar.overflowWidth
             height: 12
-            radius: 2
-            color: overflowMouse.pressed ? "#1d5fd0" : overflowMouse.containsMouse ? "#5a9cf8" : "transparent"
-            border.color: overflowMouse.containsMouse ? Qt.rgba(1, 1, 1, 0.35) : "transparent"
 
+            KSvg.FrameSvgItem {
+                anchors.fill: parent
+                visible: overflowMouse.containsMouse
+                imagePath: "widgets/button"
+                prefix: overflowMouse.pressed ? "toolbutton-pressed" : "toolbutton-hover"
+            }
             Text {
                 anchors.centerIn: parent
                 anchors.verticalCenterOffset: -1
@@ -204,7 +209,7 @@ PlasmoidItem {
                 font.family: "Tahoma"
                 font.pixelSize: 11
                 font.bold: true
-                color: overflowMouse.containsMouse ? "#ffffff" : "#70acff"
+                color: Kirigami.Theme.textColor
             }
             MouseArea {
                 id: overflowMouse
@@ -247,71 +252,66 @@ PlasmoidItem {
             onHeightChanged: if (visible) place()
             onWidthChanged: if (visible) place()
 
-            backgroundHints: PlasmaCore.Dialog.NoBackground
+            // As wide as the longest title (hidden rows do not count)
+            mainItem: ColumnLayout {
+                id: overflowList
+                width: Math.min(400, Math.max(160, implicitWidth))
+                spacing: 0
 
-            mainItem: Rectangle {
-                width: overflowList.width + 6
-                height: overflowList.height + 6
-                color: "#ffffff"
-                border.color: "#aca899"
+                Repeater {
+                    model: tasksModel
 
-                // As wide as the longest title (hidden rows do not count)
-                ColumnLayout {
-                    id: overflowList
-                    x: 3
-                    y: 3
-                    width: Math.min(400, Math.max(160, implicitWidth))
-                    spacing: 0
+                    delegate: Item {
+                        id: overflowRow
 
-                    Repeater {
-                        model: tasksModel
+                        required property int index
+                        required property var model
+                        readonly property var modelIndex: tasksModel.makeModelIndex(index)
 
-                        delegate: Rectangle {
-                            id: overflowRow
+                        visible: index >= bar.shownCount
+                        Layout.fillWidth: true
+                        implicitWidth: 28 + rowText.implicitWidth + 12
+                        implicitHeight: 22
 
-                            required property int index
-                            required property var model
-                            readonly property var modelIndex: tasksModel.makeModelIndex(index)
+                        KSvg.FrameSvgItem {
+                            anchors.fill: parent
+                            visible: rowMouse.containsMouse
+                            imagePath: "widgets/viewitem"
+                            prefix: "hover"
+                        }
 
-                            visible: index >= bar.shownCount
-                            Layout.fillWidth: true
-                            implicitWidth: 28 + rowText.implicitWidth + 12
-                            implicitHeight: 22
-                            color: rowMouse.containsMouse ? "#316ac5" : "transparent"
-
-                            Kirigami.Icon {
-                                x: 4
-                                anchors.verticalCenter: parent.verticalCenter
-                                width: 16
-                                height: 16
-                                source: overflowRow.model.decoration
-                                roundToIconSize: false
-                            }
-                            Text {
-                                id: rowText
-                                x: 28
-                                width: parent.width - x - 6
-                                anchors.verticalCenter: parent.verticalCenter
-                                text: overflowRow.model.display ?? ""
-                                elide: Text.ElideRight
-                                font.family: Plasmoid.configuration.fontFamily
-                                font.pixelSize: 11
-                                font.bold: overflowRow.model.IsActive === true
-                                renderType: Text.NativeRendering
-                                color: rowMouse.containsMouse ? "#ffffff" : "#000000"
-                            }
-                            MouseArea {
-                                id: rowMouse
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                acceptedButtons: Qt.LeftButton | Qt.RightButton
-                                onClicked: mouse => {
-                                    if (mouse.button === Qt.RightButton) {
-                                        windowMenu.show(overflowRow, mouse.x, mouse.y, true);
-                                    } else {
-                                        overflowPopup.visible = false;
-                                        tasksModel.requestActivate(overflowRow.modelIndex);
-                                    }
+                        Kirigami.Icon {
+                            x: 4
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 16
+                            height: 16
+                            source: overflowRow.model.decoration
+                            roundToIconSize: false
+                        }
+                        Text {
+                            id: rowText
+                            x: 28
+                            width: parent.width - x - 6
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: overflowRow.model.display ?? ""
+                            elide: Text.ElideRight
+                            font.family: Plasmoid.configuration.fontFamily
+                            font.pixelSize: 11
+                            font.bold: overflowRow.model.IsActive === true
+                            renderType: Text.NativeRendering
+                            color: Kirigami.Theme.textColor
+                        }
+                        MouseArea {
+                            id: rowMouse
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            acceptedButtons: Qt.LeftButton | Qt.RightButton
+                            onClicked: mouse => {
+                                if (mouse.button === Qt.RightButton) {
+                                    windowMenu.show(overflowRow, mouse.x, mouse.y, true);
+                                } else {
+                                    overflowPopup.visible = false;
+                                    tasksModel.requestActivate(overflowRow.modelIndex);
                                 }
                             }
                         }

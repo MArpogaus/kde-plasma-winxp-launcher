@@ -7,7 +7,7 @@
             }
         ],
         "Category": "Windows and Tasks",
-        "Description": "Light blue Windows XP notification area block. Place it directly before the System Tray; it extends under the tray and clock to the end of the panel.",
+        "Description": "XP's chevron for the System Tray: shows the hidden icons in the tray itself. Place it directly before the System Tray.",
         "EnabledByDefault": true,
         "Icon": "preferences-desktop-notification",
         "Id": "com.github.marpogaus.winxptray",

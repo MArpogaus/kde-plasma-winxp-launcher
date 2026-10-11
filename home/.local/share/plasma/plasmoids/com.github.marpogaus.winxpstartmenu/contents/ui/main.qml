@@ -42,9 +42,11 @@ PlasmoidItem {
     FontLoader { source: Qt.resolvedUrl("../fonts/LibreFranklin-Bold.ttf") }
 
     // Start icon: the configured one, else XP's original 20 px flag if
-    // get-microsoft-files.sh put it in place, else the bundled flag ("")
-    readonly property string startIcon: Plasmoid.configuration.startIcon
+    // get-microsoft-files.sh put it in place, else the theme's start icon.
+    // The Turn Off dialog falls back to its own flag instead.
+    readonly property string flagIcon: Plasmoid.configuration.startIcon
         || (xpFlag.status === Image.Ready ? xpFlag.source.toString() : "")
+    readonly property string startIcon: flagIcon || "start-here-kde"
 
     Image {
         id: xpFlag
@@ -238,8 +240,6 @@ PlasmoidItem {
             }
         }
 
-        backgroundHints: PlasmaCore.Dialog.NoBackground
-
         mainItem: Item {
             width: root.activeMenu.width
             height: root.activeMenu.height
@@ -378,12 +378,6 @@ PlasmoidItem {
         startMenu.searchText = "";
     }
 
-    function maxCascadeRows() {
-        // Fit the screen without its panels (and the cascade's frame and
-        // shadow); long menus wrap into more columns.
-        return Math.max(5, Math.floor((availableArea.height - 6) / xp.cascadeRowHeight));
-    }
-
     // bottomAlign: grow upwards from visualParent's bottom edge (All Programs);
     // otherwise the cascade's first row is level with visualParent.
     function openCascade(level, visualParent, model, ownerView, ownerIndex, bottomAlign) {
@@ -396,13 +390,12 @@ PlasmoidItem {
             controller: root,
             model: model,
             level: level,
-            maxRows: maxCascadeRows(),
             // keeps it stacked above the menu (or the cascade it came from)
             transientParent: level > 0 && cascades[level - 1] ? cascades[level - 1] : menuDialog,
         });
         // Next to the cascade the row is in, or to the start menu itself;
         // All Programs grows up from its button instead
-        cascade.placeAt(visualParent, ownerView ? ownerView.frameItem : bottomAlign ? null : activeMenu);
+        cascade.placeAt(visualParent, ownerView ? cascades[level - 1] : bottomAlign ? null : menuDialog);
         cascade.visible = true;
         const list = cascades.slice(0, level);
         list[level] = cascade;
@@ -664,7 +657,7 @@ PlasmoidItem {
     SessionDialog {
         id: sessionDialog
         xp: root.xp
-        flagIcon: root.startIcon
+        flagIcon: root.flagIcon
         screenGeometry: Plasmoid.containment.screenGeometry
         onActivated: action => root.sessionAction(action)
     }

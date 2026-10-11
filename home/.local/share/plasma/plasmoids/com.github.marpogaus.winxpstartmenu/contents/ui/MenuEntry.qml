@@ -2,10 +2,12 @@
     SPDX-License-Identifier: GPL-2.0-or-later
 
     One row of the start menu or of a cascading menu: icon, title,
-    optional grey subtitle and optional cascade arrow.
+    optional subtitle and optional cascade arrow. Highlight, arrow and
+    colours come from the Plasma theme.
 */
 import QtQuick
 import org.kde.kirigami as Kirigami
+import org.kde.ksvg as KSvg
 
 Item {
     id: entry
@@ -21,7 +23,6 @@ Item {
     property int iconSize: 30
     property int leftPadding: 2
     property int textSpacing: 4
-    property color textColor: xp.leftText
     property bool wrap: false
     // Wrapped titles break at this width (0: the full row)
     property int wrapWidth: 0
@@ -29,7 +30,6 @@ Item {
 
     // Kept highlighted by the owner, e.g. while its cascade is open.
     property bool forceHighlight: false
-    property color highlightColor: xp.highlight
     // Newly installed program (or a folder with one), when XP's
     // "Highlight newly installed programs" is on
     property bool isNew: false
@@ -47,13 +47,14 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: entry.xp.newProgram
+        color: Kirigami.Theme.neutralBackgroundColor
         visible: entry.isNew && !entry.highlighted
     }
 
-    Rectangle {
+    KSvg.FrameSvgItem {
         anchors.fill: parent
-        color: entry.highlightColor
+        imagePath: "widgets/viewitem"
+        prefix: "hover"
         visible: entry.highlighted
     }
 
@@ -90,8 +91,7 @@ Item {
             font.family: entry.xp.fontFamily
             font.pixelSize: entry.xp.fontPixelSize
             font.bold: entry.bold
-            color: !entry.interactive ? entry.xp.disabledText
-                 : entry.highlighted ? entry.xp.highlightText : entry.textColor
+            color: entry.interactive ? Kirigami.Theme.textColor : Kirigami.Theme.disabledTextColor
         }
 
         Text {
@@ -105,19 +105,19 @@ Item {
             renderType: Text.NativeRendering
             font.family: entry.xp.fontFamily
             font.pixelSize: entry.xp.fontPixelSize
-            color: entry.highlighted ? entry.xp.highlightText : entry.xp.subtitleText
+            color: Kirigami.Theme.disabledTextColor
         }
     }
 
-    Image {
+    KSvg.SvgItem {
         anchors.right: parent.right
-        anchors.rightMargin: 6
-        // On whole pixels, so the arrow stays crisp
-        y: Math.floor((parent.height - height) / 2)
+        anchors.rightMargin: 4
+        anchors.verticalCenter: parent.verticalCenter
+        width: 8
+        height: 8
         visible: entry.showArrow
-        source: entry.highlighted ? "../images/arrow-white.svg" : "../images/arrow.svg"
-        sourceSize: Qt.size(4, 7)
-        smooth: false
+        imagePath: "widgets/arrows"
+        elementId: "right-arrow"
     }
 
     DragHandler {

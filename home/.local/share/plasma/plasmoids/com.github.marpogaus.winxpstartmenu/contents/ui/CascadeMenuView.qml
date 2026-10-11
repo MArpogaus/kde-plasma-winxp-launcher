@@ -7,6 +7,7 @@
     additional columns, like on XP, or scroll ("Scroll Programs").
 */
 import QtQuick
+import org.kde.ksvg as KSvg
 
 Item {
     id: view
@@ -28,22 +29,12 @@ Item {
     readonly property int stripHeight: scrolling ? 16 : 0
     readonly property int shownRows: scrolling ? Math.max(1, maxRows - 2) : Math.max(1, Math.min(itemCount, maxRows))
     readonly property int columns: scroll ? 1 : Math.max(1, Math.ceil(itemCount / Math.max(1, maxRows)))
-    readonly property int shadow: 4
-    // The menu itself, without its drop shadow (cascades open next to it)
-    readonly property alias frameItem: frame
     property int columnWidth: 160
 
-    // The Classic Start menu's submenus are Luna's plain menus: white,
-    // 1 px grey border and 2 px padding, no band, plain separators
-    readonly property bool classic: controller.classic === true
-
-    // XP: left border and band (6 px), rows, right border (1 px); rows
-    // directly below the top border and above the bottom one
-    readonly property int frameLeft: classic ? 3 : 1 + xp.cascadeBand.length
-    readonly property int frameTop: classic ? 3 : 1
-    readonly property int frameRight: classic ? 3 : 1
-    width: frameLeft + columns * columnWidth + frameRight + shadow
-    height: 2 * frameTop + 2 * stripHeight + shownRows * rowHeight + shadow
+    // Just the rows: the cascade window draws the Plasma theme's dialog
+    // frame around them
+    width: columns * columnWidth
+    height: 2 * stripHeight + shownRows * rowHeight
 
     function computeColumnWidth() {
         let widest = 0;
@@ -129,195 +120,129 @@ Item {
         }
     }
 
-    // Drop shadow (right and bottom), as drawn by XP for menus: stacked
-    // so it falls off as measured, 0.45 / 0.32 / 0.16 / 0.07 outwards
+    // Scroll arrows: hovering one scrolls, as on XP
     Repeater {
-        model: [0.07, 0.097, 0.19, 0.19]
-        Rectangle {
-            required property int index
-            required property real modelData
-            x: view.shadow - index
-            y: view.shadow - index
-            width: frame.width
-            height: frame.height
-            color: Qt.rgba(0, 0, 0, modelData)
+        model: view.scrolling ? [-1, 1] : []
+        Item {
+            id: strip
+            required property int modelData
+            y: modelData < 0 ? 0 : view.height - view.stripHeight
+            width: view.columnWidth
+            height: view.stripHeight
+
+            KSvg.SvgItem {
+                anchors.centerIn: parent
+                width: 8
+                height: 8
+                imagePath: "widgets/arrows"
+                elementId: strip.modelData < 0 ? "up-arrow" : "down-arrow"
+            }
+            MouseArea {
+                id: stripMouse
+                anchors.fill: parent
+                hoverEnabled: true
+                onEntered: view.hoverEntered(-1, false, null)
+            }
+            Timer {
+                interval: 60
+                repeat: true
+                running: stripMouse.containsMouse
+                triggeredOnStart: true
+                onTriggered: view.scrollBy(strip.modelData)
+            }
         }
     }
 
-    Rectangle {
-        id: frame
-        width: view.width - view.shadow
-        height: view.height - view.shadow
-        color: view.xp.cascadeBackground
+    WheelHandler {
+        enabled: view.scrolling
+        onWheel: event => view.scrollBy(event.angleDelta.y > 0 ? -3 : 3)
+    }
 
-        Rectangle {
-            width: parent.width
-            height: 1
-            color: view.classic ? view.xp.classicBorder : view.xp.cascadeBorderLight
-        }
-        Rectangle {
-            y: parent.height - 1
-            width: parent.width
-            height: 1
-            color: view.classic ? view.xp.classicBorder : view.xp.cascadeBorderLight
-        }
-        Rectangle {
-            width: 1
-            height: parent.height
-            color: view.classic ? view.xp.classicBorder : view.xp.cascadeBorder
-        }
-        Rectangle {
-            x: parent.width - 1
-            width: 1
-            height: parent.height
-            color: view.classic ? view.xp.classicBorder : view.xp.cascadeBorder
-        }
-        Row {
-            visible: !view.classic
-            x: 1
-            y: 1
-            Repeater {
-                model: view.xp.cascadeBand
-                Rectangle {
-                    required property color modelData
-                    width: 1
-                    height: frame.height - 2
-                    color: modelData
-                }
-            }
-        }
+    GridView {
+        id: grid
+        y: view.stripHeight
+        width: view.columns * view.columnWidth
+        height: view.shownRows * view.rowHeight
+        // One column that scrolls vertically, or columns side by side
+        flow: view.scroll ? GridView.FlowLeftToRight : GridView.FlowTopToBottom
+        clip: view.scrolling
+        interactive: false
+        cellWidth: view.columnWidth
+        cellHeight: view.rowHeight
+        model: view.model
 
-        // Scroll arrows: hovering one scrolls, as on XP
-        Repeater {
-            model: view.scrolling ? [-1, 1] : []
-            Item {
-                id: strip
-                required property int modelData
-                x: view.frameLeft
-                y: modelData < 0 ? view.frameTop : frame.height - view.frameTop - view.stripHeight
-                width: view.columnWidth
-                height: view.stripHeight
+        delegate: Item {
+            id: cell
 
-                Image {
-                    anchors.centerIn: parent
-                    source: "../images/arrow.svg"
-                    sourceSize: Qt.size(4, 7)
-                    rotation: strip.modelData < 0 ? -90 : 90
-                    smooth: false
-                }
+            required property int index
+            required property var model
+
+            readonly property bool isSeparator: cell.model.isSeparator === true
+            // Folders of a FolderMenuModel say isDir
+            readonly property bool hasChildren: cell.model.hasChildren === true || cell.model.isDir === true
+
+            width: grid.cellWidth
+            height: grid.cellHeight
+
+            MenuSeparator {
+                anchors.fill: parent
+                anchors.leftMargin: 2
+                anchors.rightMargin: 2
+                visible: cell.isSeparator
+
                 MouseArea {
-                    id: stripMouse
                     anchors.fill: parent
                     hoverEnabled: true
                     onEntered: view.hoverEntered(-1, false, null)
                 }
-                Timer {
-                    interval: 60
-                    repeat: true
-                    running: stripMouse.containsMouse
-                    triggeredOnStart: true
-                    onTriggered: view.scrollBy(strip.modelData)
-                }
             }
-        }
 
-        WheelHandler {
-            enabled: view.scrolling
-            onWheel: event => view.scrollBy(event.angleDelta.y > 0 ? -3 : 3)
-        }
+            MenuEntry {
+                id: cellEntry
+                anchors.fill: parent
+                visible: !cell.isSeparator
+                xp: view.xp
+                // Recent documents in a StaticMenuModel take their icon from the source model
+                iconSource: (cell.model.sourceRow ?? -1) >= 0 ? view.controller.recentDocumentIcon(cell.model.sourceRow) : cell.model.decoration
+                title: cell.model.display ?? ""
+                dragUrl: cell.hasChildren ? "" : cell.model.url ?? ""
+                dragController: view.controller
+                iconSize: 16
+                leftPadding: 4
+                textSpacing: 3
+                showArrow: cell.hasChildren
+                isNew: view.controller.highlightNew && cell.model.isNewlyInstalled === true
+                forceHighlight: view.openIndex === cell.index
+                    && (view.pointerIndex < 0 || view.pointerIndex === cell.index)
 
-        GridView {
-            id: grid
-            x: view.frameLeft
-            y: view.frameTop + view.stripHeight
-            width: view.columns * view.columnWidth
-            height: view.shownRows * view.rowHeight
-            // One column that scrolls vertically, or columns side by side
-            flow: view.scroll ? GridView.FlowLeftToRight : GridView.FlowTopToBottom
-            clip: view.scrolling
-            interactive: false
-            cellWidth: view.columnWidth
-            cellHeight: view.rowHeight
-            model: view.model
-
-            delegate: Item {
-                id: cell
-
-                required property int index
-                required property var model
-
-                readonly property bool isSeparator: cell.model.isSeparator === true
-                // Folders of a FolderMenuModel say isDir
-                readonly property bool hasChildren: cell.model.hasChildren === true || cell.model.isDir === true
-
-                width: grid.cellWidth
-                height: grid.cellHeight
-
-                MenuSeparator {
-                    anchors.fill: parent
-                    anchors.leftMargin: 2
-                    anchors.rightMargin: 2
-                    visible: cell.isSeparator
-                    color: view.classic ? view.xp.classicSeparator : view.xp.cascadeSeparator
-                    fade: !view.classic
-
-                    MouseArea {
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        onEntered: view.hoverEntered(-1, false, null)
+                onHoveredChanged: {
+                    if (hovered) {
+                        view.pointerIndex = cell.index;
+                        view.hoverEntered(cell.index, cell.hasChildren, cellEntry);
+                    } else if (view.pointerIndex === cell.index) {
+                        view.pointerIndex = -1;
                     }
                 }
-
-                MenuEntry {
-                    id: cellEntry
-                    anchors.fill: parent
-                    visible: !cell.isSeparator
-                    xp: view.xp
-                    // Recent documents in a StaticMenuModel take their icon from the source model
-                    iconSource: (cell.model.sourceRow ?? -1) >= 0 ? view.controller.recentDocumentIcon(cell.model.sourceRow) : cell.model.decoration
-                    title: cell.model.display ?? ""
-                    dragUrl: cell.hasChildren ? "" : cell.model.url ?? ""
-                    dragController: view.controller
-                    iconSize: 16
-                    leftPadding: 4
-                    textSpacing: 3
-                    showArrow: cell.hasChildren
-                    highlightColor: view.classic ? view.xp.highlight : view.xp.cascadeHighlight
-                    isNew: view.controller.highlightNew && cell.model.isNewlyInstalled === true
-                    forceHighlight: view.openIndex === cell.index
-                        && (view.pointerIndex < 0 || view.pointerIndex === cell.index)
-
-                    onHoveredChanged: {
-                        if (hovered) {
-                            view.pointerIndex = cell.index;
-                            view.hoverEntered(cell.index, cell.hasChildren, cellEntry);
-                        } else if (view.pointerIndex === cell.index) {
-                            view.pointerIndex = -1;
-                        }
-                    }
-                    onClicked: view.activate(cell.index, cell.hasChildren, cellEntry)
-                    onContextMenuRequested: (x, y) => {
-                        // Only Kicker's models have programs' actions
-                        if (!cell.hasChildren && typeof view.model.trigger === "function") {
-                            view.controller.showItemContextMenu(view.model, cell.index, cell.model.favoriteId ?? "", cell.model.actionList, cellEntry, x, y);
-                        }
+                onClicked: view.activate(cell.index, cell.hasChildren, cellEntry)
+                onContextMenuRequested: (x, y) => {
+                    // Only Kicker's models have programs' actions
+                    if (!cell.hasChildren && typeof view.model.trigger === "function") {
+                        view.controller.showItemContextMenu(view.model, cell.index, cell.model.favoriteId ?? "", cell.model.actionList, cellEntry, x, y);
                     }
                 }
             }
         }
+    }
 
-        MenuEntry {
-            x: view.frameLeft
-            y: view.frameTop
-            width: view.columnWidth
-            height: view.rowHeight
-            visible: view.itemCount === 0
-            xp: view.xp
-            title: i18n("(Empty)")
-            iconSize: 16
-            leftPadding: 4
-            textSpacing: 3
-            interactive: false
-        }
+    MenuEntry {
+        width: view.columnWidth
+        height: view.rowHeight
+        visible: view.itemCount === 0
+        xp: view.xp
+        title: i18n("(Empty)")
+        iconSize: 16
+        leftPadding: 4
+        textSpacing: 3
+        interactive: false
     }
 }
