@@ -1,0 +1,50 @@
+# Windows XP Silver colours for Plasma: black on white popups, black on the silver taskbar (Complementary), XP's silver selection with black text.
+# Part of the Windows XP pack (XP's Silver scheme), replacing Exposé's colours.
+[Colors:Window]
+ForegroundNormal=0,0,0
+BackgroundNormal=255,255,255
+ForegroundActive=178,180,191
+ForegroundNegative=255,0,0
+ForegroundLink=0,0,255
+ForegroundInactive=115,115,115
+# XP's tint for newly installed programs
+BackgroundNeutral=255,239,193
+DecorationFocus=178,180,191
+DecorationHover=178,180,191
+
+[Colors:Selection]
+BackgroundNormal=178,180,191
+ForegroundNormal=0,0,0
+ForegroundInactive=0,0,0
+DecorationFocus=178,180,191
+DecorationHover=178,180,191
+
+[Colors:Complementary]
+BackgroundNormal=194,193,208
+ForegroundNormal=0,0,0
+ForegroundInactive=0,0,0
+
+[Colors:Button]
+ForegroundNormal=0,0,0
+BackgroundNormal=224,223,227
+ForegroundInactive=161,161,146
+DecorationFocus=178,180,191
+# XP's orange hover
+DecorationHover=248,179,48
+ForegroundLink=0,0,255
+
+[Colors:View]
+ForegroundNormal=0,0,0
+BackgroundNormal=255,255,255
+ForegroundInactive=115,115,115
+DecorationFocus=178,180,191
+DecorationHover=178,180,191
+
+[Colors:Header]
+ForegroundNormal=10,36,106
+BackgroundNormal=255,255,255
+
+[Colors:Tooltip]
+ForegroundNormal=0,0,0
+BackgroundNormal=255,255,225
+ForegroundInactive=0,0,0

@@ -140,10 +140,11 @@ Item {
             font.italic: !button.libreFranklin
             font.weight: button.libreFranklin ? Font.Bold : Font.Medium
             transform: Matrix4x4 { matrix: button.labelSlant }
-            // White on XP's green button, else the button text colour
-            Kirigami.Theme.colorSet: face.xpButton ? Kirigami.Theme.Complementary : Kirigami.Theme.Button
+            // XP's green button has white text in every colour scheme;
+            // otherwise the button text colour
+            Kirigami.Theme.colorSet: Kirigami.Theme.Button
             Kirigami.Theme.inherit: false
-            color: Kirigami.Theme.textColor
+            color: face.xpButton ? "white" : Kirigami.Theme.textColor
         }
 
         MouseArea {

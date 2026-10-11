@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Windows XP (Luna) separator: 1 px #aca899. Part of the Windows XP pack (XP's Olive Green scheme), replacing Exposé's. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+<rect id="horizontal-line" x="0" y="0" width="32" height="1" fill="#aca899"/>
+<rect id="vertical-line" x="36" y="0" width="1" height="32" fill="#aca899"/>
+</svg>

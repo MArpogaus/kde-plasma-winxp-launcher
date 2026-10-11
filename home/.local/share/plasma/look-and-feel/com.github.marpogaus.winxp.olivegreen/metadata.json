@@ -1,0 +1,16 @@
+{
+    "KPackageStructure": "Plasma/LookAndFeel",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "Marcel Arpogaus"
+            }
+        ],
+        "Description": "Windows XP's Olive Green colour scheme: phob1an's Exposé Green look (window borders, Plasma theme, colours) with the XP widgets in Olive Green. Appearance only: apply Windows XP first for the taskbar layout.",
+        "Id": "com.github.marpogaus.winxp.olivegreen",
+        "License": "GPL-2.0+",
+        "Name": "Windows XP (Olive Green)",
+        "Website": "https://github.com/MArpogaus/kde-plasma-winxp-launcher"
+    },
+    "X-Plasma-APIVersion": "2"
+}

@@ -30,6 +30,8 @@ and scroll bars, and pale yellow tooltips.
 
 ![Classic Start menu with Programs](docs/preview-classic.png)
 
+![Olive Green and Silver](docs/preview-schemes.png)
+
 Rendered from the widgets' own QML with Exposé's Plasma theme, stand-in
 icons and Exposé's Bløff wallpaper; with WinXPSVG and
 `get-microsoft-files.sh` the icons, fonts and wallpaper are XP's.
@@ -53,7 +55,15 @@ icons and Exposé's Bløff wallpaper; with WinXPSVG and
    (bundled; its Plasma theme with XP replacements, see below): window
    borders, Plasma theme, colours, Kvantum style and wallpaper. [Kvantum](https://github.com/tsujan/Kvantum) is
    needed for the application style.
-3. For XP icons, install the [WinXPSVG](https://store.kde.org/p/1925937)
+3. Optional, XP's other colour schemes: apply **Windows XP (Olive Green)**
+   or **Windows XP (Silver)** afterwards (appearance only, they keep the
+   taskbar) and pick the matching Kvantum theme, `ExposeGreen` or
+   `ExposeMetallic` (Kvantum Manager, or
+   `kvantummanager --set ExposeGreen`). They use phob1an's
+   [Exposé Green](https://www.opencode.net/phob1an/expose-green) and
+   [Exposé Metallic](https://www.opencode.net/phob1an/expose-metallic)
+   (bundled) with the XP artwork recoloured to Olive Green and Silver.
+4. For XP icons, install the [WinXPSVG](https://store.kde.org/p/1925937)
    icon theme: System Settings → Icons → *Get New…*, search "WinXPSVG",
    install and select it. The Global Theme leaves the icon theme alone, so
    re-applying it keeps your choice. (Exposé's login screen is not bundled
@@ -131,7 +141,8 @@ done
 | Fallback fonts for the start menu | `.local/share/plasma/plasmoids/com.github.marpogaus.winxpstartmenu/contents/fonts` | Wine's Tahoma (LGPL-2.1+), Libre Franklin (OFL-1.1) |
 | Grey fade behind Turn Off / Log Off (KWin effect) | `.local/share/kwin/effects/winxp_sessionfade` | this repository, GPL-2.0+ |
 | XP Alt+Tab (KWin window switcher) | `.local/share/kwin/tabbox/winxp_alttab` | this repository, GPL-2.0+ |
-| Windows XP Global Theme (taskbar layout, Alt+Tab, cursors, Exposé look) | `.local/share/plasma/look-and-feel/com.github.marpogaus.winxp` | this repository, GPL-2.0+ |
+| Windows XP Global Themes (taskbar layout, Alt+Tab, cursors, Exposé look; Olive Green and Silver) | `.local/share/plasma/look-and-feel/com.github.marpogaus.winxp{,.olivegreen,.silver}` | this repository, GPL-2.0+ |
+| Exposé Green and Exposé Metallic (window borders, Plasma themes, colours, Kvantum) | `.local/share/plasma/desktoptheme/{exposegreen,exposemetallic}`, `.local/share/aurorae/themes/{exposegreen,exposemetallic}`, `.local/share/color-schemes/{ExposeGreen,ExposeMetallic}.colors`, `.config/Kvantum/{ExposeGreen,ExposeMetallic}` | [Exposé Green](https://www.opencode.net/phob1an/expose-green), [Exposé Metallic](https://www.opencode.net/phob1an/expose-metallic) by phob1an, GPL-3.0 (see the bundled `LICENSE` files). Their Plasma themes' files marked "Part of the Windows XP pack" are this repository's, GPL-2.0+ |
 | Exposé (window borders, Plasma theme, colours, Kvantum, wallpapers) | `.local/share/plasma/desktoptheme/expose`, `.local/share/aurorae/themes/expose`, `.local/share/color-schemes/Expose.colors`, `.config/Kvantum`, `.local/share/wallpapers/{expose,Bløff}` | [Exposé](https://www.opencode.net/phob1an/expose) by phob1an, GPL-3.0 (see the bundled `LICENSE` files); wallpapers CC BY-SA 4.0. The Plasma theme's files marked "Part of the Windows XP pack" (XP versions of Exposé's files, and `widgets/winxp.svg`) are this repository's, GPL-2.0+ |
 | Cursors | `.local/share/icons/ModernXP` | [modernXP](https://github.com/na0miluv/modernXP-cursor-theme) release, unmodified, GPL-3.0 |
 | Dolphin as XP Explorer | `.local/share/kxmlgui5/dolphin`, `.local/share/dolphin` | toolbar derived from [Dolphin](https://invent.kde.org/system/dolphin), GPL-2.0+ |

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Windows XP check mark (green), drawn over the button frame Plasma uses
+     as the box.
+     Part of the Windows XP pack (XP's Silver scheme), replacing Exposé's. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="20" viewBox="0 0 16 20">
+<g id="checkbox"><rect x="0" y="0" width="16" height="16" fill="#000" fill-opacity="0"/><rect x="10" y="4" width="1" height="1.5" fill="#21a121"/><rect x="9" y="5" width="2" height="1.5" fill="#21a121"/><rect x="4" y="6" width="1" height="1.5" fill="#21a121"/><rect x="8" y="6" width="3" height="1" fill="#21a121"/><rect x="4" y="7" width="2" height="1.5" fill="#21a121"/><rect x="7" y="7" width="3" height="1" fill="#21a121"/><rect x="4" y="8" width="5" height="1" fill="#21a121"/><rect x="5" y="9" width="3" height="1" fill="#21a121"/><rect x="6" y="10" width="1" height="1" fill="#21a121"/></g>
+</svg>

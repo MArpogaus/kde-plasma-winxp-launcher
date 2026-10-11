@@ -281,9 +281,8 @@ FocusScope {
             font.family: menu.xp.fontFamily
             font.pixelSize: 18
             font.bold: true
-            Kirigami.Theme.colorSet: menu.xpChrome ? Kirigami.Theme.Complementary : Kirigami.Theme.Window
-            Kirigami.Theme.inherit: false
-            color: Kirigami.Theme.textColor
+            // white on XP's header in every colour scheme
+            color: menu.xpChrome ? "white" : Kirigami.Theme.textColor
         }
 
         MenuSeparator {

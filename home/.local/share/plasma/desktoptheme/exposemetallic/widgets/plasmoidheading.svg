@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Headers and footers of Plasma's popups on XP's white menus: no fill, a
+     1 px line towards the content in the menu border's grey, 6 px padding.
+     Part of the Windows XP pack (XP's Silver scheme), replacing Exposé's. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="40" viewBox="0 0 48 40">
+<g id="header-topleft"><rect x="0" y="0" width="6" height="6" fill="#000" fill-opacity="0"/></g>
+<g id="header-top"><rect x="6" y="0" width="1" height="6" fill="#000" fill-opacity="0"/></g>
+<g id="header-topright"><rect x="7" y="0" width="6" height="6" fill="#000" fill-opacity="0"/></g>
+<g id="header-left"><rect x="0" y="6" width="6" height="1" fill="#000" fill-opacity="0"/></g>
+<g id="header-center"><rect x="6" y="6" width="1" height="1" fill="#000" fill-opacity="0"/></g>
+<g id="header-right"><rect x="7" y="6" width="6" height="1" fill="#000" fill-opacity="0"/></g>
+<g id="header-bottomleft"><rect x="0" y="7" width="6" height="6" fill="#000" fill-opacity="0"/><rect x="0" y="12" width="6" height="1" fill="#aca899"/></g>
+<g id="header-bottom"><rect x="6" y="7" width="1" height="6" fill="#000" fill-opacity="0"/><rect x="6" y="12" width="1" height="1" fill="#aca899"/></g>
+<g id="header-bottomright"><rect x="7" y="7" width="6" height="6" fill="#000" fill-opacity="0"/><rect x="7" y="12" width="6" height="1" fill="#aca899"/></g>
+<rect id="header-hint-top-margin" x="16" y="0" width="1" height="6" fill="#000" fill-opacity="0"/>
+<rect id="header-hint-bottom-margin" x="23" y="0" width="1" height="6" fill="#000" fill-opacity="0"/>
+<rect id="header-hint-left-margin" x="30" y="0" width="6" height="1" fill="#000" fill-opacity="0"/>
+<rect id="header-hint-right-margin" x="37" y="0" width="6" height="1" fill="#000" fill-opacity="0"/>
+<g id="footer-topleft"><rect x="0" y="20" width="6" height="6" fill="#000" fill-opacity="0"/><rect x="0" y="20" width="6" height="1" fill="#aca899"/></g>
+<g id="footer-top"><rect x="6" y="20" width="1" height="6" fill="#000" fill-opacity="0"/><rect x="6" y="20" width="1" height="1" fill="#aca899"/></g>
+<g id="footer-topright"><rect x="7" y="20" width="6" height="6" fill="#000" fill-opacity="0"/><rect x="7" y="20" width="6" height="1" fill="#aca899"/></g>
+<g id="footer-left"><rect x="0" y="26" width="6" height="1" fill="#000" fill-opacity="0"/></g>
+<g id="footer-center"><rect x="6" y="26" width="1" height="1" fill="#000" fill-opacity="0"/></g>
+<g id="footer-right"><rect x="7" y="26" width="6" height="1" fill="#000" fill-opacity="0"/></g>
+<g id="footer-bottomleft"><rect x="0" y="27" width="6" height="6" fill="#000" fill-opacity="0"/></g>
+<g id="footer-bottom"><rect x="6" y="27" width="1" height="6" fill="#000" fill-opacity="0"/></g>
+<g id="footer-bottomright"><rect x="7" y="27" width="6" height="6" fill="#000" fill-opacity="0"/></g>
+<rect id="footer-hint-top-margin" x="16" y="20" width="1" height="6" fill="#000" fill-opacity="0"/>
+<rect id="footer-hint-bottom-margin" x="23" y="20" width="1" height="6" fill="#000" fill-opacity="0"/>
+<rect id="footer-hint-left-margin" x="30" y="20" width="6" height="1" fill="#000" fill-opacity="0"/>
+<rect id="footer-hint-right-margin" x="37" y="20" width="6" height="1" fill="#000" fill-opacity="0"/>
+</svg>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Windows XP (Luna) menu: white, 1 px #aca899 border, 2 px padding, shadow on the right and bottom. Part of the Windows XP pack (XP's Olive Green scheme), replacing Exposé's blue dialog background. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="70" viewBox="0 0 80 70">
+<g id="topleft"><rect x="0" y="0" width="3" height="3" fill="#ffffff"/><rect x="0" y="0" width="3" height="1" fill="#aca899"/><rect x="0" y="0" width="1" height="3" fill="#aca899"/></g>
+<g id="top"><rect x="3" y="0" width="10" height="3" fill="#ffffff"/><rect x="3" y="0" width="10" height="1" fill="#aca899"/></g>
+<g id="topright"><rect x="13" y="0" width="3" height="3" fill="#ffffff"/><rect x="13" y="0" width="3" height="1" fill="#aca899"/><rect x="15" y="0" width="1" height="3" fill="#aca899"/></g>
+<g id="left"><rect x="0" y="3" width="3" height="10" fill="#ffffff"/><rect x="0" y="3" width="1" height="10" fill="#aca899"/></g>
+<g id="center"><rect x="3" y="3" width="10" height="10" fill="#ffffff"/></g>
+<g id="right"><rect x="13" y="3" width="3" height="10" fill="#ffffff"/><rect x="15" y="3" width="1" height="10" fill="#aca899"/></g>
+<g id="bottomleft"><rect x="0" y="13" width="3" height="3" fill="#ffffff"/><rect x="0" y="15" width="3" height="1" fill="#aca899"/><rect x="0" y="13" width="1" height="3" fill="#aca899"/></g>
+<g id="bottom"><rect x="3" y="13" width="10" height="3" fill="#ffffff"/><rect x="3" y="15" width="10" height="1" fill="#aca899"/></g>
+<g id="bottomright"><rect x="13" y="13" width="3" height="3" fill="#ffffff"/><rect x="13" y="15" width="3" height="1" fill="#aca899"/><rect x="15" y="13" width="1" height="3" fill="#aca899"/></g>
+<rect id="hint-top-margin" x="40" y="0" width="1" height="3" fill="#00ff00" fill-opacity="0"/>
+<rect id="hint-bottom-margin" x="50" y="0" width="1" height="3" fill="#00ff00" fill-opacity="0"/>
+<rect id="hint-left-margin" x="60" y="0" width="3" height="1" fill="#00ff00" fill-opacity="0"/>
+<rect id="hint-right-margin" x="70" y="0" width="3" height="1" fill="#00ff00" fill-opacity="0"/>
+<g id="shadow-topleft"><rect x="0" y="30" width="1" height="1" fill="#000000" fill-opacity="0"/></g>
+<g id="shadow-top"><rect x="1" y="30" width="1" height="1" fill="#000000" fill-opacity="0"/></g>
+<g id="shadow-topright"><rect x="2" y="30" width="4" height="4" fill="#000000" fill-opacity="0"/></g>
+<g id="shadow-left"><rect x="0" y="31" width="1" height="1" fill="#000000" fill-opacity="0"/></g>
+<g id="shadow-center"><rect x="1" y="31" width="1" height="1" fill="#000000" fill-opacity="0"/></g>
+<g id="shadow-right"><rect x="2" y="34" width="1" height="10" fill="#000000" fill-opacity="0.45"/><rect x="3" y="34" width="1" height="10" fill="#000000" fill-opacity="0.32"/><rect x="4" y="34" width="1" height="10" fill="#000000" fill-opacity="0.16"/><rect x="5" y="34" width="1" height="10" fill="#000000" fill-opacity="0.07"/></g>
+<g id="shadow-bottomleft"><rect x="0" y="50" width="4" height="4" fill="#000000" fill-opacity="0"/></g>
+<g id="shadow-bottom"><rect x="4" y="50" width="10" height="1" fill="#000000" fill-opacity="0.45"/><rect x="4" y="51" width="10" height="1" fill="#000000" fill-opacity="0.32"/><rect x="4" y="52" width="10" height="1" fill="#000000" fill-opacity="0.16"/><rect x="4" y="53" width="10" height="1" fill="#000000" fill-opacity="0.07"/></g>
+<g id="shadow-bottomright"><rect x="20" y="50" width="1" height="1" fill="#000000" fill-opacity="0.45"/><rect x="20" y="51" width="1" height="1" fill="#000000" fill-opacity="0.32"/><rect x="20" y="52" width="1" height="1" fill="#000000" fill-opacity="0.16"/><rect x="20" y="53" width="1" height="1" fill="#000000" fill-opacity="0.07"/><rect x="21" y="50" width="1" height="1" fill="#000000" fill-opacity="0.32"/><rect x="21" y="51" width="1" height="1" fill="#000000" fill-opacity="0.32"/><rect x="21" y="52" width="1" height="1" fill="#000000" fill-opacity="0.16"/><rect x="21" y="53" width="1" height="1" fill="#000000" fill-opacity="0.07"/><rect x="22" y="50" width="1" height="1" fill="#000000" fill-opacity="0.16"/><rect x="22" y="51" width="1" height="1" fill="#000000" fill-opacity="0.16"/><rect x="22" y="52" width="1" height="1" fill="#000000" fill-opacity="0.16"/><rect x="22" y="53" width="1" height="1" fill="#000000" fill-opacity="0.07"/><rect x="23" y="50" width="1" height="1" fill="#000000" fill-opacity="0.07"/><rect x="23" y="51" width="1" height="1" fill="#000000" fill-opacity="0.07"/><rect x="23" y="52" width="1" height="1" fill="#000000" fill-opacity="0.07"/><rect x="23" y="53" width="1" height="1" fill="#000000" fill-opacity="0.07"/></g>
+<rect id="shadow-hint-top-margin" x="40" y="60" width="1" height="0" fill="#00ff00" fill-opacity="0"/>
+<rect id="shadow-hint-left-margin" x="50" y="60" width="0" height="1" fill="#00ff00" fill-opacity="0"/>
+<rect id="shadow-hint-right-margin" x="60" y="60" width="4" height="1" fill="#00ff00" fill-opacity="0"/>
+<rect id="shadow-hint-bottom-margin" x="70" y="60" width="1" height="4" fill="#00ff00" fill-opacity="0"/>
+</svg>

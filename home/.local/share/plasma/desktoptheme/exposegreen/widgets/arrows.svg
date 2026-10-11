@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Windows XP menu arrows (4 x 7 px), in the text colour, each in an 8 x 8 px
+     box: drawn 1:1 at their own size, scaled evenly at others (Plasma's combo
+     boxes, 16 px). Part of the Windows XP pack (XP's Olive Green scheme), replacing Exposé's. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="38" height="8" viewBox="0 0 38 8">
+<style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#000000; }</style>
+<g id="right-arrow" class="ColorScheme-Text" style="fill:currentColor"><rect x="0" y="0" width="8" height="8" fill-opacity="0"/><rect x="2" y="0" width="1" height="7"/><rect x="3" y="1" width="1" height="5"/><rect x="4" y="2" width="1" height="3"/><rect x="5" y="3" width="1" height="1"/></g>
+<g id="left-arrow" class="ColorScheme-Text" style="fill:currentColor"><rect x="10" y="0" width="8" height="8" fill-opacity="0"/><rect x="12" y="3" width="1" height="1"/><rect x="13" y="2" width="1" height="3"/><rect x="14" y="1" width="1" height="5"/><rect x="15" y="0" width="1" height="7"/></g>
+<g id="down-arrow" class="ColorScheme-Text" style="fill:currentColor"><rect x="20" y="0" width="8" height="8" fill-opacity="0"/><rect x="20" y="2" width="7" height="1"/><rect x="21" y="3" width="5" height="1"/><rect x="22" y="4" width="3" height="1"/><rect x="23" y="5" width="1" height="1"/></g>
+<g id="up-arrow" class="ColorScheme-Text" style="fill:currentColor"><rect x="30" y="0" width="8" height="8" fill-opacity="0"/><rect x="33" y="2" width="1" height="1"/><rect x="32" y="3" width="3" height="1"/><rect x="31" y="4" width="5" height="1"/><rect x="30" y="5" width="7" height="1"/></g>
+</svg>

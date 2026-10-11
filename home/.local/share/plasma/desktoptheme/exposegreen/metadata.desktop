@@ -1,0 +1,15 @@
+[Desktop Entry]
+Comment=Like Expose, only green
+Name=Expose Green
+X-KDE-PluginInfo-Author=Mark Whittaker
+X-KDE-PluginInfo-Category=Plasma Theme
+X-KDE-PluginInfo-Email=phobian@tutanota.com
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-PluginInfo-License=GPL3
+X-KDE-PluginInfo-Name=exposegreen
+X-KDE-PluginInfo-Version=2.0
+X-KDE-PluginInfo-Website=
+X-Plasma-API=5.0
+
+[BlurBehindEffect]
+enabled=false

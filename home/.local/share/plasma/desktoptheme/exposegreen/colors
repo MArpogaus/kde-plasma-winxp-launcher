@@ -1,0 +1,50 @@
+# Windows XP Olive Green colours for Plasma: black on white popups, dark olive on the olive taskbar (Complementary), XP's olive selection.
+# Part of the Windows XP pack (XP's Olive Green scheme), replacing Exposé's colours.
+[Colors:Window]
+ForegroundNormal=0,0,0
+BackgroundNormal=255,255,255
+ForegroundActive=147,160,112
+ForegroundNegative=255,0,0
+ForegroundLink=0,0,255
+ForegroundInactive=115,115,115
+# XP's tint for newly installed programs
+BackgroundNeutral=255,239,193
+DecorationFocus=147,160,112
+DecorationHover=147,160,112
+
+[Colors:Selection]
+BackgroundNormal=147,160,112
+ForegroundNormal=255,255,255
+ForegroundInactive=255,255,255
+DecorationFocus=147,160,112
+DecorationHover=147,160,112
+
+[Colors:Complementary]
+BackgroundNormal=173,189,133
+ForegroundNormal=71,71,17
+ForegroundInactive=71,71,17
+
+[Colors:Button]
+ForegroundNormal=0,0,0
+BackgroundNormal=236,233,216
+ForegroundInactive=161,161,146
+DecorationFocus=147,160,112
+# XP's orange hover
+DecorationHover=248,179,48
+ForegroundLink=0,0,255
+
+[Colors:View]
+ForegroundNormal=0,0,0
+BackgroundNormal=255,255,255
+ForegroundInactive=115,115,115
+DecorationFocus=147,160,112
+DecorationHover=147,160,112
+
+[Colors:Header]
+ForegroundNormal=71,71,17
+BackgroundNormal=255,255,255
+
+[Colors:Tooltip]
+ForegroundNormal=0,0,0
+BackgroundNormal=255,255,225
+ForegroundInactive=0,0,0

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Expose Green
+Comment=Like Expose, only green.
+X-KDE-PluginInfo-Author=Mark Whittaker
+X-KDE-PluginInfo-Email=phobian@tutanota.com
+X-KDE-PluginInfo-Name=exposegreen
+X-KDE-PluginInfo-Version=2.1
+X-KDE-PluginInfo-Category=
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=GPL3
+X-KDE-PluginInfo-EnabledByDefault=true

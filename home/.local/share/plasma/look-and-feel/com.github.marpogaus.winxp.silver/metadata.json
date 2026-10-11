@@ -1,0 +1,16 @@
+{
+    "KPackageStructure": "Plasma/LookAndFeel",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "Marcel Arpogaus"
+            }
+        ],
+        "Description": "Windows XP's Silver colour scheme: phob1an's Exposé Metallic look (window borders, Plasma theme, colours) with the XP widgets in Silver. Appearance only: apply Windows XP first for the taskbar layout.",
+        "Id": "com.github.marpogaus.winxp.silver",
+        "License": "GPL-2.0+",
+        "Name": "Windows XP (Silver)",
+        "Website": "https://github.com/MArpogaus/kde-plasma-winxp-launcher"
+    },
+    "X-Plasma-APIVersion": "2"
+}
