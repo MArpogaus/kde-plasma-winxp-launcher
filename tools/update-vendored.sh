@@ -26,7 +26,13 @@ replace() { rm -rf "$2"; mkdir -p "$(dirname "$2")"; cp -r "$1" "$2"; }
 # Windows XP Global Theme's contents/defaults refers to (taken from Exposé's
 # own Plasma 6 Global Theme, org.magpie.expose.desktop)
 E=$SRC/expose
-replace "$E/desktoptheme/expose" "$D/plasma/desktoptheme/expose"
+# The pack's XP files in Exposé's Plasma theme (marked "Part of the Windows
+# XP pack") replace Exposé's: keep them over the refreshed theme
+T=$D/plasma/desktoptheme/expose
+mkdir -p "$SRC/xp"
+(cd "$T" && grep -rl "Part of the Windows XP pack" . | xargs -r cp --parents -t "$SRC/xp")
+replace "$E/desktoptheme/expose" "$T"
+cp -r "$SRC/xp/." "$T/"
 replace "$E/themes/expose" "$D/aurorae/themes/expose"
 replace "$E/Kvantum/Expose" "$H/.config/Kvantum/Expose"
 replace "$E/wallpapers/expose" "$D/wallpapers/expose"

@@ -60,6 +60,9 @@ Item {
         renderType: Text.NativeRendering
         font.family: button.fontFamily
         font.pixelSize: 11
+        // Text on the taskbar: the colour set for contrasting areas
+        Kirigami.Theme.colorSet: Kirigami.Theme.Complementary
+        Kirigami.Theme.inherit: false
         color: Kirigami.Theme.textColor
     }
 }

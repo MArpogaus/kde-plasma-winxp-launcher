@@ -91,7 +91,8 @@ Item {
             font.family: entry.xp.fontFamily
             font.pixelSize: entry.xp.fontPixelSize
             font.bold: entry.bold
-            color: entry.interactive ? Kirigami.Theme.textColor : Kirigami.Theme.disabledTextColor
+            color: !entry.interactive ? Kirigami.Theme.disabledTextColor
+                 : entry.highlighted ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
         }
 
         Text {
@@ -105,7 +106,7 @@ Item {
             renderType: Text.NativeRendering
             font.family: entry.xp.fontFamily
             font.pixelSize: entry.xp.fontPixelSize
-            color: Kirigami.Theme.disabledTextColor
+            color: entry.highlighted ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.disabledTextColor
         }
     }
 
@@ -113,10 +114,13 @@ Item {
         anchors.right: parent.right
         anchors.rightMargin: 4
         anchors.verticalCenter: parent.verticalCenter
-        width: 8
-        height: 8
+        width: naturalSize.width
+        height: naturalSize.height
         visible: entry.showArrow
-        imagePath: "widgets/arrows"
+        svg: KSvg.Svg {
+            imagePath: "widgets/arrows"
+            status: entry.highlighted ? KSvg.Svg.Selected : KSvg.Svg.Normal
+        }
         elementId: "right-arrow"
     }
 

@@ -1,24 +1,23 @@
+# Windows XP colours for Plasma: black on white popups, white on the blue
+# taskbar (Complementary), XP blue selection. Part of the Windows XP pack,
+# replacing Exposé's colours.
 [Colors:Window]
-ForegroundNormal=255,255,255
-BackgroundNormal=67,142,255
-ForegroundNegative=212,84,255
+ForegroundNormal=0,0,0
+BackgroundNormal=255,255,255
 ForegroundActive=128,0,0
 ForegroundNegative=255,0,0
-ForegroundLink=232,242,255
-ForegroundInactive=255,255,255
+ForegroundLink=0,0,255
+ForegroundInactive=115,115,115
 
 [Colors:Selection]
-BackgroundNormal=49,161,60
-#BackgroundNormal=117,196,45
+BackgroundNormal=49,106,197
 ForegroundNormal=255,255,255
-ForegroundInactive=255,0,255
+ForegroundInactive=255,255,255
 
-[Colors:Complimentary]
-BackgroundNormal=255,54,40
-ForegroundNormal=0,0,255
-DecorationFocus=255,0,0
-ForegroundLink=255,0,0
-ForegroundVisited=255,0,0
+[Colors:Complementary]
+BackgroundNormal=36,94,219
+ForegroundNormal=255,255,255
+ForegroundInactive=255,255,255
 
 [Colors:Button]
 ForegroundNormal=255,255,255
@@ -28,18 +27,14 @@ DecorationHover=138,112,65
 ForegroundLink=255,0,255
 
 [Colors:View]
-ForegroundNormal=21,21,21
-BackgroundNormal=211,187,145
-DecorationHover=237,0,0
-DecorationFocus=0,0,0
-ForegroundInactive=0,0,255
-ForegroundLink=255,0,255
+ForegroundNormal=0,0,0
+BackgroundNormal=255,255,255
+ForegroundInactive=115,115,115
 
 [Colors:Header]
-ForegroundNormal=250,250,250
+ForegroundNormal=7,26,79
 
 [Colors:Tooltip]
 ForegroundNormal=21,21,21
 BackgroundNormal=236,233,216
 ForegroundInactive=0,0,255
-

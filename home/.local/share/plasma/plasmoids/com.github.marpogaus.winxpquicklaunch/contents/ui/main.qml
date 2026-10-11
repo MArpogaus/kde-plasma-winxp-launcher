@@ -268,6 +268,8 @@ PlasmoidItem {
                         font.family: "Tahoma"
                         font.pixelSize: 11
                         font.bold: true
+                        Kirigami.Theme.colorSet: Kirigami.Theme.Complementary
+                        Kirigami.Theme.inherit: false
                         color: Kirigami.Theme.textColor
                     }
                     MouseArea {
@@ -380,7 +382,7 @@ PlasmoidItem {
                             font.family: "Tahoma"
                             font.pixelSize: 11
                             renderType: Text.NativeRendering
-                            color: Kirigami.Theme.textColor
+                            color: rowMouse.containsMouse ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
                         }
                         MouseArea {
                             id: rowMouse

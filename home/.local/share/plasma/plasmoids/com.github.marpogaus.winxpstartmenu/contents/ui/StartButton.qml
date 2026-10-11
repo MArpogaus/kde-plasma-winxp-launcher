@@ -88,6 +88,9 @@ Item {
             font.italic: !button.libreFranklin
             font.weight: button.libreFranklin ? Font.Bold : Font.Medium
             transform: Matrix4x4 { matrix: button.labelSlant }
+            // Text on the taskbar: the colour set for contrasting areas
+            Kirigami.Theme.colorSet: Kirigami.Theme.Complementary
+            Kirigami.Theme.inherit: false
             color: Kirigami.Theme.textColor
         }
 

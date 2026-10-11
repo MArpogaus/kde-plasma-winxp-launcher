@@ -37,8 +37,8 @@ icons and Exposé's Bløff wallpaper; with WinXPSVG and
    sets up a 30 px XP taskbar (Start, Quick Launch, task buttons,
    notification area, clock), XP Alt+Tab and the cursors, on
    the look of [Exposé](https://www.opencode.net/phob1an/expose) by phob1an
-   (bundled unmodified): window borders, Plasma theme, colours, Kvantum
-   style and wallpaper. [Kvantum](https://github.com/tsujan/Kvantum) is
+   (bundled; its Plasma theme with XP replacements, see below): window
+   borders, Plasma theme, colours, Kvantum style and wallpaper. [Kvantum](https://github.com/tsujan/Kvantum) is
    needed for the application style.
 3. For XP icons, install the [WinXPSVG](https://store.kde.org/p/1925937)
    icon theme: System Settings → Icons → *Get New…*, search "WinXPSVG",
@@ -119,7 +119,7 @@ done
 | Grey fade behind Turn Off / Log Off (KWin effect) | `.local/share/kwin/effects/winxp_sessionfade` | this repository, GPL-2.0+ |
 | XP Alt+Tab (KWin window switcher) | `.local/share/kwin/tabbox/winxp_alttab` | this repository, GPL-2.0+ |
 | Windows XP Global Theme (taskbar layout, Alt+Tab, cursors, Exposé look) | `.local/share/plasma/look-and-feel/com.github.marpogaus.winxp` | this repository, GPL-2.0+ |
-| Exposé (window borders, Plasma theme, colours, Kvantum, wallpapers) | `.local/share/plasma/desktoptheme/expose`, `.local/share/aurorae/themes/expose`, `.local/share/color-schemes/Expose.colors`, `.config/Kvantum`, `.local/share/wallpapers/{expose,Bløff}` | [Exposé](https://www.opencode.net/phob1an/expose) by phob1an, unmodified, GPL-3.0 (see the bundled `LICENSE` files); wallpapers CC BY-SA 4.0 |
+| Exposé (window borders, Plasma theme, colours, Kvantum, wallpapers) | `.local/share/plasma/desktoptheme/expose`, `.local/share/aurorae/themes/expose`, `.local/share/color-schemes/Expose.colors`, `.config/Kvantum`, `.local/share/wallpapers/{expose,Bløff}` | [Exposé](https://www.opencode.net/phob1an/expose) by phob1an, GPL-3.0 (see the bundled `LICENSE` files); wallpapers CC BY-SA 4.0. The Plasma theme's files marked "Part of the Windows XP pack" are this repository's XP replacements |
 | Cursors | `.local/share/icons/ModernXP` | [modernXP](https://github.com/na0miluv/modernXP-cursor-theme) release, unmodified, GPL-3.0 |
 | Dolphin as XP Explorer | `.local/share/kxmlgui5/dolphin`, `.local/share/dolphin` | toolbar derived from [Dolphin](https://invent.kde.org/system/dolphin), GPL-2.0+ |
 
