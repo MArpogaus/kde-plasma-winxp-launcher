@@ -131,6 +131,7 @@ Kicker.SubMenu {
             model: dialog.model
             level: dialog.level
             maxRows: dialog.maxRows
+            frameWidth: (dialog.xpFrame ? frame.margins.left + frame.margins.right : 0) + dialog.margins.left + dialog.margins.right
 
             Keys.onEscapePressed: dialog.controller.closeCascadesFrom(dialog.level)
         }

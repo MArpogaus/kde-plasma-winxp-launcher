@@ -25,8 +25,10 @@ Item {
     readonly property int itemCount: grid.count
     // Scrolling menus keep one column and show arrows at both ends; menus
     // that would wrap into more columns than the screen holds scroll too
+    // (frameWidth: what the cascade window adds around the rows)
+    property real frameWidth: 0
     readonly property int maxColumns: controller.availableArea && controller.availableArea.width > 0
-        ? Math.max(1, Math.floor(controller.availableArea.width / columnWidth)) : 99
+        ? Math.max(1, Math.floor((controller.availableArea.width - frameWidth) / columnWidth)) : 99
     readonly property bool scroll: controller.scrollPrograms || Math.ceil(itemCount / Math.max(1, maxRows)) > maxColumns
     readonly property bool scrolling: scroll && itemCount > maxRows
     readonly property int stripHeight: scrolling ? 16 : 0
@@ -82,7 +84,11 @@ Item {
         if (openIndex === index) {
             return;
         }
-        view.controller.openCascade(view.level + 1, item, view.controller.childModel(view.model, index, rowAt(index)), view, index);
+        const model = view.controller.childModel(view.model, index, rowAt(index));
+        if (!view.controller.openCascade(view.level + 1, item, model, view, index)
+                && model && (model.isStaticMenu || view.controller.isFolderModel(model))) {
+            model.destroy();
+        }
     }
 
     // The model's data for a row, as its delegate sees it

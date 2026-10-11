@@ -70,7 +70,9 @@ FocusScope {
         // As XP: only as many as fit on the screen with the rest of the menu
         const area = controller.availableArea;
         const row = xp.programRowHeight;
-        const fixed = leftColumn.neededHeight - frequentItems.length * row;
+        // (from the counts: the column is not laid out while the menu is hidden)
+        const pinnedCount = favoritesModel ? favoritesModel.count : 0;
+        const fixed = leftColumn.neededHeight - leftTop.implicitHeight + pinnedCount * row + xp.separatorHeight;
         const room = area && area.height > 0
             ? Math.floor((area.height - 8 - xp.headerHeight - 2 - xp.footerHeight - fixed) / row) : numFrequentApps;
         const limit = Math.max(0, Math.min(numFrequentApps, room));
@@ -96,13 +98,13 @@ FocusScope {
         return hoverItem !== null && hoverItem !== item && hoverItem.hovered === true;
     }
 
-    function openKind(kind, item) {
+    function openKind(kind, item, fromHover) {
         if (kind === "programs") {
             controller.openAllPrograms(item);
         } else if (kind === "recent") {
             controller.openRecentDocuments(item);
         } else {
-            controller.openPlaceMenu(kind, item);
+            controller.openPlaceMenu(kind, item, fromHover);
         }
     }
 
@@ -129,7 +131,7 @@ FocusScope {
             } else if (!menu.controller.openOnHover) {
                 // Without "Open submenus when I pause on them" only a click opens one
             } else {
-                menu.openKind(menu.hoverKind, menu.hoverItem);
+                menu.openKind(menu.hoverKind, menu.hoverItem, true);
             }
         }
     }

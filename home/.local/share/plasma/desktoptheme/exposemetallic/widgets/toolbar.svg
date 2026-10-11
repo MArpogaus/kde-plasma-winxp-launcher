@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Tool bars in Plasma's popups: flat, as on XP's white menus.
-     Part of the Windows XP pack (XP's Silver scheme), replacing Exposé's. -->
+     Part of the Windows XP pack (XP's Silver scheme). -->
 <svg xmlns="http://www.w3.org/2000/svg" width="47" height="9" viewBox="0 0 47 9">
 <g id="topleft"><rect x="0" y="0" width="2" height="2" fill="#000" fill-opacity="0"/></g>
 <g id="top"><rect x="4" y="0" width="1" height="2" fill="#000" fill-opacity="0"/></g>

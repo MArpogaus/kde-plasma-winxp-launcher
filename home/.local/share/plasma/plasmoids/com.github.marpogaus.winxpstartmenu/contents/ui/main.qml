@@ -452,11 +452,14 @@ PlasmoidItem {
     }
 
     // A right-column entry set to "Display as a menu"
-    function openPlaceMenu(key, item) {
+    function openPlaceMenu(key, item, fromHover) {
         const model = placeModel(key);
         if (!model) {
-            // No folder view plugin or no such category: open it instead
-            return openPlace(key);
+            // No folder view plugin or no such category: a click opens it instead
+            if (!fromHover) {
+                openPlace(key);
+            }
+            return;
         }
         if (openCascade(0, item, model, null, -1)) {
             startMenu.openCascade = key;
@@ -603,7 +606,10 @@ PlasmoidItem {
 
     // The key a program is pinned under, or "": the recently used list
     // names programs by their .desktop file, the pinned list as
-    // "applications:" plus that (or by URL)
+    // "applications:" plus that (or by URL). The default browser and mail
+    // program are pinned as preferred://…, known by their .desktop file's
+    // resolved path, which differs for a Flatpak (a symlink): compare the
+    // file names then
     function pinnedKey(favoriteId, url) {
         const favorites = rootModel.favoritesModel;
         for (const key of [favoriteId, favoriteId ? "applications:" + favoriteId : "", url ? String(url) : ""]) {
@@ -611,7 +617,26 @@ PlasmoidItem {
                 return key;
             }
         }
+        const name = String(url || favoriteId || "").replace(/^applications:/, "").split("/").pop();
+        if (name.endsWith(".desktop")) {
+            for (let i = 0; i < pinnedRows.count; ++i) {
+                const row = pinnedRows.objectAt(i);
+                if (row && row.fileName === name) {
+                    return row.favoriteId;
+                }
+            }
+        }
         return "";
+    }
+
+    Instantiator {
+        id: pinnedRows
+        model: rootModel.favoritesModel
+        delegate: QtObject {
+            required property var model
+            readonly property string favoriteId: model.favoriteId ?? ""
+            readonly property string fileName: String(model.url ?? "").split("/").pop()
+        }
     }
 
     function isPinned(favoriteId, url) {

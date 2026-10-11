@@ -132,10 +132,12 @@ PlasmoidItem {
                 if (!item || !item.inHiddenLayout || !item.iconContainer) {
                     continue;
                 }
-                // Plasma leaves a hidden item's tooltip title out when its
-                // label shows the name; the row hides the label
+                // Plasma leaves a hidden item's tooltip title out (and the
+                // tooltip off) when its label shows the name; the row hides
+                // the label. As Plasma, no tooltip over an open applet
                 if (!item.mainText) {
                     item.mainText = Qt.binding(() => item.text);
+                    item.active = Qt.binding(() => item.mainText !== "" && !(item.applet && item.applet.expanded));
                 }
                 const icon = item.iconContainer;
                 const row = icon.parent;

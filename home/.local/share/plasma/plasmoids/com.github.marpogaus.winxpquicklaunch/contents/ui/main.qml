@@ -361,11 +361,12 @@ PlasmoidItem {
                 const p = overflowButton.mapToGlobal(0, 0);
                 const location = Plasmoid.location;
                 if (location === PlasmaCore.Types.LeftEdge || location === PlasmaCore.Types.RightEdge) {
-                    // Beside a vertical taskbar, top edges aligned
+                    // Beside a vertical taskbar, top edges aligned (kept on
+                    // the screen)
                     const left = location === PlasmaCore.Types.LeftEdge;
                     const edge = bar.mapToGlobal(left ? bar.width : 0, 0).x;
                     x = left ? Math.round(edge) : Math.round(edge) - width;
-                    y = Math.round(p.y);
+                    y = Math.round(Math.min(p.y, bar.Screen.virtualY + bar.Screen.height - height));
                     return;
                 }
                 x = Math.round(p.x);

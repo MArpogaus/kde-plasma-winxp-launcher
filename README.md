@@ -97,11 +97,14 @@ button picks up XP's flag automatically.
 
 Apply Breeze (or any other) Global Theme with its desktop layout, then
 remove the copied files (from this repository's directory) and the XP
-Alt+Tab setting the Global Theme left in KWin's defaults:
+Alt+Tab and title bar button settings the Global Theme left in KWin's
+defaults:
 
 ```sh
 (cd home && git ls-files -z) | (cd ~ && xargs -0 rm -f)
 kwriteconfig6 --file ~/.config/kdedefaults/kwinrc --group TabBox --key LayoutName --delete
+kwriteconfig6 --file ~/.config/kdedefaults/kwinrc --group org.kde.kdecoration2 --key ButtonsOnLeft --delete
+kwriteconfig6 --file ~/.config/kdedefaults/kwinrc --group org.kde.kdecoration2 --key ButtonsOnRight --delete
 ```
 
 Files from `get-microsoft-files.sh` are in `~/.local/share/{fonts,sounds,wallpapers}/WindowsXP`
@@ -145,7 +148,7 @@ done
 | XP Alt+Tab (KWin window switcher) | `.local/share/kwin/tabbox/winxp_alttab` | this repository, GPL-2.0+ |
 | Windows XP Global Themes (taskbar layout, Alt+Tab, cursors, Exposé look; Olive Green and Silver) | `.local/share/plasma/look-and-feel/com.github.marpogaus.winxp{,.olivegreen,.silver}` | this repository, GPL-2.0+ |
 | Exposé Green and Exposé Metallic (window borders, Plasma themes, colours, Kvantum) | `.local/share/plasma/desktoptheme/{exposegreen,exposemetallic}`, `.local/share/aurorae/themes/{exposegreen,exposemetallic}`, `.local/share/color-schemes/{ExposeGreen,ExposeMetallic}.colors`, `.config/Kvantum/{ExposeGreen,ExposeMetallic}` | [Exposé Green](https://www.opencode.net/phob1an/expose-green), [Exposé Metallic](https://www.opencode.net/phob1an/expose-metallic) by phob1an, GPL-3.0 (see the bundled `LICENSE` files). Their Plasma themes' files marked "Part of the Windows XP pack" are this repository's, GPL-2.0+; their `metadata.json` declares Plasma's theme API 5 |
-| Exposé (window borders, Plasma theme, colours, Kvantum, wallpapers) | `.local/share/plasma/desktoptheme/expose`, `.local/share/aurorae/themes/expose`, `.local/share/color-schemes/Expose.colors`, `.config/Kvantum/Expose`, `.local/share/wallpapers/{expose,Bløff}` | [Exposé](https://www.opencode.net/phob1an/expose) by phob1an, GPL-3.0 (see the bundled `LICENSE` files); wallpapers CC BY-SA 4.0. The Plasma theme's files marked "Part of the Windows XP pack" (XP versions of Exposé's files, and `widgets/winxp.svg`) are this repository's, GPL-2.0+; its `metadata.json` declares Plasma's theme API 5 |
+| Exposé (window borders, Plasma theme, colours, Kvantum, wallpapers) | `.local/share/plasma/desktoptheme/expose`, `.local/share/aurorae/themes/expose`, `.local/share/color-schemes/Expose.colors`, `.config/Kvantum/Expose`, `.local/share/wallpapers/{expose,Bløff}` | [Exposé](https://www.opencode.net/phob1an/expose) by phob1an, GPL-3.0 (see the bundled `LICENSE` files); wallpapers CC BY-SA 4.0. The Plasma theme's files marked "Part of the Windows XP pack" (XP versions of Exposé's files, and the files Exposé lacks: `widgets/{winxp,listitem,toolbar}.svg`, `solid/`) are this repository's, GPL-2.0+; its `metadata.json` declares Plasma's theme API 5 |
 | Cursors | `.local/share/icons/ModernXP` | [modernXP](https://github.com/na0miluv/modernXP-cursor-theme) release, unmodified, GPL-3.0 |
 | Dolphin as XP Explorer | `.local/share/kxmlgui5/dolphin`, `.local/share/dolphin` | toolbar derived from [Dolphin](https://invent.kde.org/system/dolphin), GPL-2.0+ |
 
