@@ -11,7 +11,11 @@ task buttons from its task frames, the start button and the tool buttons
 from its button frames, menus and cascades from its dialog frame, the
 highlight, lines and arrows from its view item, line and arrow images,
 and all text colours from its colour scheme. So they follow whatever
-Plasma theme is chosen, Exposé or another one.
+Plasma theme is chosen, Exposé or another one. XP's own artwork (the
+green start button, the start menu's blue header and footer, the
+cascades with their shadow, the notification area's block and chevron,
+Quick Launch's hover and », the Alt+Tab box) lives in the theme too, in
+`widgets/winxp.svg`; a theme without that file gets the plain look.
 
 ![Start menu with All Programs](docs/preview-all-programs.png)
 

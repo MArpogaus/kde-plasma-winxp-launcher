@@ -7,7 +7,7 @@
             }
         ],
         "Category": "Windows and Tasks",
-        "Description": "XP's chevron for the System Tray: shows the hidden icons in the tray itself. Place it directly before the System Tray.",
+        "Description": "Windows XP notification area: the light blue block and the round chevron for the System Tray, which shows the hidden icons in the tray itself. Place it directly before the System Tray.",
         "EnabledByDefault": true,
         "Icon": "preferences-desktop-notification",
         "Id": "com.github.marpogaus.winxptray",

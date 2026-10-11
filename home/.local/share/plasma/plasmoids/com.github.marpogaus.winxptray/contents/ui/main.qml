@@ -1,9 +1,13 @@
 /*
     SPDX-License-Identifier: GPL-2.0-or-later
 
-    XP's chevron for Plasma's System Tray, placed right before it: instead
-    of Plasma's popup it shows the hidden icons in the tray itself. Drawn
-    with the Plasma theme's arrows and tool button.
+    XP's notification area for Plasma's System Tray, placed right before
+    it: the light blue block under the tray and the clock (widgets later
+    in the panel are painted on top of earlier ones, so it reaches to the
+    end of the panel) and the round chevron, which shows the hidden icons
+    in the tray itself instead of Plasma's popup. Both come from the
+    Plasma theme (widgets/winxp, tray-*); without them the theme's arrow
+    and tool button stand in for the chevron.
 */
 import QtQuick
 import QtQuick.Layouts
@@ -25,9 +29,30 @@ PlasmoidItem {
             target: anchorItem
         }
 
-        // Room for the chevron only while there is something to show
-        Layout.minimumWidth: showChevron ? chevron.width + 2 : 0
+        KSvg.Svg {
+            id: winxp
+            imagePath: "widgets/winxp"
+        }
+        readonly property bool xpArea: horizontal && winxp.hasElement("tray-center")
+
+        // XP's chevron reaches 11 px left of the block; keep that (plus
+        // 3 px) inside this widget so it never covers the task buttons
+        readonly property int blockLeft: xpArea && showChevron ? 14 : 0
+        // Room for the block's edge and the chevron, or just the chevron
+        Layout.minimumWidth: xpArea ? blockLeft + (showChevron ? 14 : 10)
+                           : showChevron ? chevron.width + 2 : 0
         Layout.maximumWidth: Layout.minimumWidth
+
+        // The block, from here to the end of the visible taskbar
+        KSvg.FrameSvgItem {
+            visible: anchorItem.xpArea
+            x: anchorItem.blockLeft
+            y: anchorItem.area.y
+            width: anchorItem.area.x + anchorItem.area.width - anchorItem.blockLeft
+            height: anchorItem.area.height
+            imagePath: "widgets/winxp"
+            prefix: "tray"
+        }
 
         // XP's round chevron. Plasma's own "show hidden icons" arrow opens a
         // popup; XP instead widens the notification area in place. So hide
@@ -185,22 +210,32 @@ PlasmoidItem {
         }
 
         // Centred on the taskbar's height; the arrow points right while the
-        // hidden icons are shown
+        // hidden icons are shown. XP's starts 11 px left of the block's edge
+        // and is drawn 1:1.
         Item {
             id: chevron
             visible: anchorItem.showChevron
+            x: anchorItem.xpArea ? anchorItem.blockLeft - 11 : 0
             y: Math.round(anchorItem.area.y + (anchorItem.area.height - height) / 2)
             width: 18
-            height: 18
+            height: anchorItem.xpArea ? 19 : 18
+            opacity: anchorItem.xpArea && chevronMouse.pressed ? 0.8 : 1
 
+            KSvg.SvgItem {
+                anchors.fill: parent
+                visible: anchorItem.xpArea
+                svg: winxp
+                elementId: anchorItem.trayExpanded ? "tray-chevron-right" : "tray-chevron-left"
+            }
             KSvg.FrameSvgItem {
                 anchors.fill: parent
-                visible: chevronMouse.containsMouse
+                visible: !anchorItem.xpArea && chevronMouse.containsMouse
                 imagePath: "widgets/button"
                 prefix: chevronMouse.pressed ? "toolbutton-pressed" : "toolbutton-hover"
             }
             KSvg.SvgItem {
                 anchors.centerIn: parent
+                visible: !anchorItem.xpArea
                 width: 10
                 height: 10
                 imagePath: "widgets/arrows"

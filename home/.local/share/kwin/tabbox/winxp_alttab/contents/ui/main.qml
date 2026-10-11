@@ -2,8 +2,9 @@
     SPDX-License-Identifier: GPL-2.0-or-later
 
     Windows XP's Alt+Tab: up to seven 32 px icons per row with the
-    selected window's title below, in the Plasma theme's dialog frame,
-    highlight and colours.
+    selected window's title below. XP's beige box, selection frame and
+    sunken title field come from the Plasma theme (widgets/winxp,
+    alttab-*); without them its dialog frame and highlight stand in.
 */
 import QtQuick
 import org.kde.kirigami as Kirigami
@@ -19,6 +20,8 @@ KWin.TabBoxSwitcher {
 
     currentIndex: grid.currentIndex
 
+    readonly property bool xpBox: winxp.hasElement("alttab-center")
+
     PlasmaCore.Dialog {
         id: dialog
 
@@ -28,12 +31,32 @@ KWin.TabBoxSwitcher {
         x: tabBox.screenGeometry.x + Math.round((tabBox.screenGeometry.width - width) / 2)
         y: tabBox.screenGeometry.y + Math.round((tabBox.screenGeometry.height - height) / 2)
 
+        backgroundHints: tabBox.xpBox ? PlasmaCore.Dialog.NoBackground : PlasmaCore.Dialog.StandardBackground
+
         mainItem: Item {
-            width: grid.width
-            height: grid.height + 12 + title.height
+            // XP's box keeps 12 px around the icons and the title
+            readonly property real pad: tabBox.xpBox ? box.margins.left : 0
+
+            // (inside the dialog: the switcher itself takes a single item)
+            KSvg.Svg {
+                id: winxp
+                imagePath: "widgets/winxp"
+            }
+            width: grid.width + 2 * pad
+            height: grid.height + 12 + title.height + 2 * pad
+
+            KSvg.FrameSvgItem {
+                id: box
+                anchors.fill: parent
+                visible: tabBox.xpBox
+                imagePath: "widgets/winxp"
+                prefix: "alttab"
+            }
 
             GridView {
                 id: grid
+                x: parent.pad
+                y: parent.pad
 
                 width: tabBox.columns * tabBox.cell
                 height: Math.ceil(count / tabBox.columns) * tabBox.cell
@@ -44,8 +67,8 @@ KWin.TabBoxSwitcher {
                 model: tabBox.model
 
                 highlight: KSvg.FrameSvgItem {
-                    imagePath: "widgets/viewitem"
-                    prefix: "selected"
+                    imagePath: tabBox.xpBox ? "widgets/winxp" : "widgets/viewitem"
+                    prefix: tabBox.xpBox ? "alttab-selection" : "selected"
                 }
 
                 delegate: Item {
@@ -83,21 +106,34 @@ KWin.TabBoxSwitcher {
                 }
             }
 
-            // The selected window's title
-            Text {
+            // The selected window's title, in XP's sunken field
+            Item {
                 id: title
-                y: grid.height + 12
+                x: grid.x
+                y: grid.y + grid.height + 12
                 width: grid.width
-                height: 16
-                text: grid.currentItem ? grid.currentItem.model.caption : ""
-                textFormat: Text.PlainText
-                elide: Text.ElideRight
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                renderType: Text.NativeRendering
-                font.family: "Tahoma"
-                font.pixelSize: 11
-                color: Kirigami.Theme.textColor
+                height: tabBox.xpBox ? 22 : 16
+
+                KSvg.FrameSvgItem {
+                    id: field
+                    anchors.fill: parent
+                    visible: tabBox.xpBox
+                    imagePath: "widgets/winxp"
+                    prefix: "alttab-title"
+                }
+                Text {
+                    anchors.fill: parent
+                    anchors.margins: tabBox.xpBox ? field.margins.left : 0
+                    text: grid.currentItem ? grid.currentItem.model.caption : ""
+                    textFormat: Text.PlainText
+                    elide: Text.ElideRight
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    renderType: Text.NativeRendering
+                    font.family: "Tahoma"
+                    font.pixelSize: 11
+                    color: Kirigami.Theme.textColor
+                }
             }
         }
     }

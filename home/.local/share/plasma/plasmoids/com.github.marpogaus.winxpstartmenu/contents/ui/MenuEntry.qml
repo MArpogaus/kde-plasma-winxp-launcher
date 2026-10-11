@@ -33,6 +33,9 @@ Item {
     // Newly installed program (or a folder with one), when XP's
     // "Highlight newly installed programs" is on
     property bool isNew: false
+    // Highlight frame of widgets/winxp to use instead of the theme's
+    // selection (the cascades' darker blue)
+    property string xpHighlight: ""
     // Applications can be dragged (to Quick Launch, the desktop, …): the
     // .desktop URL and an object with startDrag(url, icon)
     property url dragUrl
@@ -51,10 +54,16 @@ Item {
         visible: entry.isNew && !entry.highlighted
     }
 
+    KSvg.Svg {
+        id: winxp
+        imagePath: "widgets/winxp"
+    }
+    readonly property bool useXpHighlight: xpHighlight !== "" && winxp.hasElement(xpHighlight + "-center")
+
     KSvg.FrameSvgItem {
         anchors.fill: parent
-        imagePath: "widgets/viewitem"
-        prefix: "hover"
+        imagePath: entry.useXpHighlight ? "widgets/winxp" : "widgets/viewitem"
+        prefix: entry.useXpHighlight ? entry.xpHighlight : "hover"
         visible: entry.highlighted
     }
 

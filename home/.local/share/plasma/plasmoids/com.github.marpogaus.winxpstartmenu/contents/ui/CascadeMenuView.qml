@@ -189,6 +189,7 @@ Item {
                 anchors.leftMargin: 2
                 anchors.rightMargin: 2
                 visible: cell.isSeparator
+                xpElement: view.controller.classic ? "" : "cascade-separator"
 
                 MouseArea {
                     anchors.fill: parent
@@ -212,6 +213,7 @@ Item {
                 textSpacing: 3
                 showArrow: cell.hasChildren
                 isNew: view.controller.highlightNew && cell.model.isNewlyInstalled === true
+                xpHighlight: view.controller.classic ? "" : "cascade-highlight"
                 forceHighlight: view.openIndex === cell.index
                     && (view.pointerIndex < 0 || view.pointerIndex === cell.index)
 

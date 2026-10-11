@@ -21,6 +21,12 @@ import org.kde.draganddrop as DragAndDrop
 PlasmoidItem {
     id: root
 
+    // XP's artwork in the Plasma theme, if it has it
+    KSvg.Svg {
+        id: winxp
+        imagePath: "widgets/winxp"
+    }
+
     readonly property bool horizontal: Plasmoid.formFactor !== PlasmaCore.Types.Vertical
     readonly property int cell: 22
     readonly property int spacing: 1
@@ -201,6 +207,9 @@ PlasmoidItem {
             y: root.horizontal ? row.y : row.y + offset
             width: root.horizontal ? 2 : bar.width
             height: root.horizontal ? root.cell : 2
+            // On the taskbar: the colour set for contrasting areas
+            Kirigami.Theme.colorSet: Kirigami.Theme.Complementary
+            Kirigami.Theme.inherit: false
             color: Kirigami.Theme.textColor
             z: 1
         }
@@ -255,13 +264,23 @@ PlasmoidItem {
                     width: parent.width
                     height: 12
 
+                    // XP's » from the Plasma theme (widgets/winxp), else a tool
+                    // button with a » in the text colour
+                    readonly property bool xpChevrons: winxp.hasElement("overflow-normal")
+                    KSvg.SvgItem {
+                        anchors.fill: parent
+                        visible: parent.xpChevrons
+                        svg: winxp
+                        elementId: "overflow-" + (overflowMouse.pressed ? "pressed" : overflowMouse.containsMouse ? "hover" : "normal")
+                    }
                     KSvg.FrameSvgItem {
                         anchors.fill: parent
-                        visible: overflowMouse.containsMouse
+                        visible: !parent.xpChevrons && overflowMouse.containsMouse
                         imagePath: "widgets/button"
                         prefix: overflowMouse.pressed ? "toolbutton-pressed" : "toolbutton-hover"
                     }
                     Text {
+                        visible: !parent.xpChevrons
                         anchors.centerIn: parent
                         anchors.verticalCenterOffset: -1
                         text: "»"
@@ -282,7 +301,8 @@ PlasmoidItem {
             }
         }
 
-        // Separator towards the task buttons: the theme's line
+        // Separator towards the task buttons: XP's etched line from the
+        // theme (widgets/winxp), else its line
         Item {
             id: separator
 
@@ -293,11 +313,16 @@ PlasmoidItem {
             height: root.horizontal ? bar.area.height - 6 : 4
 
             KSvg.SvgItem {
+                readonly property bool xp: root.horizontal && winxp.hasElement("quicklaunch-separator")
                 anchors.centerIn: parent
-                imagePath: "widgets/line"
-                elementId: root.horizontal ? "vertical-line" : "horizontal-line"
-                width: root.horizontal ? naturalSize.width : parent.width
+                svg: xp ? winxp : lineSvg
+                elementId: xp ? "quicklaunch-separator" : root.horizontal ? "vertical-line" : "horizontal-line"
+                width: xp ? parent.width : root.horizontal ? naturalSize.width : parent.width
                 height: root.horizontal ? parent.height : naturalSize.height
+            }
+            KSvg.Svg {
+                id: lineSvg
+                imagePath: "widgets/line"
             }
         }
 
@@ -472,11 +497,14 @@ PlasmoidItem {
         width: root.cell
         height: root.cell
 
+        // XP's hover box from the theme (widgets/winxp), else a tool button
         KSvg.FrameSvgItem {
+            readonly property bool xp: winxp.hasElement("quicklaunch-hover-center")
             anchors.fill: parent
             visible: mouse.containsMouse
-            imagePath: "widgets/button"
-            prefix: mouse.pressed ? "toolbutton-pressed" : "toolbutton-hover"
+            imagePath: xp ? "widgets/winxp" : "widgets/button"
+            prefix: xp ? (mouse.pressed ? "quicklaunch-pressed" : "quicklaunch-hover")
+                       : (mouse.pressed ? "toolbutton-pressed" : "toolbutton-hover")
         }
 
         Kirigami.Icon {

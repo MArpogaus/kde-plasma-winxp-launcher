@@ -22,10 +22,20 @@ Item {
         id: winxp
         imagePath: "widgets/winxp"
     }
-    readonly property bool useXp: xpElement !== "" && winxp.hasElement(xpElement)
+    // A frame (stretches, keeps its ends) or a plain element
+    readonly property bool xpFrame: xpElement !== "" && winxp.hasElement(xpElement + "-center")
+    readonly property bool useXp: xpFrame || (xpElement !== "" && winxp.hasElement(xpElement))
 
+    KSvg.FrameSvgItem {
+        visible: separator.xpFrame
+        y: Math.ceil((parent.height - 1) / 2)
+        width: parent.width
+        height: 1
+        imagePath: "widgets/winxp"
+        prefix: separator.xpElement
+    }
     KSvg.SvgItem {
-        visible: separator.useXp
+        visible: separator.useXp && !separator.xpFrame
         y: Math.ceil((parent.height - 1) / 2)
         width: naturalSize.width
         height: naturalSize.height

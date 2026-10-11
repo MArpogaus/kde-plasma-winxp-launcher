@@ -18,6 +18,12 @@ import org.kde.taskmanager as TaskManager
 PlasmoidItem {
     id: root
 
+    // XP's artwork in the Plasma theme, if it has it
+    KSvg.Svg {
+        id: winxp
+        imagePath: "widgets/winxp"
+    }
+
     readonly property bool horizontal: Plasmoid.formFactor !== PlasmaCore.Types.Vertical
 
     preferredRepresentation: fullRepresentation
@@ -196,13 +202,23 @@ PlasmoidItem {
             width: bar.overflowWidth
             height: 12
 
+            // XP's » from the Plasma theme (widgets/winxp), else a tool
+            // button with a » in the text colour
+            readonly property bool xpChevrons: winxp.hasElement("overflow-normal")
+            KSvg.SvgItem {
+                anchors.fill: parent
+                visible: parent.xpChevrons
+                svg: winxp
+                elementId: "overflow-" + (overflowMouse.pressed ? "pressed" : overflowMouse.containsMouse ? "hover" : "normal")
+            }
             KSvg.FrameSvgItem {
                 anchors.fill: parent
-                visible: overflowMouse.containsMouse
+                visible: !parent.xpChevrons && overflowMouse.containsMouse
                 imagePath: "widgets/button"
                 prefix: overflowMouse.pressed ? "toolbutton-pressed" : "toolbutton-hover"
             }
             Text {
+                visible: !parent.xpChevrons
                 anchors.centerIn: parent
                 anchors.verticalCenterOffset: -1
                 text: "»"
