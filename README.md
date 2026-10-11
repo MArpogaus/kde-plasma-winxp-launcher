@@ -21,6 +21,11 @@ Tray included) takes the colour scheme's set for contrasting areas; a
 theme without that file gets Plasma's plain look. Only the Classic
 menu's banner and the Log Off / Turn Off dialogs keep XP's own colours.
 
+Plasma's own popups (volume, network, notifications, …) get XP's look
+from the same theme: white menus with black text, XP's push buttons,
+text fields, check boxes, radio buttons, track bars, progress bars, tabs
+and scroll bars, and pale yellow tooltips.
+
 ![Start menu with All Programs](docs/preview-all-programs.png)
 
 ![Classic Start menu with Programs](docs/preview-classic.png)

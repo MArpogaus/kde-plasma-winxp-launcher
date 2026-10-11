@@ -1,6 +1,7 @@
 # Windows XP colours for Plasma: black on white popups, white on the blue
-# taskbar (Complementary), XP blue selection. Part of the Windows XP pack,
-# replacing Exposé's colours.
+# taskbar (Complementary), XP blue selection, black on XP's buttons and on
+# its pale yellow tooltips. Part of the Windows XP pack, replacing Exposé's
+# colours.
 [Colors:Window]
 ForegroundNormal=0,0,0
 BackgroundNormal=255,255,255
@@ -26,8 +27,9 @@ ForegroundNormal=255,255,255
 ForegroundInactive=255,255,255
 
 [Colors:Button]
-ForegroundNormal=255,255,255
-BackgroundNormal=31,31,31
+ForegroundNormal=0,0,0
+BackgroundNormal=236,233,216
+ForegroundInactive=161,161,146
 DecorationFocus=49,106,197
 # XP's orange hover
 DecorationHover=248,179,48
@@ -45,6 +47,6 @@ ForegroundNormal=7,26,79
 BackgroundNormal=255,255,255
 
 [Colors:Tooltip]
-ForegroundNormal=21,21,21
-BackgroundNormal=236,233,216
-ForegroundInactive=21,21,21
+ForegroundNormal=0,0,0
+BackgroundNormal=255,255,225
+ForegroundInactive=0,0,0
