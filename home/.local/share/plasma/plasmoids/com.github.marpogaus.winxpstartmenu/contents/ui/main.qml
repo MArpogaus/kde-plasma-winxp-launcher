@@ -3,9 +3,10 @@
 
     Windows XP style start menu for Plasma 6.
 
-    The menu is not shown through Plasma's applet popup (which would wrap
-    it in the Plasma theme's frame) but in its own frameless window, so
-    every pixel is drawn by StartMenu.qml.
+    The menu is not Plasma's applet popup but its own window, so it can
+    open from the start button like XP's: with XP's artwork in the Plasma
+    theme a frameless one whose every pixel StartMenu.qml draws, otherwise
+    (and for the Classic Start menu) the theme's dialog frame.
 */
 import QtQuick
 import QtCore

@@ -21,10 +21,13 @@ Item {
     KSvg.Svg {
         id: winxp
         imagePath: "widgets/winxp"
+        // Bumped when the Plasma theme changes, to check again
+        property int revision: 0
+        onRepaintNeeded: revision++
     }
     // A frame (stretches, keeps its ends) or a plain element
-    readonly property bool xpFrame: xpElement !== "" && winxp.hasElement(xpElement + "-center")
-    readonly property bool useXp: xpFrame || (xpElement !== "" && winxp.hasElement(xpElement))
+    readonly property bool xpFrame: winxp.revision >= 0 && xpElement !== "" && winxp.hasElement(xpElement + "-center")
+    readonly property bool useXp: xpFrame || (winxp.revision >= 0 && xpElement !== "" && winxp.hasElement(xpElement))
 
     KSvg.FrameSvgItem {
         visible: separator.xpFrame
@@ -46,7 +49,8 @@ Item {
     KSvg.SvgItem {
         visible: !separator.useXp
         x: separator.leftInset
-        anchors.verticalCenter: parent.verticalCenter
+        // On whole pixels, so the line stays crisp
+        y: Math.ceil((parent.height - height) / 2)
         width: parent.width - separator.leftInset - separator.rightInset
         height: naturalSize.height
         imagePath: "widgets/line"

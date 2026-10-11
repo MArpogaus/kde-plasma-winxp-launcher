@@ -22,7 +22,8 @@ H=$ROOT/home
 D=$H/.local/share
 replace() { rm -rf "$2"; mkdir -p "$(dirname "$2")"; cp -r "$1" "$2"; }
 
-# Exposé by phob1an, unmodified (GPL; wallpapers CC BY-SA), at the paths the
+# Exposé by phob1an (GPL; wallpapers CC BY-SA), unmodified but for the pack's
+# marked XP files in its Plasma theme (below), at the paths the
 # Windows XP Global Theme's contents/defaults refers to (taken from Exposé's
 # own Plasma 6 Global Theme, org.magpie.expose.desktop)
 E=$SRC/expose
@@ -30,7 +31,7 @@ E=$SRC/expose
 # XP pack") replace Exposé's: keep them over the refreshed theme
 T=$D/plasma/desktoptheme/expose
 mkdir -p "$SRC/xp"
-(cd "$T" && grep -rl "Part of the Windows XP pack" . | xargs -r cp --parents -t "$SRC/xp")
+(cd "$T" && grep -rlZ "Part of the Windows XP pack" . | xargs -0r cp --parents -t "$SRC/xp")
 replace "$E/desktoptheme/expose" "$T"
 cp -r "$SRC/xp/." "$T/"
 replace "$E/themes/expose" "$D/aurorae/themes/expose"

@@ -13,6 +13,7 @@ import QtQuick
 import QtQuick.Layouts
 import org.kde.plasma.plasmoid
 import org.kde.plasma.core as PlasmaCore
+import org.kde.kirigami as Kirigami
 import org.kde.ksvg as KSvg
 
 PlasmoidItem {
@@ -32,24 +33,31 @@ PlasmoidItem {
         KSvg.Svg {
             id: winxp
             imagePath: "widgets/winxp"
+            // Checked again when the Plasma theme changes
+            property bool present: hasElement("tray-center")
+            onRepaintNeeded: present = hasElement("tray-center")
         }
-        readonly property bool xpArea: horizontal && winxp.hasElement("tray-center")
+        readonly property bool xpArea: winxp.present
 
         // XP's chevron reaches 11 px left of the block; keep that (plus
         // 3 px) inside this widget so it never covers the task buttons
         readonly property int blockLeft: xpArea && showChevron ? 14 : 0
-        // Room for the block's edge and the chevron, or just the chevron
-        Layout.minimumWidth: xpArea ? blockLeft + (showChevron ? 14 : 10)
+        // Room for the block's edge and the chevron, or just the chevron;
+        // on a vertical taskbar a strip at the block's top
+        Layout.minimumWidth: !horizontal ? -1
+                           : xpArea ? blockLeft + (showChevron ? 14 : 10)
                            : showChevron ? chevron.width + 2 : 0
         Layout.maximumWidth: Layout.minimumWidth
+        Layout.minimumHeight: horizontal ? -1 : xpArea ? 10 : 0
+        Layout.maximumHeight: Layout.minimumHeight
 
         // The block, from here to the end of the visible taskbar
         KSvg.FrameSvgItem {
             visible: anchorItem.xpArea
-            x: anchorItem.blockLeft
-            y: anchorItem.area.y
-            width: anchorItem.area.x + anchorItem.area.width - anchorItem.blockLeft
-            height: anchorItem.area.height
+            x: anchorItem.horizontal ? anchorItem.blockLeft : anchorItem.area.x
+            y: anchorItem.horizontal ? anchorItem.area.y : 0
+            width: anchorItem.horizontal ? anchorItem.area.x + anchorItem.area.width - anchorItem.blockLeft : anchorItem.area.width
+            height: anchorItem.horizontal ? anchorItem.area.height : anchorItem.area.y + anchorItem.area.height
             imagePath: "widgets/winxp"
             prefix: "tray"
         }
@@ -89,6 +97,22 @@ PlasmoidItem {
                 shown.filterRowCallback = originalFilters.shown;
                 hidden.filterRowCallback = originalFilters.hidden;
             }
+        }
+
+        // On XP's blue taskbar the tray's icons and texts take the colour
+        // set for contrasting areas, like this pack's widgets (Plasma's
+        // panel gives its widgets the Window set, black on white popups)
+        Binding {
+            target: anchorItem.tray ? anchorItem.tray.Kirigami.Theme : null
+            property: "colorSet"
+            value: Kirigami.Theme.Complementary
+            when: anchorItem.xpArea
+        }
+        Binding {
+            target: anchorItem.tray ? anchorItem.tray.Kirigami.Theme : null
+            property: "inherit"
+            value: false
+            when: anchorItem.xpArea
         }
 
         // Hidden icons keep their status while shown in the row, and Plasma
@@ -236,8 +260,8 @@ PlasmoidItem {
             KSvg.SvgItem {
                 anchors.centerIn: parent
                 visible: !anchorItem.xpArea
-                width: 10
-                height: 10
+                width: Math.min(naturalSize.width, 10)
+                height: Math.min(naturalSize.height, 10)
                 imagePath: "widgets/arrows"
                 elementId: anchorItem.trayExpanded ? "right-arrow" : "left-arrow"
             }

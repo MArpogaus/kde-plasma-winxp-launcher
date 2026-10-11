@@ -4,15 +4,21 @@
 [Colors:Window]
 ForegroundNormal=0,0,0
 BackgroundNormal=255,255,255
-ForegroundActive=128,0,0
+ForegroundActive=49,106,197
 ForegroundNegative=255,0,0
 ForegroundLink=0,0,255
 ForegroundInactive=115,115,115
+# XP's tint for newly installed programs
+BackgroundNeutral=255,239,193
+DecorationFocus=49,106,197
+DecorationHover=49,106,197
 
 [Colors:Selection]
 BackgroundNormal=49,106,197
 ForegroundNormal=255,255,255
 ForegroundInactive=255,255,255
+DecorationFocus=49,106,197
+DecorationHover=49,106,197
 
 [Colors:Complementary]
 BackgroundNormal=36,94,219
@@ -22,19 +28,23 @@ ForegroundInactive=255,255,255
 [Colors:Button]
 ForegroundNormal=255,255,255
 BackgroundNormal=31,31,31
-DecorationFocus=237,0,211
-DecorationHover=138,112,65
-ForegroundLink=255,0,255
+DecorationFocus=49,106,197
+# XP's orange hover
+DecorationHover=248,179,48
+ForegroundLink=0,0,255
 
 [Colors:View]
 ForegroundNormal=0,0,0
 BackgroundNormal=255,255,255
 ForegroundInactive=115,115,115
+DecorationFocus=49,106,197
+DecorationHover=49,106,197
 
 [Colors:Header]
 ForegroundNormal=7,26,79
+BackgroundNormal=255,255,255
 
 [Colors:Tooltip]
 ForegroundNormal=21,21,21
 BackgroundNormal=236,233,216
-ForegroundInactive=0,0,255
+ForegroundInactive=21,21,21

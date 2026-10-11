@@ -47,8 +47,11 @@ FocusScope {
     KSvg.Svg {
         id: winxp
         imagePath: "widgets/winxp"
+        // Checked again when the Plasma theme changes
+        property bool present: hasElement("startmenu-header")
+        onRepaintNeeded: present = hasElement("startmenu-header")
     }
-    readonly property bool xpChrome: winxp.hasElement("startmenu-header")
+    readonly property bool xpChrome: winxp.present
     readonly property int frameWidth: xpChrome ? 2 : 0
 
     // header | 1 px line | body | 1 px line | footer
@@ -285,7 +288,7 @@ FocusScope {
 
         MenuSeparator {
             visible: !menu.xpChrome
-            y: menu.xp.headerHeight - height / 2
+            y: menu.xp.headerHeight
             width: parent.width
             height: 1
         }
@@ -422,6 +425,7 @@ FocusScope {
                             font.family: menu.xp.fontFamily
                             font.pixelSize: menu.xp.fontPixelSize
                             font.bold: true
+                            color: Kirigami.Theme.textColor
                         }
                         Rectangle {
                             anchors.left: queryText.right
@@ -528,15 +532,16 @@ FocusScope {
                     width: parent.width - 10
                     height: 24
 
+                    // XP's highlight (white text) and green arrow from the
+                    // theme, else its view item hover and plain arrow
                     KSvg.FrameSvgItem {
                         anchors.fill: parent
-                        imagePath: "widgets/viewitem"
-                        prefix: "hover"
+                        imagePath: menu.xpChrome ? "widgets/winxp" : "widgets/viewitem"
+                        prefix: menu.xpChrome ? "menu-highlight" : "hover"
                         visible: allPrograms.highlighted
                     }
 
-                    // XP's green arrow from the theme, else its plain arrow
-                    readonly property bool xpArrow: winxp.hasElement("startmenu-allprograms-arrow")
+                    readonly property bool xpArrow: menu.xpChrome
                     readonly property int arrowGap: xpArrow ? 18 : 8
 
                     Text {
@@ -548,7 +553,7 @@ FocusScope {
                         font.family: menu.xp.fontFamily
                         font.pixelSize: menu.xp.fontPixelSize
                         font.bold: true
-                        color: allPrograms.highlighted ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
+                        color: allPrograms.highlighted && menu.xpChrome ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
                     }
                     KSvg.SvgItem {
                         id: allProgramsArrow
@@ -688,7 +693,7 @@ FocusScope {
 
         MenuSeparator {
             visible: !menu.xpChrome
-            y: body.y + body.height - height / 2
+            y: body.y + body.height
             width: parent.width
             height: 1
         }

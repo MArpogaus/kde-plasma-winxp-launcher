@@ -10,12 +10,16 @@ The widgets take their look from the Plasma theme, as Plasma's own do:
 task buttons from its task frames, the start button and the tool buttons
 from its button frames, menus and cascades from its dialog frame, the
 highlight, lines and arrows from its view item, line and arrow images,
-and all text colours from its colour scheme. So they follow whatever
+and the text colours from its colour scheme. So they follow whatever
 Plasma theme is chosen, Exposé or another one. XP's own artwork (the
-green start button, the start menu's blue header and footer, the
-cascades with their shadow, the notification area's block and chevron,
-Quick Launch's hover and », the Alt+Tab box) lives in the theme too, in
-`widgets/winxp.svg`; a theme without that file gets the plain look.
+green start button, the start menu's blue header and footer, the menus'
+solid blue highlight, the cascades with their shadow, the notification
+area's block and chevron, Quick Launch's hover and », the Alt+Tab box)
+lives in the theme too, in `widgets/winxp.svg`. With it the taskbar is
+XP's blue one under white menus, so text on the taskbar (Plasma's System
+Tray included) takes the colour scheme's set for contrasting areas; a
+theme without that file gets Plasma's plain look. Only the Classic
+menu's banner and the Log Off / Turn Off dialogs keep XP's own colours.
 
 ![Start menu with All Programs](docs/preview-all-programs.png)
 
@@ -123,7 +127,7 @@ done
 | Grey fade behind Turn Off / Log Off (KWin effect) | `.local/share/kwin/effects/winxp_sessionfade` | this repository, GPL-2.0+ |
 | XP Alt+Tab (KWin window switcher) | `.local/share/kwin/tabbox/winxp_alttab` | this repository, GPL-2.0+ |
 | Windows XP Global Theme (taskbar layout, Alt+Tab, cursors, Exposé look) | `.local/share/plasma/look-and-feel/com.github.marpogaus.winxp` | this repository, GPL-2.0+ |
-| Exposé (window borders, Plasma theme, colours, Kvantum, wallpapers) | `.local/share/plasma/desktoptheme/expose`, `.local/share/aurorae/themes/expose`, `.local/share/color-schemes/Expose.colors`, `.config/Kvantum`, `.local/share/wallpapers/{expose,Bløff}` | [Exposé](https://www.opencode.net/phob1an/expose) by phob1an, GPL-3.0 (see the bundled `LICENSE` files); wallpapers CC BY-SA 4.0. The Plasma theme's files marked "Part of the Windows XP pack" are this repository's XP replacements |
+| Exposé (window borders, Plasma theme, colours, Kvantum, wallpapers) | `.local/share/plasma/desktoptheme/expose`, `.local/share/aurorae/themes/expose`, `.local/share/color-schemes/Expose.colors`, `.config/Kvantum`, `.local/share/wallpapers/{expose,Bløff}` | [Exposé](https://www.opencode.net/phob1an/expose) by phob1an, GPL-3.0 (see the bundled `LICENSE` files); wallpapers CC BY-SA 4.0. The Plasma theme's files marked "Part of the Windows XP pack" (XP versions of Exposé's files, and `widgets/winxp.svg`) are this repository's, GPL-2.0+ |
 | Cursors | `.local/share/icons/ModernXP` | [modernXP](https://github.com/na0miluv/modernXP-cursor-theme) release, unmodified, GPL-3.0 |
 | Dolphin as XP Explorer | `.local/share/kxmlgui5/dolphin`, `.local/share/dolphin` | toolbar derived from [Dolphin](https://invent.kde.org/system/dolphin), GPL-2.0+ |
 
@@ -144,9 +148,9 @@ battery and app icons all work). Plasma gives
 every panel widget at least 22 px, so tray icons are 22 px where XP had
 16 px. Like XP's *Hide inactive icons*, clipboard, brightness, Bluetooth,
 notifications and similar status icons start out hidden (System Tray
-settings → Entries to change that); the arrow on the left shows them in
-the notification area itself, as XP's chevron did, instead of Plasma's
-popup.
+settings → Entries to change that); XP's round chevron at the left of the
+light blue notification area shows them in the notification area itself,
+as XP's did, instead of Plasma's popup.
 
 The clock follows System Settings → Region & Language. Right-click →
 Configure for XP's options: *Show the clock*, an XP style time format
@@ -180,7 +184,7 @@ Dolphin with a changed toolbar file ignores it until it is updated.
   Tooltip: "Click here to begin".
 - XP's layout: header with user picture and name, programs on the left,
   places on the right, Log Off / Turn Off Computer footer. Geometry measured
-  from a native XP screenshot: 378 px wide, 64 px header, 40 px footer,
+  from a native XP screenshot: 382 px wide, 64 px header, 40 px footer,
   36 px program rows with 32 px icons, 30 px place rows with 24 px icons.
 - **Pinned programs** at the top (Internet and E-mail by default, using your
   preferred browser and mail client) and **most frequently used programs** below.
@@ -250,7 +254,8 @@ with Plasma.
   (`systemctl --user restart plasma-plasmashell`).
 
 The start menu uses Plasma's private `org.kde.plasma.private.kicker` models
-(as Kickoff and Kicker do). All artwork of the widgets is original; no
+(as Kickoff and Kicker do). All artwork of the widgets and of the Plasma
+theme's XP files is original, drawn after native XP screenshots; no
 Microsoft assets are included in this repository.
 
 ## License

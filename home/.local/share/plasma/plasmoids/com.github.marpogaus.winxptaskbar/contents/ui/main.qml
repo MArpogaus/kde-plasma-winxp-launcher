@@ -18,11 +18,17 @@ import org.kde.taskmanager as TaskManager
 PlasmoidItem {
     id: root
 
-    // XP's artwork in the Plasma theme, if it has it
+    // XP's artwork in the Plasma theme, if it has it (checked again when
+    // the theme changes)
     KSvg.Svg {
         id: winxp
         imagePath: "widgets/winxp"
+        property bool present: hasElement("overflow-normal")
+        onRepaintNeeded: present = hasElement("overflow-normal")
     }
+    // Text on the taskbar: XP's taskbar is blue, so with XP's artwork the
+    // colour set for contrasting areas; otherwise the panel's own
+    readonly property int panelColorSet: winxp.present ? Kirigami.Theme.Complementary : Kirigami.Theme.Window
 
     readonly property bool horizontal: Plasmoid.formFactor !== PlasmaCore.Types.Vertical
 
@@ -127,6 +133,7 @@ PlasmoidItem {
                 icon: model.decoration
                 text: model.display ?? ""
                 fontFamily: Plasmoid.configuration.fontFamily
+                textColorSet: root.panelColorSet
                 active: model.IsActive === true && model.IsMinimized !== true
                 attention: model.IsDemandingAttention === true
                 minimized: model.IsMinimized === true
@@ -204,7 +211,7 @@ PlasmoidItem {
 
             // XP's » from the Plasma theme (widgets/winxp), else a tool
             // button with a » in the text colour
-            readonly property bool xpChevrons: winxp.hasElement("overflow-normal")
+            readonly property bool xpChevrons: winxp.present
             KSvg.SvgItem {
                 anchors.fill: parent
                 visible: parent.xpChevrons
@@ -222,10 +229,10 @@ PlasmoidItem {
                 anchors.centerIn: parent
                 anchors.verticalCenterOffset: -1
                 text: "»"
-                font.family: "Tahoma"
+                font.family: Plasmoid.configuration.fontFamily
                 font.pixelSize: 11
                 font.bold: true
-                Kirigami.Theme.colorSet: Kirigami.Theme.Complementary
+                Kirigami.Theme.colorSet: root.panelColorSet
                 Kirigami.Theme.inherit: false
                 color: Kirigami.Theme.textColor
             }
@@ -291,11 +298,12 @@ PlasmoidItem {
                         implicitWidth: 28 + rowText.implicitWidth + 12
                         implicitHeight: 22
 
+                        // XP's menu highlight (white text), else the theme's
                         KSvg.FrameSvgItem {
                             anchors.fill: parent
                             visible: rowMouse.containsMouse
-                            imagePath: "widgets/viewitem"
-                            prefix: "hover"
+                            imagePath: winxp.present ? "widgets/winxp" : "widgets/viewitem"
+                            prefix: winxp.present ? "menu-highlight" : "hover"
                         }
 
                         Kirigami.Icon {
@@ -317,7 +325,7 @@ PlasmoidItem {
                             font.pixelSize: 11
                             font.bold: overflowRow.model.IsActive === true
                             renderType: Text.NativeRendering
-                            color: rowMouse.containsMouse ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
+                            color: rowMouse.containsMouse && winxp.present ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
                         }
                         MouseArea {
                             id: rowMouse

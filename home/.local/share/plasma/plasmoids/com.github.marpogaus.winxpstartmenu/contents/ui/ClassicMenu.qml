@@ -12,7 +12,6 @@
     All behaviour is delegated to `controller` (main.qml).
 */
 import QtQuick
-import org.kde.kirigami as Kirigami
 
 FocusScope {
     id: menu

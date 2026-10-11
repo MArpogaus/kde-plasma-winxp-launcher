@@ -31,8 +31,8 @@ Item {
     readonly property int columns: scroll ? 1 : Math.max(1, Math.ceil(itemCount / Math.max(1, maxRows)))
     property int columnWidth: 160
 
-    // Just the rows: the cascade window draws the Plasma theme's dialog
-    // frame around them
+    // Just the rows: the cascade window draws the frame around them (XP's
+    // from widgets/winxp, else the Plasma theme's dialog frame)
     width: columns * columnWidth
     height: 2 * stripHeight + shownRows * rowHeight
 
@@ -213,7 +213,7 @@ Item {
                 textSpacing: 3
                 showArrow: cell.hasChildren
                 isNew: view.controller.highlightNew && cell.model.isNewlyInstalled === true
-                xpHighlight: view.controller.classic ? "" : "cascade-highlight"
+                xpHighlight: view.controller.classic ? "menu-highlight" : "cascade-highlight"
                 forceHighlight: view.openIndex === cell.index
                     && (view.pointerIndex < 0 || view.pointerIndex === cell.index)
 

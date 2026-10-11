@@ -1,19 +1,30 @@
 /*
     SPDX-License-Identifier: GPL-2.0-or-later
 
-    XP notification area clock: white Tahoma 8 pt, the long date as
-    tooltip, double-click opens the date and time settings. Follows the
-    Region & Language formats, or XP style formats with own AM/PM symbols.
+    XP notification area clock: Tahoma 8 pt in the taskbar's text colour,
+    the long date as tooltip, double-click opens the date and time
+    settings. Follows the Region & Language formats, or XP style formats
+    with own AM/PM symbols.
 */
 import QtQuick
 import QtQuick.Layouts
 import org.kde.plasma.plasmoid
 import org.kde.plasma.core as PlasmaCore
 import org.kde.kirigami as Kirigami
+import org.kde.ksvg as KSvg
 import org.kde.plasma.plasma5support as P5Support
 
 PlasmoidItem {
     id: root
+
+    // XP's notification area in the Plasma theme, if it has it (checked
+    // again when the theme changes): then the taskbar is blue
+    KSvg.Svg {
+        id: winxp
+        imagePath: "widgets/winxp"
+        property bool present: hasElement("tray-center")
+        onRepaintNeeded: present = hasElement("tray-center")
+    }
 
     readonly property bool regionFormats: Plasmoid.configuration.useRegionFormats
     readonly property string timeFormat: regionFormats
@@ -105,8 +116,9 @@ PlasmoidItem {
             renderType: Text.NativeRendering
             font.family: Plasmoid.configuration.fontFamily
             font.pixelSize: 11
-            // Text on the taskbar: the colour set for contrasting areas
-            Kirigami.Theme.colorSet: Kirigami.Theme.Complementary
+            // On XP's blue taskbar the colour set for contrasting areas,
+            // otherwise the panel's own
+            Kirigami.Theme.colorSet: winxp.present ? Kirigami.Theme.Complementary : Kirigami.Theme.Window
             Kirigami.Theme.inherit: false
             color: Kirigami.Theme.textColor
         }

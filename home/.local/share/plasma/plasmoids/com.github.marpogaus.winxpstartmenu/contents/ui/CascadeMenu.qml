@@ -20,7 +20,7 @@ Kicker.SubMenu {
     property var model: null
     property int level: 0
     // Long menus wrap into more columns (or scroll) to fit the screen
-    // without its panels, inside the theme's dialog frame
+    // without its panels, inside the window's frame
     readonly property int maxRows: Math.max(5, Math.floor(
         (controller.availableArea.height - insetTop - insetBottom - shadow) / xp.cascadeRowHeight))
 
@@ -28,9 +28,11 @@ Kicker.SubMenu {
         id: winxp
         imagePath: "widgets/winxp"
     }
+    // Cascades are rebuilt each time they open, so this follows theme changes
     readonly property bool xpFrame: !controller.classic && winxp.hasElement("cascade-center")
-    // The rows' distance from the window's edges; XP's frame has a shadow
-    // (right and bottom) that is not part of the menu
+    // The rows' distance from the frame's outer edges (the dialog's own
+    // frame adds its margins outside); XP's frame has a shadow (right and
+    // bottom) that is not part of the menu
     readonly property real insetLeft: xpFrame ? frame.margins.left : 0
     readonly property real insetTop: xpFrame ? frame.margins.top : margins.top
     readonly property real insetBottom: xpFrame ? frame.margins.top : margins.bottom

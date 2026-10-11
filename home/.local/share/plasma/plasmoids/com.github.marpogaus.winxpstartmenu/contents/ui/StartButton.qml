@@ -63,8 +63,11 @@ Item {
         KSvg.Svg {
             id: winxp
             imagePath: "widgets/winxp"
+            // Checked again when the Plasma theme changes
+            property bool present: hasElement("startbutton-normal")
+            onRepaintNeeded: present = hasElement("startbutton-normal")
         }
-        readonly property bool xpButton: winxp.hasElement("startbutton-normal")
+        readonly property bool xpButton: winxp.present
 
         KSvg.SvgItem {
             anchors.fill: parent
@@ -72,11 +75,23 @@ Item {
             svg: winxp
             elementId: "startbutton-" + face.look
         }
+        // Otherwise a button as Plasma's own: the normal or pressed frame,
+        // under the pointer the hover frame around it
         KSvg.FrameSvgItem {
             anchors.fill: parent
             visible: !face.xpButton
             imagePath: "widgets/button"
-            prefix: face.look
+            prefix: button.pressedLook ? "pressed" : "normal"
+        }
+        KSvg.FrameSvgItem {
+            anchors.fill: parent
+            anchors.leftMargin: -margins.left
+            anchors.topMargin: -margins.top
+            anchors.rightMargin: -margins.right
+            anchors.bottomMargin: -margins.bottom
+            visible: !face.xpButton && face.look === "hover"
+            imagePath: "widgets/button"
+            prefix: "hover"
         }
 
         // XP's flag is 20 px at x = 10 on a 30 px taskbar
@@ -125,8 +140,8 @@ Item {
             font.italic: !button.libreFranklin
             font.weight: button.libreFranklin ? Font.Bold : Font.Medium
             transform: Matrix4x4 { matrix: button.labelSlant }
-            // Text on the taskbar: the colour set for contrasting areas
-            Kirigami.Theme.colorSet: Kirigami.Theme.Complementary
+            // White on XP's green button, else the button text colour
+            Kirigami.Theme.colorSet: face.xpButton ? Kirigami.Theme.Complementary : Kirigami.Theme.Button
             Kirigami.Theme.inherit: false
             color: Kirigami.Theme.textColor
         }

@@ -33,9 +33,9 @@ Item {
     // Newly installed program (or a folder with one), when XP's
     // "Highlight newly installed programs" is on
     property bool isNew: false
-    // Highlight frame of widgets/winxp to use instead of the theme's
-    // selection (the cascades' darker blue)
-    property string xpHighlight: ""
+    // XP's highlight frame in widgets/winxp (solid blue, white text; the
+    // cascades' is a darker blue); without it the theme's view item hover
+    property string xpHighlight: "menu-highlight"
     // Applications can be dragged (to Quick Launch, the desktop, …): the
     // .desktop URL and an object with startDrag(url, icon)
     property url dragUrl
@@ -57,8 +57,13 @@ Item {
     KSvg.Svg {
         id: winxp
         imagePath: "widgets/winxp"
+        // Bumped when the Plasma theme changes, to check again
+        property int revision: 0
+        onRepaintNeeded: revision++
     }
-    readonly property bool useXpHighlight: xpHighlight !== "" && winxp.hasElement(xpHighlight + "-center")
+    readonly property bool useXpHighlight: winxp.revision >= 0 && xpHighlight !== "" && winxp.hasElement(xpHighlight + "-center")
+    // XP's highlight is a selection: text in the selection's colours
+    readonly property bool selectedLook: highlighted && useXpHighlight
 
     KSvg.FrameSvgItem {
         anchors.fill: parent
@@ -101,7 +106,7 @@ Item {
             font.pixelSize: entry.xp.fontPixelSize
             font.bold: entry.bold
             color: !entry.interactive ? Kirigami.Theme.disabledTextColor
-                 : entry.highlighted ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
+                 : entry.selectedLook ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
         }
 
         Text {
@@ -115,21 +120,22 @@ Item {
             renderType: Text.NativeRendering
             font.family: entry.xp.fontFamily
             font.pixelSize: entry.xp.fontPixelSize
-            color: entry.highlighted ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.disabledTextColor
+            color: entry.selectedLook ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.disabledTextColor
         }
     }
 
+    // The theme's arrow box (XP's: 8 px, the arrow 2 px from its right),
+    // on whole pixels so the arrow stays crisp
     KSvg.SvgItem {
         anchors.right: parent.right
-        anchors.rightMargin: 6
-        // On whole pixels, so the arrow stays crisp
-        y: Math.floor((parent.height - height) / 2)
+        anchors.rightMargin: 4
+        y: Math.ceil((parent.height - height) / 2)
         width: naturalSize.width
         height: naturalSize.height
         visible: entry.showArrow
         svg: KSvg.Svg {
             imagePath: "widgets/arrows"
-            status: entry.highlighted ? KSvg.Svg.Selected : KSvg.Svg.Normal
+            status: entry.selectedLook ? KSvg.Svg.Selected : KSvg.Svg.Normal
         }
         elementId: "right-arrow"
     }

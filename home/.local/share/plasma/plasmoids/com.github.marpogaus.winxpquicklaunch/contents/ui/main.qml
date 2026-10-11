@@ -21,11 +21,17 @@ import org.kde.draganddrop as DragAndDrop
 PlasmoidItem {
     id: root
 
-    // XP's artwork in the Plasma theme, if it has it
+    // XP's artwork in the Plasma theme, if it has it (checked again when
+    // the theme changes)
     KSvg.Svg {
         id: winxp
         imagePath: "widgets/winxp"
+        property bool present: hasElement("quicklaunch-hover-center")
+        onRepaintNeeded: present = hasElement("quicklaunch-hover-center")
     }
+    // Drawn on the taskbar: XP's taskbar is blue, so with XP's artwork the
+    // colour set for contrasting areas; otherwise the panel's own
+    readonly property int panelColorSet: winxp.present ? Kirigami.Theme.Complementary : Kirigami.Theme.Window
 
     readonly property bool horizontal: Plasmoid.formFactor !== PlasmaCore.Types.Vertical
     readonly property int cell: 22
@@ -207,8 +213,7 @@ PlasmoidItem {
             y: root.horizontal ? row.y : row.y + offset
             width: root.horizontal ? 2 : bar.width
             height: root.horizontal ? root.cell : 2
-            // On the taskbar: the colour set for contrasting areas
-            Kirigami.Theme.colorSet: Kirigami.Theme.Complementary
+            Kirigami.Theme.colorSet: root.panelColorSet
             Kirigami.Theme.inherit: false
             color: Kirigami.Theme.textColor
             z: 1
@@ -266,7 +271,7 @@ PlasmoidItem {
 
                     // XP's » from the Plasma theme (widgets/winxp), else a tool
                     // button with a » in the text colour
-                    readonly property bool xpChevrons: winxp.hasElement("overflow-normal")
+                    readonly property bool xpChevrons: winxp.present
                     KSvg.SvgItem {
                         anchors.fill: parent
                         visible: parent.xpChevrons
@@ -287,7 +292,7 @@ PlasmoidItem {
                         font.family: "Tahoma"
                         font.pixelSize: 11
                         font.bold: true
-                        Kirigami.Theme.colorSet: Kirigami.Theme.Complementary
+                        Kirigami.Theme.colorSet: root.panelColorSet
                         Kirigami.Theme.inherit: false
                         color: Kirigami.Theme.textColor
                     }
@@ -313,7 +318,7 @@ PlasmoidItem {
             height: root.horizontal ? bar.area.height - 6 : 4
 
             KSvg.SvgItem {
-                readonly property bool xp: root.horizontal && winxp.hasElement("quicklaunch-separator")
+                readonly property bool xp: root.horizontal && winxp.present
                 anchors.centerIn: parent
                 svg: xp ? winxp : lineSvg
                 elementId: xp ? "quicklaunch-separator" : root.horizontal ? "vertical-line" : "horizontal-line"
@@ -382,11 +387,12 @@ PlasmoidItem {
                         implicitWidth: 28 + rowText.implicitWidth + 24
                         implicitHeight: 22
 
+                        // XP's menu highlight (white text), else the theme's
                         KSvg.FrameSvgItem {
                             anchors.fill: parent
                             visible: rowMouse.containsMouse
-                            imagePath: "widgets/viewitem"
-                            prefix: "hover"
+                            imagePath: winxp.present ? "widgets/winxp" : "widgets/viewitem"
+                            prefix: winxp.present ? "menu-highlight" : "hover"
                         }
 
                         Kirigami.Icon {
@@ -407,7 +413,7 @@ PlasmoidItem {
                             font.family: "Tahoma"
                             font.pixelSize: 11
                             renderType: Text.NativeRendering
-                            color: rowMouse.containsMouse ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
+                            color: rowMouse.containsMouse && winxp.present ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
                         }
                         MouseArea {
                             id: rowMouse
@@ -499,7 +505,7 @@ PlasmoidItem {
 
         // XP's hover box from the theme (widgets/winxp), else a tool button
         KSvg.FrameSvgItem {
-            readonly property bool xp: winxp.hasElement("quicklaunch-hover-center")
+            readonly property bool xp: winxp.present
             anchors.fill: parent
             visible: mouse.containsMouse
             imagePath: xp ? "widgets/winxp" : "widgets/button"

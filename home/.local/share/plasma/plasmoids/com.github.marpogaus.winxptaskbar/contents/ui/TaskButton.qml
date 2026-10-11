@@ -14,6 +14,8 @@ Item {
     property var icon
     property string text
     property string fontFamily: "Tahoma"
+    // The colour set for the label (the taskbar's)
+    property int textColorSet: Kirigami.Theme.Window
     property bool active: false
     property bool attention: false
     property bool minimized: false
@@ -61,8 +63,7 @@ Item {
         renderType: Text.NativeRendering
         font.family: button.fontFamily
         font.pixelSize: 11
-        // Text on the taskbar: the colour set for contrasting areas
-        Kirigami.Theme.colorSet: Kirigami.Theme.Complementary
+        Kirigami.Theme.colorSet: button.textColorSet
         Kirigami.Theme.inherit: false
         color: Kirigami.Theme.textColor
     }

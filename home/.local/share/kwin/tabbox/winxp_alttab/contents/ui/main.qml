@@ -20,7 +20,7 @@ KWin.TabBoxSwitcher {
 
     currentIndex: grid.currentIndex
 
-    readonly property bool xpBox: winxp.hasElement("alttab-center")
+    readonly property bool xpBox: winxp.present
 
     PlasmaCore.Dialog {
         id: dialog
@@ -41,6 +41,9 @@ KWin.TabBoxSwitcher {
             KSvg.Svg {
                 id: winxp
                 imagePath: "widgets/winxp"
+                // Checked again when the Plasma theme changes
+                property bool present: hasElement("alttab-center")
+                onRepaintNeeded: present = hasElement("alttab-center")
             }
             width: grid.width + 2 * pad
             height: grid.height + 12 + title.height + 2 * pad
