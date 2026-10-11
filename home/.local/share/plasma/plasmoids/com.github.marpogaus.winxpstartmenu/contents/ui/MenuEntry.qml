@@ -135,6 +135,8 @@ Item {
         visible: entry.showArrow
         svg: KSvg.Svg {
             imagePath: "widgets/arrows"
+            // in the row's text colour (KSvg does not follow Kirigami's set)
+            colorSet: entry.Kirigami.Theme.colorSet
             status: entry.selectedLook ? KSvg.Svg.Selected : KSvg.Svg.Normal
         }
         elementId: "right-arrow"

@@ -4,7 +4,7 @@
 # Maintainer script: refresh the third-party files bundled in home/ (Exposé
 # and its Green and Metallic variants, modernXP cursors) from their upstream
 # projects. Users do not need this,
-# they copy home/. Needs git and curl.
+# they copy home/. Needs git, curl, tar and GNU coreutils and sed.
 set -euo pipefail
 for tool in git curl; do
     command -v "$tool" >/dev/null || { echo "error: $tool is required" >&2; exit 1; }
@@ -23,7 +23,10 @@ curl -fsSL https://raw.githubusercontent.com/na0miluv/modernXP-cursor-theme/main
 
 H=$ROOT/home
 D=$H/.local/share
-replace() { rm -rf "$2"; mkdir -p "$(dirname "$2")"; cp -r "$1" "$2"; }
+replace() {
+    [ -e "$1" ] || { echo "error: upstream path missing: $1" >&2; exit 1; }
+    rm -rf "$2"; mkdir -p "$(dirname "$2")"; cp -r "$1" "$2"
+}
 # Plasma theme $1 from the Exposé checkout $2. The pack's XP files in it
 # (marked "Part of the Windows XP pack") replace Exposé's: keep them over
 # the refreshed theme
@@ -34,11 +37,18 @@ theme() {
         (cd "$t" && { grep -rlZ "Part of the Windows XP pack" . || true; } | xargs -0r cp --parents -t "$keep")
     fi
     replace "$2/desktoptheme/$1" "$t"
+    # not Exposé's editor backups
+    find "$t" \( -name '*~' -o -name '*.old' \) -delete
     cp -r "$keep/." "$t/"
+    # Plasma takes a theme's Complementary, Header, View, Tooltip… colours
+    # only from themes that declare its API 5 (else they are the Button
+    # colours); Exposé's metadata.json does not
+    grep -q '"X-Plasma-API"' "$t/metadata.json" ||
+        sed -i '0,/{/s//{\n    "X-Plasma-API": "5.0",/' "$t/metadata.json"
 }
 
 # Exposé by phob1an (GPL; wallpapers CC BY-SA), unmodified but for the pack's
-# marked XP files in its Plasma theme (below), at the paths the
+# marked XP files and the API version in its Plasma theme (above), at the paths the
 # Windows XP Global Theme's contents/defaults refers to (taken from Exposé's
 # own Plasma 6 Global Theme, org.magpie.expose.desktop)
 E=$SRC/expose

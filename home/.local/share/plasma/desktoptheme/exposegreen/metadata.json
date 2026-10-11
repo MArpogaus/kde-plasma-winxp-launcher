@@ -1,4 +1,5 @@
 {
+    "X-Plasma-API": "5.0",
     "KPackageStructure": "Plasma/Theme",
     "KPlugin": {
         "Authors": [

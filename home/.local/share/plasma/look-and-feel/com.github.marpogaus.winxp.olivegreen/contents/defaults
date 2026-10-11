@@ -13,9 +13,6 @@ LayoutName=winxp_alttab
 [kwinrc][org.kde.kdecoration2]
 library=org.kde.kwin.aurorae
 theme=__aurorae__svg__exposegreen
-# XP's title bar: window icon (menu) on the left, minimize, maximize, close on the right
-ButtonsOnLeft=M
-ButtonsOnRight=IAX
 
 [plasmarc][Theme]
 name=exposegreen

@@ -1,0 +1,5 @@
+# Applied with the desktop and window layout (or the title bar buttons layout)
+[kwinrc][org.kde.kdecoration2]
+# XP's title bar: window icon (menu) on the left, minimize, maximize, close on the right
+ButtonsOnLeft=M
+ButtonsOnRight=IAX
