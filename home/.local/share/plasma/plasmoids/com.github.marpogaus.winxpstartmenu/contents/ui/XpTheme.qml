@@ -8,6 +8,9 @@ import QtQuick
 QtObject {
     property string fontFamily: "Tahoma"
     property string startFontFamily: "Franklin Gothic Medium"
+    // "Small icons" in Customize Start Menu
+    property bool smallIcons: false
+    property bool classicSmallIcons: false
 
     readonly property int fontPixelSize: 11
 
@@ -50,6 +53,17 @@ QtObject {
     readonly property color cascadeSeparator: "#d6d6d3"
     readonly property color disabledText: "#aca899"
     readonly property int cascadeRowHeight: 22
+    // Background of newly installed programs (and the folders with them)
+    readonly property color newProgram: "#ffefc1"
+
+    // Classic Start menu, with Luna's flat menus: white, 1 px border,
+    // the banner on the left
+    readonly property color classicBackground: "#ffffff"
+    readonly property color classicBorder: "#aca899"
+    readonly property color classicSeparator: "#aca899"
+    readonly property int classicRowHeight: classicSmallIcons ? 22 : 32
+    readonly property int classicSeparatorHeight: 9
+    readonly property int classicBannerWidth: 21
 
     // Metrics (measured on a native 1024x768 XP screenshot, 96 DPI)
     readonly property int frameWidth: 2
@@ -58,8 +72,8 @@ QtObject {
     readonly property int menuWidth: frameWidth + leftWidth + 1 + rightWidth + frameWidth // 382
     readonly property int headerHeight: 64
     readonly property int footerHeight: 40
-    readonly property int programRowHeight: 36
-    readonly property int programIconSize: 32
+    readonly property int programRowHeight: smallIcons ? 22 : 36
+    readonly property int programIconSize: smallIcons ? 16 : 32
     readonly property int placeRowHeight: 30
     readonly property int placeIconSize: 24
     readonly property int separatorHeight: 8

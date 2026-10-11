@@ -30,6 +30,9 @@ Item {
     // Kept highlighted by the owner, e.g. while its cascade is open.
     property bool forceHighlight: false
     property color highlightColor: xp.highlight
+    // Newly installed program (or a folder with one), when XP's
+    // "Highlight newly installed programs" is on
+    property bool isNew: false
     // Applications can be dragged (to Quick Launch, the desktop, …): the
     // .desktop URL and an object with startDrag(url, icon)
     property url dragUrl
@@ -41,6 +44,12 @@ Item {
     signal contextMenuRequested(real x, real y)
 
     implicitHeight: Math.max(iconSize + 2, 18)
+
+    Rectangle {
+        anchors.fill: parent
+        color: entry.xp.newProgram
+        visible: entry.isNew && !entry.highlighted
+    }
 
     Rectangle {
         anchors.fill: parent
@@ -113,7 +122,7 @@ Item {
 
     DragHandler {
         target: null
-        enabled: entry.dragController !== null && entry.dragUrl.toString() !== ""
+        enabled: entry.dragController !== null && entry.dragController.dragEnabled && entry.dragUrl.toString() !== ""
         onActiveChanged: if (active) entry.dragController.startDrag(entry.dragUrl, entry.iconSource)
     }
 

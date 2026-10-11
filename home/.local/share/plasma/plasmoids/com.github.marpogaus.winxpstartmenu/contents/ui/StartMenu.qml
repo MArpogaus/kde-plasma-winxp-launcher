@@ -22,12 +22,14 @@ FocusScope {
     property var searchModel: null
     property int numFrequentApps: 6
     // Keys of right-column entries to hide (see the places list below)
-    property var hiddenPlaces: ["network"]
+    property var hiddenPlaces: ["network", "connections", "admintools"]
+    // Keys of right-column entries shown as a menu ("Display as a menu")
+    property var menuPlaces: []
 
     property string userName
     property url userAvatar
 
-    // "programs", "recent" or "" – which cascade is attached to the menu.
+    // "programs", "recent", a place key or "" – which cascade is attached to the menu.
     property string openCascade: ""
 
     property string searchText: ""
@@ -73,6 +75,16 @@ FocusScope {
         return hoverItem !== null && hoverItem !== item && hoverItem.hovered === true;
     }
 
+    function openKind(kind, item) {
+        if (kind === "programs") {
+            controller.openAllPrograms(item);
+        } else if (kind === "recent") {
+            controller.openRecentDocuments(item);
+        } else {
+            controller.openPlaceMenu(kind, item);
+        }
+    }
+
     function hovered(kind, item) {
         hoverKind = kind;
         hoverItem = item;
@@ -86,12 +98,12 @@ FocusScope {
             if (menu.hoverKind === menu.openCascade && menu.hoverKind !== "") {
                 return;
             }
-            if (menu.hoverKind === "programs") {
-                menu.controller.openAllPrograms(menu.hoverItem);
-            } else if (menu.hoverKind === "recent") {
-                menu.controller.openRecentDocuments(menu.hoverItem);
-            } else {
+            if (menu.hoverKind === "") {
                 menu.controller.closeCascadesFrom(0);
+            } else if (!menu.controller.openOnHover) {
+                // Without "Open submenus when I pause on them" only a click opens one
+            } else {
+                menu.openKind(menu.hoverKind, menu.hoverItem);
             }
         }
     }
@@ -397,7 +409,8 @@ FocusScope {
                             leftPadding: 3
                             textSpacing: 3
                             title: specialTitle || (model.display ?? "")
-                            subtitle: specialTitle ? (model.display ?? "") : ""
+                            // Small icons leave no room for the program's name
+                            subtitle: specialTitle && !menu.xp.smallIcons ? (model.display ?? "") : ""
                             bold: true
 
                             onHoveredChanged: if (hovered) menu.hovered("", pinned)
@@ -434,7 +447,7 @@ FocusScope {
                             textSpacing: 3
                             title: modelData.display
                             // XP breaks long names onto two lines at about 105 px
-                            wrap: true
+                            wrap: !menu.xp.smallIcons
                             wrapWidth: 105
 
                             onHoveredChanged: if (hovered) menu.hovered("", frequent)
@@ -619,7 +632,7 @@ FocusScope {
                         onClicked: {
                             hoverTimer.stop();
                             if (menu.openCascade !== "programs") {
-                                menu.controller.openAllPrograms(allPrograms);
+                                menu.openKind("programs", allPrograms);
                             }
                         }
                     }
@@ -676,7 +689,9 @@ FocusScope {
                             { key: "network", icon: "network-workgroup", title: i18n("My Network Places"), bold: true },
                             { separator: true },
                             { key: "controlpanel", icon: "preferences-system", title: i18n("Control Panel") },
+                            { key: "admintools", icon: "applications-system", title: i18n("Administrative Tools"), arrow: true },
                             { key: "defaults", icon: "preferences-desktop-default-applications", title: i18n("Set Program Access and Defaults") },
+                            { key: "connections", icon: "network-wired", title: i18n("Network Connections") },
                             { key: "printers", icon: "printer", title: i18n("Printers and Faxes") },
                             { separator: true },
                             { key: "help", icon: "help-browser", title: i18n("Help and Support") },
@@ -689,6 +704,8 @@ FocusScope {
 
                             required property var modelData
                             readonly property bool hidden: !modelData.separator && menu.hiddenPlaces.indexOf(modelData.key) >= 0
+                            // Opens a cascade instead of a window
+                            readonly property bool cascades: modelData.arrow === true || menu.menuPlaces.indexOf(modelData.key) >= 0
 
                             width: placesColumn.width
                             height: hidden ? 0
@@ -712,21 +729,21 @@ FocusScope {
                                 iconSource: place.modelData.icon ?? ""
                                 title: place.modelData.title ?? ""
                                 bold: place.modelData.bold === true
-                                showArrow: place.modelData.arrow === true
+                                showArrow: place.cascades
                                 wrap: true
                                 iconSize: menu.xp.placeIconSize
                                 leftPadding: 5
                                 textSpacing: 3
                                 textColor: menu.xp.rightText
-                                forceHighlight: place.modelData.key === "recent" && menu.openCascade === "recent"
+                                forceHighlight: place.cascades && menu.openCascade === place.modelData.key
                                     && !menu.pointerElsewhere(placeEntry)
 
-                                onHoveredChanged: if (hovered) menu.hovered(place.modelData.key === "recent" ? "recent" : "", placeEntry)
+                                onHoveredChanged: if (hovered) menu.hovered(place.cascades ? place.modelData.key : "", placeEntry)
                                 onClicked: {
-                                    if (place.modelData.key === "recent") {
+                                    if (place.cascades) {
                                         hoverTimer.stop();
-                                        if (menu.openCascade !== "recent") {
-                                            menu.controller.openRecentDocuments(placeEntry);
+                                        if (menu.openCascade !== place.modelData.key) {
+                                            menu.openKind(place.modelData.key, placeEntry);
                                         }
                                     } else {
                                         menu.controller.openPlace(place.modelData.key);

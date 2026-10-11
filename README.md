@@ -8,6 +8,8 @@ application style).
 
 ![Start menu with All Programs](docs/preview-all-programs.png)
 
+![Classic Start menu with Programs](docs/preview-classic.png)
+
 Rendered from the widgets' own QML with stand-in icons and
 Exposé's Bløff wallpaper; with WinXPSVG and `get-microsoft-files.sh` the icons, fonts
 and wallpaper are XP's.
@@ -182,6 +184,10 @@ Dolphin with a changed toolbar file ignores it until it is updated.
   the program list, Up/Down/Enter to launch, Esc to clear.
 - Meta key opens the menu (it can replace Kickoff via *Show Alternatives*).
 - Log Off and Turn Off Computer open XP style Log Off / Turn Off dialogs.
+- **Classic Start menu** as an option, as XP draws it with Luna: pinned
+  programs, Programs, Documents, Settings, Search, Help and Support, Run,
+  Log Off, Turn Off Computer, and the "Windows XP Professional" banner
+  (text configurable; hidden with small icons).
 
 ### Fonts
 
@@ -194,12 +200,37 @@ see the widget's `contents/fonts`. Both fonts are configurable.
 
 Right-click the start button → *Configure Windows XP Start Menu…*
 
-- button label, icon (empty = XP's flag if downloaded, else the built-in one) and fonts
-- number of frequently used programs; which optional entries of the right
-  column are shown, like XP's *Customize Start Menu* dialog
-- the location or command behind My Computer, Network, Control Panel, Set
-  Program Access and Defaults, Printers and Faxes, Help and Support, Search
-  and Run (My Documents, Pictures and Music follow the XDG folders)
+**General:** button label, icon (empty = XP's flag if downloaded, else the
+built-in one) and fonts, and the location or command behind My Computer,
+Network, Control Panel, Set Program Access and Defaults, Network
+Connections, Printers and Faxes, Help and Support, Search and Run (My
+Documents, Pictures and Music follow the XDG folders).
+
+**Start Menu**, laid out like XP's Start Menu tab and its *Customize*
+dialogs:
+
+- Start menu or Classic Start menu
+- Start menu, General: large or small icons, number of programs (0–30)
+  and *Clear List*, Internet and E-mail on the start menu (*Choose
+  Programs…* opens Plasma's default applications)
+- Start menu, Advanced: open submenus when pausing on them, highlight newly
+  installed programs; Control Panel, My Computer, My Documents, My Music
+  and My Pictures as a link, as a menu or hidden (as a menu, folders show
+  their contents and Control Panel shows KDE's Settings category); Network
+  Connections as a link or hidden; show or hide Help and Support, My Network
+  Places, My Recent Documents (with *Clear List*), Printers and Faxes, Run,
+  Search, Set Program Access and Defaults and System Administrative Tools
+  (KDE's System category)
+- Classic Start menu: small icons, Display Log Off, Display Run, expand
+  Control Panel, My Documents, My Music and My Pictures into submenus, the
+  banner text
+- both: enable dragging and dropping, scroll programs instead of wrapping
+  them into columns
+
+Not carried over from XP: the Favorites menu (Internet Explorer's
+bookmarks), *Connect To* (a list of dial-up connections) and personalized
+menus. Folders as menus use the desktop folder view's model, which comes
+with Plasma.
 
 ## Development
 

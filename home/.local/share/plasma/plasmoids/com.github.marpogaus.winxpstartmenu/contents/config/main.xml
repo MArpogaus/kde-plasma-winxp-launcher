@@ -25,14 +25,77 @@
       <label>Number of frequently used programs</label>
       <default>6</default>
       <min>0</min>
-      <max>12</max>
+      <max>30</max>
     </entry>
     <entry name="hiddenPlaces" type="StringList">
       <label>Entries of the right column that are hidden</label>
-      <default>network</default>
+      <default>network,connections,admintools</default>
     </entry>
     <entry name="favoritesInitialized" type="Bool">
       <default>false</default>
+    </entry>
+  </group>
+
+  <!-- Taskbar and Start Menu Properties: Start Menu tab and its two
+       Customize dialogs -->
+  <group name="StartMenu">
+    <entry name="menuStyle" type="String">
+      <label>"xp" for the Windows XP start menu, "classic" for the Classic Start menu</label>
+      <default>xp</default>
+    </entry>
+    <entry name="smallIcons" type="Bool">
+      <label>Small icons for the programs on the start menu</label>
+      <default>false</default>
+    </entry>
+    <entry name="showInternet" type="Bool">
+      <label>Internet (the default web browser) pinned to the start menu</label>
+      <default>true</default>
+    </entry>
+    <entry name="showEmail" type="Bool">
+      <label>E-mail (the default mail program) pinned to the start menu</label>
+      <default>true</default>
+    </entry>
+    <entry name="openSubmenusOnHover" type="Bool">
+      <label>Open submenus when the pointer pauses on them</label>
+      <default>true</default>
+    </entry>
+    <entry name="highlightNewPrograms" type="Bool">
+      <label>Highlight newly installed programs</label>
+      <default>true</default>
+    </entry>
+    <entry name="menuPlaces" type="StringList">
+      <label>Entries of the right column shown as a menu instead of a link</label>
+      <default></default>
+    </entry>
+    <entry name="dragAndDrop" type="Bool">
+      <label>Programs can be dragged out of the menu</label>
+      <default>true</default>
+    </entry>
+    <entry name="scrollPrograms" type="Bool">
+      <label>Long program menus scroll instead of wrapping into columns</label>
+      <default>false</default>
+    </entry>
+    <entry name="classicSmallIcons" type="Bool">
+      <label>Classic Start menu: small icons (without the side banner)</label>
+      <default>false</default>
+    </entry>
+    <entry name="classicShowRun" type="Bool">
+      <default>true</default>
+    </entry>
+    <entry name="classicShowLogOff" type="Bool">
+      <default>true</default>
+    </entry>
+    <entry name="classicExpand" type="StringList">
+      <label>Classic Start menu: entries shown as submenus (controlpanel, documents, pictures, music)</label>
+      <default></default>
+    </entry>
+    <entry name="bannerTitle" type="String">
+      <label>Classic Start menu banner, bold part</label>
+      <default>Windows XP</default>
+    </entry>
+    <entry name="bannerEdition" type="String">
+      <label>Classic Start menu banner, regular part</label>
+      <default>Professional</default>
     </entry>
   </group>
 
@@ -48,6 +111,9 @@
     </entry>
     <entry name="defaultsCommand" type="String">
       <default>systemsettings kcm_componentchooser</default>
+    </entry>
+    <entry name="connectionsCommand" type="String">
+      <default>systemsettings kcm_networkmanagement</default>
     </entry>
     <entry name="printersCommand" type="String">
       <default>systemsettings kcm_printer_manager</default>
