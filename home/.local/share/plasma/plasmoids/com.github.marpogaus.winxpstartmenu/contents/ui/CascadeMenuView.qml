@@ -33,11 +33,17 @@ Item {
     readonly property alias frameItem: frame
     property int columnWidth: 160
 
-    // Frame: left border and band (6 px), rows, right border (1 px); rows
+    // The Classic Start menu's submenus are Luna's plain menus: white,
+    // 1 px grey border and 2 px padding, no band, plain separators
+    readonly property bool classic: controller.classic === true
+
+    // XP: left border and band (6 px), rows, right border (1 px); rows
     // directly below the top border and above the bottom one
-    readonly property int frameLeft: 1 + xp.cascadeBand.length
-    width: frameLeft + columns * columnWidth + 1 + shadow
-    height: 1 + 2 * stripHeight + shownRows * rowHeight + 1 + shadow
+    readonly property int frameLeft: classic ? 3 : 1 + xp.cascadeBand.length
+    readonly property int frameTop: classic ? 3 : 1
+    readonly property int frameRight: classic ? 3 : 1
+    width: frameLeft + columns * columnWidth + frameRight + shadow
+    height: 2 * frameTop + 2 * stripHeight + shownRows * rowHeight + shadow
 
     function computeColumnWidth() {
         let widest = 0;
@@ -147,26 +153,27 @@ Item {
         Rectangle {
             width: parent.width
             height: 1
-            color: view.xp.cascadeBorderLight
+            color: view.classic ? view.xp.classicBorder : view.xp.cascadeBorderLight
         }
         Rectangle {
             y: parent.height - 1
             width: parent.width
             height: 1
-            color: view.xp.cascadeBorderLight
+            color: view.classic ? view.xp.classicBorder : view.xp.cascadeBorderLight
         }
         Rectangle {
             width: 1
             height: parent.height
-            color: view.xp.cascadeBorder
+            color: view.classic ? view.xp.classicBorder : view.xp.cascadeBorder
         }
         Rectangle {
             x: parent.width - 1
             width: 1
             height: parent.height
-            color: view.xp.cascadeBorder
+            color: view.classic ? view.xp.classicBorder : view.xp.cascadeBorder
         }
         Row {
+            visible: !view.classic
             x: 1
             y: 1
             Repeater {
@@ -187,7 +194,7 @@ Item {
                 id: strip
                 required property int modelData
                 x: view.frameLeft
-                y: modelData < 0 ? 1 : frame.height - 1 - view.stripHeight
+                y: modelData < 0 ? view.frameTop : frame.height - view.frameTop - view.stripHeight
                 width: view.columnWidth
                 height: view.stripHeight
 
@@ -222,7 +229,7 @@ Item {
         GridView {
             id: grid
             x: view.frameLeft
-            y: 1 + view.stripHeight
+            y: view.frameTop + view.stripHeight
             width: view.columns * view.columnWidth
             height: view.shownRows * view.rowHeight
             // One column that scrolls vertically, or columns side by side
@@ -251,7 +258,8 @@ Item {
                     anchors.leftMargin: 2
                     anchors.rightMargin: 2
                     visible: cell.isSeparator
-                    color: view.xp.cascadeSeparator
+                    color: view.classic ? view.xp.classicSeparator : view.xp.cascadeSeparator
+                    fade: !view.classic
 
                     MouseArea {
                         anchors.fill: parent
@@ -274,7 +282,7 @@ Item {
                     leftPadding: 4
                     textSpacing: 3
                     showArrow: cell.hasChildren
-                    highlightColor: view.xp.cascadeHighlight
+                    highlightColor: view.classic ? view.xp.highlight : view.xp.cascadeHighlight
                     isNew: view.controller.highlightNew && cell.model.isNewlyInstalled === true
                     forceHighlight: view.openIndex === cell.index
                         && (view.pointerIndex < 0 || view.pointerIndex === cell.index)
@@ -300,7 +308,7 @@ Item {
 
         MenuEntry {
             x: view.frameLeft
-            y: 1
+            y: view.frameTop
             width: view.columnWidth
             height: view.rowHeight
             visible: view.itemCount === 0

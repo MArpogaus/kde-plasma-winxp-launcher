@@ -57,9 +57,10 @@ Kicker.SubMenu {
             if (x + cascadeView.width > right) {
                 x = Math.round(menu.x) + 2 - frameWidth;
             }
-            y = rowTop - 1;
+            // The first row level with the row it belongs to
+            y = rowTop - cascadeView.frameTop;
             if (y + cascadeView.height > bottom) {
-                y = rowBottom + 1 - frameHeight;
+                y = rowBottom + cascadeView.frameTop - frameHeight;
             }
         } else {
             x = Math.min(Math.round(row.x + anchorItem.width), right - cascadeView.width);
