@@ -214,8 +214,10 @@ Item {
                 anchors.fill: parent
                 visible: !cell.isSeparator
                 xp: view.xp
-                // Recent documents in a StaticMenuModel take their icon from the source model
-                iconSource: (cell.model.sourceRow ?? -1) >= 0 ? view.controller.recentDocumentIcon(cell.model.sourceRow) : cell.model.decoration
+                // Recent documents in a StaticMenuModel take their icon from the source model;
+                // program groups all show the theme's program group icon, as on XP
+                iconSource: (cell.model.sourceRow ?? -1) >= 0 ? view.controller.recentDocumentIcon(cell.model.sourceRow)
+                    : cell.model.hasChildren === true ? "applications-other" : cell.model.decoration
                 title: cell.model.display ?? ""
                 dragUrl: cell.hasChildren ? "" : cell.model.url ?? ""
                 dragController: view.controller

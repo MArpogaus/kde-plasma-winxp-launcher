@@ -1,0 +1,10 @@
+# Part of the Windows XP pack: Dolphin's defaults as XP Explorer (Plasma
+# reads ~/.config/kdedefaults below the user's own dolphinrc, so settings
+# changed in Dolphin still win). The address bar as an editable field, no
+# status bar, tiles (the compact view) with 48 px icons.
+[General]
+EditableUrl=true
+ShowStatusBar=Disabled
+
+[CompactMode]
+IconSize=48

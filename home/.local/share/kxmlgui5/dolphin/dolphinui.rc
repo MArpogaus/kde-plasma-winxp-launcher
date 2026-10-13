@@ -117,6 +117,7 @@
         <Action name="show_folders_panel" />
         <Separator />
         <Action name="view_mode" />
+        <Action name="hamburger_menu" />
     </ToolBar>
     <ToolBar noMerge="1" name="addressToolBar" newline="true" >
         <text context="@title:menu">Address Bar</text>
@@ -125,9 +126,10 @@
     <ActionProperties scheme="Default">
         <Action priority="128" name="go_back"/>
         <Action priority="0" name="go_forward"/>
-        <Action priority="0" name="go_up"/>
+        <Action priority="0" name="go_up" icon="go-parent-folder"/>
         <Action priority="0" name="view_mode"/>
-        <Action priority="128" name="toggle_search"/>
+        <Action priority="0" name="view_settings"/>
+        <Action priority="128" name="toggle_search" icon="system-search"/>
         <Action priority="128" name="show_folders_panel"/>
     </ActionProperties>
 </gui>

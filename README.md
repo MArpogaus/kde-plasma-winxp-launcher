@@ -33,8 +33,8 @@ and scroll bars, and pale yellow tooltips.
 ![Olive Green and Silver](docs/preview-schemes.png)
 
 Rendered from the widgets' own QML with Exposé's Plasma theme, stand-in
-icons and Exposé's Bløff wallpaper; with WinXPSVG and
-`get-microsoft-files.sh` the icons, fonts and wallpaper are XP's.
+icons and Exposé's Bløff wallpaper; with `get-microsoft-files.sh` the
+icons, fonts and wallpaper are XP's.
 
 ## Install
 
@@ -54,7 +54,9 @@ icons and Exposé's Bløff wallpaper; with WinXPSVG and
    the look of [Exposé](https://www.opencode.net/phob1an/expose) by phob1an
    (bundled; its Plasma theme with XP replacements, see below): window
    borders, Plasma theme, colours, Kvantum style and wallpaper. [Kvantum](https://github.com/tsujan/Kvantum) is
-   needed for the application style.
+   needed for the application style, and Aurorae for the window borders
+   (some distributions package it separately: `kwin-style-aurorae` on
+   Debian and Ubuntu, `aurorae` on Arch and Fedora).
 3. Optional, XP's other colour schemes: apply **Windows XP (Olive Green)**
    or **Windows XP (Silver)** instead (the same taskbar layout; untick
    *Desktop and window layout* to keep your panels) and pick the matching
@@ -63,11 +65,13 @@ icons and Exposé's Bløff wallpaper; with WinXPSVG and
    [Exposé Green](https://www.opencode.net/phob1an/expose-green) and
    [Exposé Metallic](https://www.opencode.net/phob1an/expose-metallic)
    (bundled) with the XP artwork recoloured to Olive Green and Silver.
-4. For XP icons, install the [WinXPSVG](https://store.kde.org/p/1925937)
-   icon theme: System Settings → Icons → *Get New…*, search "WinXPSVG",
-   install and select it. The Global Theme leaves the icon theme alone, so
-   re-applying it keeps your choice. (Exposé's login screen is not bundled
-   either; *Get New…* under Login Screen.)
+4. For XP's icons, fonts, sounds and wallpaper run
+   `./get-microsoft-files.sh` (see *Original XP files* below). Instead of
+   its icons you can use the [WinXPSVG](https://store.kde.org/p/1925937)
+   icon theme (System Settings → Icons → *Get New…*); the Global Theme
+   leaves the icon theme alone, so re-applying it keeps your choice.
+   (Exposé's login screen is not bundled either; *Get New…* under Login
+   Screen.)
 
 With its layout the Global Theme also makes Plasma behave more like XP:
 desktop icons 32 px in columns from the top left, one virtual desktop, no
@@ -79,7 +83,11 @@ icons (in Plasma and Qt/KDE applications; GTK applications keep theirs).
 Change any of them back in System Settings.
 
 Copying also switches app launch feedback to XP's static busy cursor (no
-bouncing icon, `~/.config/klaunchrc`), and it overwrites Dolphin's toolbar
+bouncing icon, `~/.config/klaunchrc`), draws Tahoma and Verdana at their
+usual sizes sharp and unsmoothed as XP does
+(`~/.config/fontconfig/conf.d/60-winxp-fonts.conf`; a font smoothing
+setting made in System Settings still wins), sets Dolphin up as XP's
+Explorer (below) and overwrites Dolphin's toolbar
 (`~/.local/share/kxmlgui5/dolphin/dolphinui.rc`), Dolphin's default view and
 the selected Kvantum theme (`~/.config/Kvantum/kvantum.kvconfig`).
 
@@ -90,7 +98,8 @@ Microsoft, so they are not part of this repository.
 `./get-microsoft-files.sh` downloads them from
 [xfce-winxp-tc](https://github.com/rozniak/xfce-winxp-tc) and
 [Windows-XP-Sound-Theme-KDE](https://github.com/wonordel/Windows-XP-Sound-Theme-KDE)
-and switches to Tahoma / Trebuchet MS, the XP sounds and Bliss. The start
+and switches to XP's icons (xfce-winxp-tc's Luna, installed as the icon
+theme *Luna*), Tahoma / Trebuchet MS, the XP sounds and Bliss. The start
 button picks up XP's flag automatically.
 
 ### Uninstall
@@ -107,11 +116,13 @@ kwriteconfig6 --file ~/.config/kdedefaults/kwinrc --group org.kde.kdecoration2 -
 kwriteconfig6 --file ~/.config/kdedefaults/kwinrc --group org.kde.kdecoration2 --key ButtonsOnRight --delete
 ```
 
-Files from `get-microsoft-files.sh` are in `~/.local/share/{fonts,sounds,wallpapers}/WindowsXP`
-and `~/.local/share/winxp-kde`. It also set fonts and sounds; choose others
-in System Settings (Text & Fonts, Sounds) or reset its settings:
+Files from `get-microsoft-files.sh` are in `~/.local/share/{fonts,icons,sounds,wallpapers}/WindowsXP`
+and `~/.local/share/winxp-kde`. It also set icons, fonts and sounds; choose
+others in System Settings (Icons, Text & Fonts, Sounds) or reset its
+settings:
 
 ```sh
+kwriteconfig6 --file kdeglobals --group Icons --key Theme --delete
 for key in font menuFont toolBarFont smallestReadableFont; do
     kwriteconfig6 --file kdeglobals --group General --key "$key" --delete
 done
@@ -150,7 +161,8 @@ done
 | Exposé Green and Exposé Metallic (window borders, Plasma themes, colours, Kvantum) | `.local/share/plasma/desktoptheme/{exposegreen,exposemetallic}`, `.local/share/aurorae/themes/{exposegreen,exposemetallic}`, `.local/share/color-schemes/{ExposeGreen,ExposeMetallic}.colors`, `.config/Kvantum/{ExposeGreen,ExposeMetallic}` | [Exposé Green](https://www.opencode.net/phob1an/expose-green), [Exposé Metallic](https://www.opencode.net/phob1an/expose-metallic) by phob1an, GPL-3.0 (see the bundled `LICENSE` files). Their Plasma themes' files marked "Part of the Windows XP pack" are this repository's, GPL-2.0+; their `metadata.json` declares Plasma's theme API 5 |
 | Exposé (window borders, Plasma theme, colours, Kvantum, wallpapers) | `.local/share/plasma/desktoptheme/expose`, `.local/share/aurorae/themes/expose`, `.local/share/color-schemes/Expose.colors`, `.config/Kvantum/Expose`, `.local/share/wallpapers/{expose,Bløff}` | [Exposé](https://www.opencode.net/phob1an/expose) by phob1an, GPL-3.0 (see the bundled `LICENSE` files); wallpapers CC BY-SA 4.0. The Plasma theme's files marked "Part of the Windows XP pack" (XP versions of Exposé's files, and the files Exposé lacks: `widgets/{winxp,listitem,toolbar}.svg`, `solid/`) are this repository's, GPL-2.0+; its `metadata.json` declares Plasma's theme API 5 |
 | Cursors | `.local/share/icons/ModernXP` | [modernXP](https://github.com/na0miluv/modernXP-cursor-theme) release, unmodified, GPL-3.0 |
-| Dolphin as XP Explorer | `.local/share/kxmlgui5/dolphin`, `.local/share/dolphin` | toolbar derived from [Dolphin](https://invent.kde.org/system/dolphin), GPL-2.0+ |
+| Dolphin as XP Explorer | `.local/share/kxmlgui5/dolphin`, `.local/share/dolphin`, `.config/kdedefaults/dolphinrc` | toolbar derived from [Dolphin](https://invent.kde.org/system/dolphin), GPL-2.0+ |
+| XP font rendering (Tahoma, Verdana) | `.config/fontconfig/conf.d/60-winxp-fonts.conf` | this repository, GPL-2.0+ |
 
 ### Taskbar and notification area
 
@@ -189,11 +201,16 @@ Right-click → Configure Quick Launch… for the full list and the limit.
 ### Dolphin as XP Explorer
 
 Toolbar *Back · Forward · Up | Search · Folders | Views* with labels on
-Back, Search and Folders, the address bar on its own row, and tiles
-(compact view) with type and size. Press Ctrl+M once for the menu bar, F7
-for the folder tree and Ctrl++ until the tiles reach XP's 48 px icons;
-Dolphin remembers all three. XP's blue task pane has no Dolphin
-counterpart.
+Back, Search and Folders (with XP's toolbar icons from
+`get-microsoft-files.sh`), the address bar on its own row as an editable
+field with its drop-down and ✓ (XP's *Go*), no status bar, and tiles
+(compact view) with 48 px file type icons, type and size; like XP's tiles
+they show no previews (View → Show Previews). Dolphin hides its menu bar
+the first time it starts: press Ctrl+M once; F7 shows the folder tree.
+Dolphin remembers both. XP's blue task pane has no Dolphin counterpart;
+the Places panel takes its side. The defaults are in
+`~/.config/kdedefaults/dolphinrc`, below Dolphin's own settings, so what
+you change in Dolphin wins.
 
 The toolbar file is made for the Dolphin version it was taken from; a newer
 Dolphin with a changed toolbar file ignores it until it is updated.
