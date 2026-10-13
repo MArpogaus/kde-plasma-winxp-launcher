@@ -72,7 +72,7 @@ PlasmoidItem {
     property var cascades: []
 
     // The button itself is the (inline) full representation, so Plasma never
-    // opens its own popup; `expanded` just mirrors our menu window.
+    // opens its own popup (and counts the applet as expanded all along).
     preferredRepresentation: fullRepresentation
     compactRepresentation: null
     fullRepresentation: StartButton {
@@ -88,13 +88,16 @@ PlasmoidItem {
     toolTipSubText: ""
     Plasmoid.status: menuOpen ? PlasmaCore.Types.RequiresAttentionStatus : PlasmaCore.Types.PassiveStatus
 
-    // The global shortcut (Meta) toggles `expanded`.
-    onExpandedChanged: {
-        if (expanded !== menuOpen) {
-            if (expanded) {
-                openMenu();
+    // The global shortcut (Meta) toggles our menu window, as in Plasma's
+    // Application Dashboard (`expanded` is already true for an inline button)
+    activationTogglesExpanded: false
+    Connections {
+        target: Plasmoid
+        function onActivated() {
+            if (root.menuOpen) {
+                root.closeMenu();
             } else {
-                closeMenu();
+                root.openMenu();
             }
         }
     }
@@ -364,7 +367,6 @@ PlasmoidItem {
         }
         activeMenu.reset();
         menuOpen = true;
-        expanded = true;
         menuDialog.visible = true;
         menuDialog.requestActivate();
         activeMenu.forceActiveFocus();
@@ -375,7 +377,6 @@ PlasmoidItem {
             return;
         }
         menuOpen = false;
-        expanded = false;
         lastClosed = Date.now();
         closeCascadesFrom(0);
         menuDialog.visible = false;

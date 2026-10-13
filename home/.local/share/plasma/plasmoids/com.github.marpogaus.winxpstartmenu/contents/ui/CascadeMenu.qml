@@ -24,8 +24,8 @@ Kicker.SubMenu {
     readonly property int maxRows: Math.max(5, Math.floor(
         (controller.availableArea.height - insetTop - insetBottom - shadow) / xp.cascadeRowHeight))
 
-    KSvg.Svg {
-        id: winxp
+    // (a property: the dialog's children go to its mainItem, which takes Items only)
+    readonly property KSvg.Svg winxp: KSvg.Svg {
         imagePath: "widgets/winxp"
     }
     // Cascades are rebuilt each time they open, so this follows theme changes
@@ -101,8 +101,11 @@ Kicker.SubMenu {
     onHeightChanged: reposition()
 
     visible: false
-    // Keyboard focus stays with the start menu window.
-    flags: Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus
+    // Keyboard focus stays with the start menu window. As it never becomes
+    // active, KWin would stack it below the active menu: a tool window is
+    // transient for the window it opens from, so it stays above that one
+    // (and out of the taskbar).
+    flags: Qt.Tool | Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus
     location: PlasmaCore.Types.Floating
     hideOnWindowDeactivate: false
 
