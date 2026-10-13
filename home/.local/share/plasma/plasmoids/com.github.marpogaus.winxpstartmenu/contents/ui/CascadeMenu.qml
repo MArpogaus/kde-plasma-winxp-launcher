@@ -139,7 +139,8 @@ Kicker.SubMenu {
             focus: true
             frameWidth: (dialog.xpFrame ? frame.margins.left + frame.margins.right : 0) + dialog.margins.left + dialog.margins.right
 
-            Keys.onEscapePressed: dialog.controller.closeCascadesFrom(dialog.level)
+            // Like the menus: the innermost cascade first, as on XP
+            Keys.onEscapePressed: dialog.controller.closeCascadesFrom(dialog.controller.cascades.length - 1)
         }
     }
 }

@@ -160,8 +160,9 @@ FocusScope {
     Keys.onPressed: event => {
         const modifiers = event.modifiers & (Qt.ControlModifier | Qt.AltModifier | Qt.MetaModifier);
         if (event.key === Qt.Key_Escape) {
-            // Cascades never take focus, so Escape arrives here: close the
-            // innermost cascade first, like XP, then the menu
+            // Escape arrives here unless a cascade was clicked (Wayland
+            // activates it then): close the innermost cascade first, like
+            // XP, then the menu
             const cascades = controller.cascades.length;
             if (searching) {
                 searchText = "";
