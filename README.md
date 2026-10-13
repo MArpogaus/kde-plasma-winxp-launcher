@@ -24,7 +24,8 @@ menu's banner and the Log Off / Turn Off dialogs keep XP's own colours.
 Plasma's own popups (volume, network, notifications, …) get XP's look
 from the same theme: white menus with black text, XP's push buttons,
 text fields, check boxes, radio buttons, track bars, progress bars, tabs
-and scroll bars, and pale yellow tooltips.
+and scroll bars, and pale yellow tooltips (those of controls inside popups
+use the white menu frame).
 
 ![Start menu with All Programs](docs/preview-all-programs.png)
 
@@ -32,7 +33,7 @@ and scroll bars, and pale yellow tooltips.
 
 ![Olive Green and Silver](docs/preview-schemes.png)
 
-Rendered from the widgets' own QML with Exposé's Plasma theme, stand-in
+Rendered from the widgets' own QML with Exposé's Plasma themes, stand-in
 icons and Exposé's Bløff wallpaper; with `get-microsoft-files.sh` the
 icons, fonts and wallpaper are XP's.
 
@@ -88,13 +89,15 @@ usual sizes sharp and unsmoothed as XP does
 (`~/.config/fontconfig/conf.d/60-winxp-fonts.conf`; a font smoothing
 setting made in System Settings still wins), sets Dolphin up as XP's
 Explorer (below) and overwrites Dolphin's toolbar
-(`~/.local/share/kxmlgui5/dolphin/dolphinui.rc`), Dolphin's default view and
+(`~/.local/share/kxmlgui5/dolphin/dolphinui.rc`), Dolphin's default view
+(`~/.local/share/dolphin/view_properties/global/.directory`) and
 the selected Kvantum theme (`~/.config/Kvantum/kvantum.kvconfig`).
 
 ### Original XP files (optional)
 
-XP's fonts, sounds, Bliss and the original start flag belong to
-Microsoft, so they are not part of this repository.
+XP's fonts, icons, sounds, wallpapers (Bliss and the others) and the
+original start flag belong to Microsoft, so they are not part of this
+repository.
 `./get-microsoft-files.sh` downloads them from
 [xfce-winxp-tc](https://github.com/rozniak/xfce-winxp-tc) and
 [Windows-XP-Sound-Theme-KDE](https://github.com/wonordel/Windows-XP-Sound-Theme-KDE)
@@ -118,10 +121,12 @@ kwriteconfig6 --file ~/.config/kdedefaults/kwinrc --group org.kde.kdecoration2 -
 
 Files from `get-microsoft-files.sh` are in `~/.local/share/{fonts,icons,sounds,wallpapers}/WindowsXP`
 and `~/.local/share/winxp-kde`. It also set icons, fonts and sounds; choose
-others in System Settings (Icons, Text & Fonts, Sounds) or reset its
-settings:
+others in System Settings (Icons, Text & Fonts, Sounds), or remove its
+files and reset its settings:
 
 ```sh
+rm -rf ~/.local/share/{fonts,icons,sounds,wallpapers}/WindowsXP ~/.local/share/winxp-kde
+fc-cache -f
 kwriteconfig6 --file kdeglobals --group Icons --key Theme --delete
 for key in font menuFont toolBarFont smallestReadableFont; do
     kwriteconfig6 --file kdeglobals --group General --key "$key" --delete
@@ -163,6 +168,7 @@ done
 | Cursors | `.local/share/icons/ModernXP` | [modernXP](https://github.com/na0miluv/modernXP-cursor-theme) release, unmodified, GPL-3.0 |
 | Dolphin as XP Explorer | `.local/share/kxmlgui5/dolphin`, `.local/share/dolphin`, `.config/kdedefaults/dolphinrc` | toolbar derived from [Dolphin](https://invent.kde.org/system/dolphin), GPL-2.0+ |
 | XP font rendering (Tahoma, Verdana) | `.config/fontconfig/conf.d/60-winxp-fonts.conf` | this repository, GPL-2.0+ |
+| Launch feedback, Kvantum theme selection | `.config/klaunchrc`, `.config/Kvantum/kvantum.kvconfig` | this repository, GPL-2.0+ |
 
 ### Taskbar and notification area
 
@@ -212,8 +218,8 @@ the Places panel takes its side. The defaults are in
 `~/.config/kdedefaults/dolphinrc`, below Dolphin's own settings, so what
 you change in Dolphin wins.
 
-The toolbar file is made for the Dolphin version it was taken from; a newer
-Dolphin with a changed toolbar file ignores it until it is updated.
+The toolbar file holds only the toolbars: every Dolphin version keeps its
+own menus and carries these toolbars over into its own file.
 
 ## Start menu features
 

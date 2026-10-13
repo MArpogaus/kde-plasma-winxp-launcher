@@ -1,5 +1,5 @@
 # Windows XP Silver colours for Plasma: black on white popups, black on the silver taskbar (Complementary), XP's silver selection with black text.
-# Part of the Windows XP pack (XP's Silver scheme), replacing Exposé's colours.
+# Part of the Windows XP pack (XP's Silver scheme).
 [Colors:Window]
 ForegroundNormal=0,0,0
 BackgroundNormal=255,255,255

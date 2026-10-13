@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Windows XP (Luna) menu: white, 1 px #aca899 border, 2 px padding, shadow on the right and bottom. Part of the Windows XP pack (XP's Silver scheme), replacing Exposé's blue dialog background. -->
+<!-- Windows XP (Luna) menu: white, 1 px #aca899 border, 2 px padding, shadow on the right and bottom. Part of the Windows XP pack (XP's Silver scheme), replacing Exposé's dialog background. -->
 <svg xmlns="http://www.w3.org/2000/svg" width="80" height="70" viewBox="0 0 80 70">
 <g id="topleft"><rect x="0" y="0" width="3" height="3" fill="#ffffff"/><rect x="0" y="0" width="3" height="1" fill="#aca899"/><rect x="0" y="0" width="1" height="3" fill="#aca899"/></g>
 <g id="top"><rect x="3" y="0" width="10" height="3" fill="#ffffff"/><rect x="3" y="0" width="10" height="1" fill="#aca899"/></g>

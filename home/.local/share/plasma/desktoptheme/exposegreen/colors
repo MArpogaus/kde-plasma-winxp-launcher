@@ -1,5 +1,5 @@
 # Windows XP Olive Green colours for Plasma: black on white popups, dark olive on the olive taskbar (Complementary), XP's olive selection.
-# Part of the Windows XP pack (XP's Olive Green scheme), replacing Exposé's colours.
+# Part of the Windows XP pack (XP's Olive Green scheme).
 [Colors:Window]
 ForegroundNormal=0,0,0
 BackgroundNormal=255,255,255

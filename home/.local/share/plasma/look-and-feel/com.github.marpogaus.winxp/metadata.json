@@ -12,9 +12,5 @@
         "Name": "Windows XP",
         "Website": "https://github.com/MArpogaus/kde-plasma-winxp-launcher"
     },
-    "X-Plasma-APIVersion": "2",
-    "X-KPackage-Dependencies": [
-        "kns://icons.knsrc/api.kde-look.org/1925937",
-        "kns://sddmtheme.knsrc/api.kde-look.org/1908708"
-    ]
+    "X-Plasma-APIVersion": "2"
 }
