@@ -12,8 +12,8 @@ import QtQuick.Layouts
 import org.kde.plasma.plasmoid
 import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.extras as PlasmaExtras
-import org.kde.plasma.plasma5support as P5Support
 import org.kde.kirigami as Kirigami
+import org.kde.kwindowsystem
 import org.kde.ksvg as KSvg
 import org.kde.taskmanager as TaskManager
 import org.kde.draganddrop as DragAndDrop
@@ -79,23 +79,8 @@ PlasmoidItem {
         delegate: QtObject {}
     }
 
-    P5Support.DataSource {
-        id: executable
-        engine: "executable"
-        onNewData: sourceName => disconnectSource(sourceName)
-
-        property int launches: 0
-
-        // Reconnecting a source whose process still runs is a no-op, so
-        // make every launch a new source
-        function exec(command) {
-            connectSource(command + "\n# " + (++launches));
-        }
-    }
-
     function showDesktop() {
-        executable.exec("dbus-send --session --type=method_call --dest=org.kde.kglobalaccel "
-            + "/component/kwin org.kde.kglobalaccel.Component.invokeShortcut string:'Show Desktop'");
+        KWindowSystem.showingDesktop = !KWindowSystem.showingDesktop;
     }
 
     function launch(row) {
@@ -355,8 +340,8 @@ PlasmoidItem {
                 requestActivate();
             }
 
-            // Above the », left edges aligned; below the taskbar when it is
-            // at the top of the screen
+            // Above the », left edges aligned (kept on the screen); below
+            // the taskbar when it is at the top of the screen
             function place() {
                 const p = overflowButton.mapToGlobal(0, 0);
                 const location = Plasmoid.location;
@@ -369,7 +354,7 @@ PlasmoidItem {
                     y = Math.round(Math.max(bar.Screen.virtualY, Math.min(p.y, bar.Screen.virtualY + bar.Screen.height - height)));
                     return;
                 }
-                x = Math.round(p.x);
+                x = Math.round(Math.min(p.x, bar.Screen.virtualX + bar.Screen.width - width));
                 y = location === PlasmaCore.Types.TopEdge
                     ? Math.round(bar.mapToGlobal(0, bar.area.y + bar.area.height).y)
                     : Math.round(p.y) - height;
@@ -379,8 +364,7 @@ PlasmoidItem {
 
             // As wide as the longest name (hidden rows do not count)
             mainItem: ColumnLayout {
-                id: overflowList
-                width: Math.min(400, Math.max(120, implicitWidth))
+                width: Math.min(400, Math.max(160, implicitWidth))
                 spacing: 0
 
                 Repeater {
@@ -395,7 +379,7 @@ PlasmoidItem {
                         visible: model.IsLauncher === true
                             && index + (Plasmoid.configuration.showDesktop ? 1 : 0) >= root.shownCount
                         Layout.fillWidth: true
-                        implicitWidth: 28 + rowText.implicitWidth + 24
+                        implicitWidth: 28 + rowText.implicitWidth + 12
                         implicitHeight: 22
 
                         // XP's menu highlight (white text), else the theme's
@@ -420,6 +404,7 @@ PlasmoidItem {
                             width: parent.width - x - 6
                             anchors.verticalCenter: parent.verticalCenter
                             text: overflowRow.model.display ?? ""
+                            textFormat: Text.PlainText
                             elide: Text.ElideRight
                             font.family: "Tahoma"
                             font.pixelSize: 11
@@ -587,9 +572,7 @@ PlasmoidItem {
             }
             onClicked: mouse => {
                 if (mouse.button === Qt.RightButton) {
-                    if (button.launcherIndex >= 0) {
-                        contextMenu.open(mouse.x, mouse.y);
-                    }
+                    contextMenu.open(mouse.x, mouse.y);
                 } else if (!button.dragging) {
                     button.clicked();
                 }

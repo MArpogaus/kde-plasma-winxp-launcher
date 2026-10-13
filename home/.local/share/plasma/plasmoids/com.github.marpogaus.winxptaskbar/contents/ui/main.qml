@@ -69,8 +69,8 @@ PlasmoidItem {
         readonly property real buttonHeight: rowPitch - spacing
 
         readonly property int count: buttons.count
-        // Overflow: how many buttons of the minimum width fit per row, with
-        // and without room for the » at the end
+        // Overflow: how many buttons of the minimum width fit per row
+        // (shownCount below leaves room for the » at the end)
         readonly property int minimumWidth: Math.min(Plasmoid.configuration.minimumButtonWidth,
                                                      Plasmoid.configuration.maximumButtonWidth)
         readonly property int overflowWidth: 13
@@ -268,7 +268,7 @@ PlasmoidItem {
                 requestActivate();
             }
 
-            // Above the », left edges aligned (as Quick Launch's); below
+            // Above the », left edges aligned (kept on the screen); below
             // the taskbar when it is at the top of the screen
             function place() {
                 const p = overflowButton.mapToGlobal(0, 0);
@@ -282,7 +282,7 @@ PlasmoidItem {
                     y = Math.round(Math.max(bar.Screen.virtualY, Math.min(p.y, bar.Screen.virtualY + bar.Screen.height - height)));
                     return;
                 }
-                x = Math.round(p.x);
+                x = Math.round(Math.min(p.x, bar.Screen.virtualX + bar.Screen.width - width));
                 y = location === PlasmaCore.Types.TopEdge
                     ? Math.round(bar.mapToGlobal(0, bar.area.y + bar.area.height).y)
                     : Math.round(p.y) - height;
@@ -292,7 +292,6 @@ PlasmoidItem {
 
             // As wide as the longest title (hidden rows do not count)
             mainItem: ColumnLayout {
-                id: overflowList
                 width: Math.min(400, Math.max(160, implicitWidth))
                 spacing: 0
 
@@ -333,6 +332,7 @@ PlasmoidItem {
                             width: parent.width - x - 6
                             anchors.verticalCenter: parent.verticalCenter
                             text: overflowRow.model.display ?? ""
+                            textFormat: Text.PlainText
                             elide: Text.ElideRight
                             font.family: Plasmoid.configuration.fontFamily
                             font.pixelSize: 11

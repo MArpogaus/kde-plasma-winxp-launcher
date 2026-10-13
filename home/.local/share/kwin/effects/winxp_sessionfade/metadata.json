@@ -11,7 +11,9 @@
         "EnabledByDefault": true,
         "Id": "winxp_sessionfade",
         "License": "GPL-2.0+",
-        "Name": "Windows XP Session Fade"
+        "Name": "Windows XP Session Fade",
+        "Version": "1.0.0",
+        "Website": "https://github.com/MArpogaus/kde-plasma-winxp-launcher"
     },
     "X-KDE-Ordering": 60,
     "X-Plasma-API": "javascript"

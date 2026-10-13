@@ -18,12 +18,9 @@ KWin.TabBoxSwitcher {
     readonly property int columns: Math.max(1, Math.min(7, grid.count))
     readonly property int cell: 43
 
-    currentIndex: grid.currentIndex
-
     readonly property bool xpBox: winxp.present
 
     PlasmaCore.Dialog {
-        id: dialog
 
         location: PlasmaCore.Types.Floating
         visible: tabBox.visible
@@ -69,6 +66,9 @@ KWin.TabBoxSwitcher {
                 cellHeight: tabBox.cell
                 interactive: false
                 highlightMoveDuration: 0
+                // KWin's selection, and the arrow keys' back to KWin
+                currentIndex: tabBox.currentIndex
+                onCurrentIndexChanged: tabBox.currentIndex = currentIndex
                 model: tabBox.model
                 // Arrow keys move the selection (KWin passes them on)
                 focus: true
@@ -101,16 +101,9 @@ KWin.TabBoxSwitcher {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            grid.currentIndex = entry.index;
+                            tabBox.currentIndex = entry.index;
                             tabBox.model.activate(entry.index);
                         }
-                    }
-                }
-
-                Connections {
-                    target: tabBox
-                    function onCurrentIndexChanged() {
-                        grid.currentIndex = tabBox.currentIndex;
                     }
                 }
             }
@@ -144,12 +137,6 @@ KWin.TabBoxSwitcher {
                     color: Kirigami.Theme.textColor
                 }
             }
-        }
-    }
-
-    onVisibleChanged: {
-        if (visible) {
-            grid.currentIndex = tabBox.currentIndex;
         }
     }
 }

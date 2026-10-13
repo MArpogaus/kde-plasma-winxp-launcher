@@ -25,7 +25,7 @@ const sessionFade = {
         }
         // An animation paints its window, so leave out the ones not shown
         // (minimized, on another desktop or activity)
-        if (window.minimized || window.visible === false) {
+        if (!window.visible) {
             return;
         }
         const id = set({

@@ -243,7 +243,7 @@ PlasmoidItem {
                 // everything of the tray used here, so a Plasma without it
                 // keeps its own arrow
                 const tray = anchorItem.findItem(anchorItem.Window.contentItem,
-                    i => "systemTrayState" in i && "hiddenLayout" in i && "plasmoid" in i
+                    i => "systemTrayState" in i && "hiddenLayout" in i
                          && "hiddenModel" in i && "visibleLayout" in i && "itemSize" in i);
                 const expander = tray && anchorItem.findItem(tray,
                     i => "wasExpanded" in i && "arrowAnimationDuration" in i);
