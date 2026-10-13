@@ -140,7 +140,6 @@ PlasmoidItem {
                 attention: model.IsDemandingAttention === true
                 minimized: model.IsMinimized === true
                 hovered: mouse.containsMouse
-                pressed: mouse.pressed && mouse.pressedButtons === Qt.LeftButton
 
                 // Tell KWin where the button is so minimize animations land
                 // on it (on the » for the windows in its menu); on Wayland

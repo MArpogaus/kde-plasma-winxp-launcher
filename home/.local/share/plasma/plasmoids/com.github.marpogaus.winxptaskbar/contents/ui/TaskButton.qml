@@ -20,18 +20,18 @@ Item {
     property bool attention: false
     property bool minimized: false
     property bool hovered: false
-    property bool pressed: false
 
-    readonly property bool down: active || pressed
     readonly property bool truncated: label.truncated
 
     KSvg.FrameSvgItem {
         anchors.fill: parent
         imagePath: "widgets/tasks"
-        // Like Plasma's task manager; themes without a state fall back to normal
+        // Like Plasma's task manager, from the window's state alone (a pressed
+        // look would flash up between the click and KWin activating the
+        // window); themes without a state fall back to normal
         prefix: button.attention && !button.active ? ["attention", "normal"]
-              : button.down && button.hovered ? ["focus-hover", "hover", "focus", "normal"]
-              : button.down ? ["focus", "normal"]
+              : button.active && button.hovered ? ["focus-hover", "hover", "focus", "normal"]
+              : button.active ? ["focus", "normal"]
               : button.hovered ? ["hover", "normal"]
               : button.minimized ? ["minimized", "normal"]
               : "normal"
@@ -39,9 +39,9 @@ Item {
 
     Kirigami.Icon {
         id: iconItem
-        x: 7 + (button.down ? 1 : 0)
+        x: 7 + (button.active ? 1 : 0)
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: button.down ? 1 : 0
+        anchors.verticalCenterOffset: button.active ? 1 : 0
         width: 16
         height: 16
         source: button.icon ?? ""
@@ -56,7 +56,7 @@ Item {
         anchors.right: parent.right
         anchors.rightMargin: 6
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: button.down ? 1 : 0
+        anchors.verticalCenterOffset: button.active ? 1 : 0
         text: button.text
         textFormat: Text.PlainText
         elide: Text.ElideRight
