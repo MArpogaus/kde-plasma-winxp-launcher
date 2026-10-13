@@ -27,7 +27,7 @@ Item {
     // that would wrap into more columns than the screen holds scroll too
     // (frameWidth: what the cascade window adds around the rows)
     property real frameWidth: 0
-    readonly property int maxColumns: controller.availableArea && controller.availableArea.width > 0
+    readonly property int maxColumns: controller.availableArea.width > 0
         ? Math.max(1, Math.floor((controller.availableArea.width - frameWidth) / columnWidth)) : 99
     readonly property bool scroll: controller.scrollPrograms || Math.ceil(itemCount / Math.max(1, maxRows)) > maxColumns
     readonly property bool scrolling: scroll && itemCount > maxRows
@@ -74,21 +74,24 @@ Item {
     function activate(index, hasChildren, item) {
         hoverTimer.stop();
         if (hasChildren) {
-            openChild(index, item);
+            openChild(index, item, false);
             return;
         }
         view.controller.activateItem(view.model, index, rowAt(index));
     }
 
-    function openChild(index, item) {
+    function openChild(index, item, fromHover) {
         if (openIndex === index) {
             return;
         }
         const model = view.controller.childModel(view.model, index, rowAt(index));
-        if (!view.controller.openCascade(view.level + 1, item, model, view, index)
-                && model && (model.isStaticMenu || view.controller.isFolderModel(model))) {
-            model.destroy();
+        // An expanded Classic entry without its menu (no folder view plugin
+        // or no such category): a click opens it instead, as the XP menu does
+        if (!model && view.model.isStaticMenu && !fromHover) {
+            view.controller.activateItem(view.model, index, rowAt(index));
+            return;
         }
+        view.controller.openCascade(view.level + 1, item, model, view, index);
     }
 
     // The model's data for a row, as its delegate sees it
@@ -123,7 +126,7 @@ Item {
             if (view.hoverHasChildren) {
                 // Without "Open submenus when I pause on them" only a click opens one
                 if (view.controller.openOnHover) {
-                    view.openChild(view.hoverIndex, view.hoverItem);
+                    view.openChild(view.hoverIndex, view.hoverItem, true);
                 }
             } else {
                 view.controller.closeCascadesFrom(view.level + 1);
@@ -217,7 +220,7 @@ Item {
                 // Recent documents in a StaticMenuModel take their icon from the source model;
                 // program groups all show the theme's program group icon, as on XP
                 iconSource: (cell.model.sourceRow ?? -1) >= 0 ? view.controller.recentDocumentIcon(cell.model.sourceRow)
-                    : cell.model.hasChildren === true ? "applications-other" : cell.model.decoration
+                    : cell.model.hasChildren === true && !view.model.isStaticMenu ? "applications-other" : cell.model.decoration
                 title: cell.model.display ?? ""
                 dragUrl: cell.hasChildren ? "" : cell.model.url ?? ""
                 dragController: view.controller

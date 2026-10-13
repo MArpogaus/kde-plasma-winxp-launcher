@@ -3,7 +3,9 @@
 
     The Windows XP start menu: header with the user picture, programs on
     the left, places on the right and the Log Off / Turn Off Computer
-    footer, in the Plasma theme's dialog frame, lines and colours.
+    footer, in XP's frame from the Plasma theme (widgets/winxp,
+    startmenu-*) or, without it, the theme's dialog frame, lines and
+    colours.
 
     All behaviour is delegated to `controller` (main.qml) so this file
     only depends on QtQuick, Kirigami and KSvg.
@@ -62,7 +64,6 @@ FocusScope {
 
     function reset() {
         searchText = "";
-        searchIndex = 0;
         rebuildFrequent();
     }
 
@@ -73,7 +74,7 @@ FocusScope {
         // (from the counts: the column is not laid out while the menu is hidden)
         const pinnedCount = favoritesModel ? favoritesModel.count : 0;
         const fixed = leftColumn.neededHeight - leftTop.implicitHeight + pinnedCount * row + xp.separatorHeight;
-        const room = area && area.height > 0
+        const room = area.height > 0
             ? Math.floor((area.height - 8 - xp.headerHeight - 2 - xp.footerHeight - fixed) / row) : numFrequentApps;
         const limit = Math.max(0, Math.min(numFrequentApps, room));
         const items = [];
@@ -98,16 +99,6 @@ FocusScope {
         return hoverItem !== null && hoverItem !== item && hoverItem.hovered === true;
     }
 
-    function openKind(kind, item, fromHover) {
-        if (kind === "programs") {
-            controller.openAllPrograms(item);
-        } else if (kind === "recent") {
-            controller.openRecentDocuments(item);
-        } else {
-            controller.openPlaceMenu(kind, item, fromHover);
-        }
-    }
-
     function hovered(kind, item) {
         hoverKind = kind;
         hoverItem = item;
@@ -128,10 +119,9 @@ FocusScope {
             }
             if (menu.hoverKind === "") {
                 menu.controller.closeCascadesFrom(0);
-            } else if (!menu.controller.openOnHover) {
-                // Without "Open submenus when I pause on them" only a click opens one
-            } else {
-                menu.openKind(menu.hoverKind, menu.hoverItem, true);
+            } else if (menu.controller.openOnHover) {
+                // (without "Open submenus when I pause on them" only a click opens one)
+                menu.controller.openPlaceMenu(menu.hoverKind, menu.hoverItem, true);
             }
         }
     }
@@ -153,7 +143,6 @@ FocusScope {
 
     Connections {
         target: menu.favoritesModel
-        ignoreUnknownSignals: true
         function onCountChanged() {
             rebuildTimer.restart();
         }
@@ -554,8 +543,7 @@ FocusScope {
                         visible: allPrograms.highlighted
                     }
 
-                    readonly property bool xpArrow: menu.xpChrome
-                    readonly property int arrowGap: xpArrow ? 18 : 8
+                    readonly property int arrowGap: menu.xpChrome ? 18 : 8
 
                     Text {
                         id: allProgramsLabel
@@ -573,10 +561,10 @@ FocusScope {
                         anchors.left: allProgramsLabel.right
                         anchors.leftMargin: allPrograms.arrowGap
                         anchors.verticalCenter: parent.verticalCenter
-                        width: allPrograms.xpArrow ? naturalSize.width : 10
-                        height: allPrograms.xpArrow ? naturalSize.height : 10
-                        svg: allPrograms.xpArrow ? winxp : arrowsSvg
-                        elementId: allPrograms.xpArrow ? "startmenu-allprograms-arrow" : "right-arrow"
+                        width: menu.xpChrome ? naturalSize.width : 10
+                        height: menu.xpChrome ? naturalSize.height : 10
+                        svg: menu.xpChrome ? winxp : arrowsSvg
+                        elementId: menu.xpChrome ? "startmenu-allprograms-arrow" : "right-arrow"
                     }
                     KSvg.Svg {
                         id: arrowsSvg
@@ -591,7 +579,7 @@ FocusScope {
                         onClicked: {
                             hoverTimer.stop();
                             if (menu.openCascade !== "programs") {
-                                menu.openKind("programs", allPrograms);
+                                menu.controller.openPlaceMenu("programs", allPrograms);
                             }
                         }
                     }
@@ -690,7 +678,7 @@ FocusScope {
                                     if (place.cascades) {
                                         hoverTimer.stop();
                                         if (menu.openCascade !== place.modelData.key) {
-                                            menu.openKind(place.modelData.key, placeEntry);
+                                            menu.controller.openPlaceMenu(place.modelData.key, placeEntry);
                                         }
                                     } else {
                                         menu.controller.openPlace(place.modelData.key);
@@ -715,7 +703,6 @@ FocusScope {
         // Footer
         // --------------------------------------------------------------
         Item {
-            id: footer
             anchors.bottom: parent.bottom
             width: parent.width
             height: menu.xp.footerHeight

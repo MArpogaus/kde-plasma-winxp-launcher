@@ -142,7 +142,6 @@ FocusScope {
     // Banner: black, turning blue behind the text towards the bottom
     // (sampled from XP, measured from the bottom: blue from 217 px up)
     Rectangle {
-        id: banner
         width: menu.xp.classicBannerWidth
         height: menu.height
         visible: !menu.smallIcons
@@ -168,7 +167,6 @@ FocusScope {
         // sized to match XP's (its first letter 12 px above the banner's
         // bottom, baseline 5 px from the right, words 10 px apart)
         Item {
-            id: bannerText
             width: bannerRow.width
             height: bannerRow.height
             rotation: -90

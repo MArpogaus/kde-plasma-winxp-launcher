@@ -101,10 +101,11 @@ Kicker.SubMenu {
     onHeightChanged: reposition()
 
     visible: false
-    // Keyboard focus stays with the start menu window. As it never becomes
-    // active, KWin would stack it below the active menu: a tool window is
-    // transient for the window it opens from, so it stays above that one
-    // (and out of the taskbar).
+    // Keyboard focus stays with the start menu window (on Wayland a click
+    // still activates the cascade). KWin stacks a window it does not
+    // activate below the active menu: a tool window is transient for the
+    // window it opens from, so it stays above that one (and out of the
+    // taskbar).
     flags: Qt.Tool | Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus
     location: PlasmaCore.Types.Floating
     hideOnWindowDeactivate: false
@@ -134,6 +135,8 @@ Kicker.SubMenu {
             model: dialog.model
             level: dialog.level
             maxRows: dialog.maxRows
+            // Escape when KWin activates the cascade on a click (Wayland)
+            focus: true
             frameWidth: (dialog.xpFrame ? frame.margins.left + frame.margins.right : 0) + dialog.margins.left + dialog.margins.right
 
             Keys.onEscapePressed: dialog.controller.closeCascadesFrom(dialog.level)

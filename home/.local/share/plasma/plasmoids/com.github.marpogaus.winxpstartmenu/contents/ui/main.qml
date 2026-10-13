@@ -84,8 +84,6 @@ PlasmoidItem {
         iconName: root.startIcon
     }
 
-    toolTipMainText: i18n("Click here to begin")
-    toolTipSubText: ""
     Plasmoid.status: menuOpen ? PlasmaCore.Types.RequiresAttentionStatus : PlasmaCore.Types.PassiveStatus
 
     // The global shortcut (Meta) toggles our menu window, as in Plasma's
@@ -103,7 +101,7 @@ PlasmoidItem {
     }
 
     // ------------------------------------------------------------------
-    // Data models (shared with Kicker / Kickoff)
+    // Data models (Kicker's)
     // ------------------------------------------------------------------
     Kicker.RootModel {
         id: rootModel
@@ -322,7 +320,7 @@ PlasmoidItem {
     }
 
     // ------------------------------------------------------------------
-    // Controller API used by StartButton, StartMenu and CascadeMenu
+    // Controller API used by the menus, their cascades and rows, and StartButton
     // ------------------------------------------------------------------
     // The screen area free of panels, in global coordinates (cascades stay
     // inside it). Without a screen Plasma reports the applet's own size.
@@ -338,7 +336,7 @@ PlasmoidItem {
     Kicker.DragHelper {
         id: dragHelper
         dragIconSize: 32
-        // The drag ended, dropped or not; the menu is already hidden
+        // The drag ended, dropped or not: close the menu
         onDropped: root.closeMenu()
     }
 
@@ -387,7 +385,13 @@ PlasmoidItem {
     // otherwise the cascade's first row is level with visualParent.
     function openCascade(level, visualParent, model, ownerView, ownerIndex, bottomAlign) {
         closeCascadesFrom(level);
-        if (!model || !visualParent || !menuOpen) {
+        if (!model) {
+            return null;
+        }
+        if (!visualParent || !menuOpen) {
+            if (ownsModel(model)) {
+                model.destroy();
+            }
             return null;
         }
         const cascade = cascadeComponent.createObject(root, {
@@ -421,8 +425,7 @@ PlasmoidItem {
             if (cascade) {
                 hadFocus = hadFocus || cascade.active;
                 cascade.visible = false;
-                // Folder and put-together menus are made for their cascade
-                if (cascade.model && (cascade.model.isStaticMenu || isFolderModel(cascade.model))) {
+                if (cascade.model && ownsModel(cascade.model)) {
                     cascade.model.destroy();
                 }
                 cascade.destroy();
@@ -440,21 +443,10 @@ PlasmoidItem {
         }
     }
 
-    function openAllPrograms(item) {
-        if (openCascade(0, item, rootModel, null, -1, true)) {
-            startMenu.openCascade = "programs";
-        }
-    }
-
-    function openRecentDocuments(item) {
-        if (openCascade(0, item, recentDocsModel, null, -1)) {
-            startMenu.openCascade = "recent";
-        }
-    }
-
-    // A right-column entry set to "Display as a menu"
+    // All Programs, My Recent Documents or a right-column entry set to
+    // "Display as a menu"
     function openPlaceMenu(key, item, fromHover) {
-        const model = placeModel(key);
+        const model = key === "programs" ? rootModel : key === "recent" ? recentDocsModel : placeModel(key);
         if (!model) {
             // No folder view plugin or no such category: a click opens it instead
             if (fromHover) {
@@ -464,20 +456,15 @@ PlasmoidItem {
             }
             return;
         }
-        if (openCascade(0, item, model, null, -1)) {
+        if (openCascade(0, item, model, null, -1, key === "programs")) {
             startMenu.openCascade = key;
-        } else if (model.isStaticMenu || isFolderModel(model)) {
-            model.destroy();
         }
     }
 
     // Programs, Documents, Settings and Search of the Classic Start menu
     function openClassicMenu(key, item) {
-        const model = key === "programs" ? rootModel : classicSubmenu(key);
-        if (openCascade(0, item, model, null, -1)) {
+        if (openCascade(0, item, key === "programs" ? rootModel : classicSubmenu(key), null, -1)) {
             classicMenu.openCascade = key;
-        } else if (model !== rootModel) {
-            model.destroy();
         }
     }
 
@@ -487,6 +474,11 @@ PlasmoidItem {
     // ------------------------------------------------------------------
     function isFolderModel(model) {
         return typeof model.cd === "function" && typeof model.run === "function";
+    }
+
+    // Folder and put-together menus are made for their cascade
+    function ownsModel(model) {
+        return model.isStaticMenu === true || isFolderModel(model);
     }
 
     function folderUrl(key) {
@@ -536,14 +528,10 @@ PlasmoidItem {
         return folderModel(folderUrl(key));
     }
 
-    function newStaticMenu() {
-        return staticMenuComponent.createObject(root);
-    }
-
     function classicSubmenu(key) {
         const cfg = Plasmoid.configuration;
         const expand = Array.from(cfg.classicExpand);
-        const menu = newStaticMenu();
+        const menu = staticMenuComponent.createObject(root);
         if (key === "documents") {
             menu.add(i18n("My Documents"), "folder-documents", "documents", expand.includes("documents"));
             menu.add(i18n("My Pictures"), "folder-pictures", "pictures", expand.includes("pictures"));
@@ -706,7 +694,7 @@ PlasmoidItem {
         id: sessionDialog
         xp: root.xp
         flagIcon: root.flagIcon
-        screenGeometry: Plasmoid.containment.screenGeometry
+        screenGeometry: root.screenGeometry
         onActivated: action => root.sessionAction(action)
     }
 

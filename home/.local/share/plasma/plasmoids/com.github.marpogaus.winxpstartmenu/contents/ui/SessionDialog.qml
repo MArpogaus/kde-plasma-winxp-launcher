@@ -19,7 +19,6 @@ PlasmaCore.Dialog {
 
     title: "WinXP Session Dialog"
     visible: false
-    type: PlasmaCore.Dialog.Normal
     flags: Qt.WindowStaysOnTopHint
     location: PlasmaCore.Types.Floating
     hideOnWindowDeactivate: false

@@ -149,7 +149,7 @@ FocusScope {
                     text: option.modelData.text
                     renderType: Text.NativeRendering
                     font.family: view.xp.fontFamily
-                    font.pixelSize: 11
+                    font.pixelSize: view.xp.fontPixelSize
                     color: "#ffffff"
                 }
 
@@ -207,7 +207,7 @@ FocusScope {
                 text: i18n("Cancel")
                 renderType: Text.NativeRendering
                 font.family: view.xp.fontFamily
-                font.pixelSize: 11
+                font.pixelSize: view.xp.fontPixelSize
                 color: "#000000"
             }
 

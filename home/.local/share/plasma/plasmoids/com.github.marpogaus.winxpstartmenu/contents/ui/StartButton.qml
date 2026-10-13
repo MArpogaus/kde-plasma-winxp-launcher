@@ -8,6 +8,8 @@
 */
 import QtQuick
 import QtQuick.Layouts
+import org.kde.plasma.plasmoid
+import org.kde.plasma.core as PlasmaCore
 import org.kde.kirigami as Kirigami
 import org.kde.ksvg as KSvg
 
@@ -147,19 +149,27 @@ Item {
             color: face.xpButton ? "white" : Kirigami.Theme.textColor
         }
 
-        MouseArea {
-            id: mouseArea
-
-            property bool wasOpen: false
-
+        // XP's tooltip (Plasma shows an applet's own only for a panel icon)
+        PlasmaCore.ToolTipArea {
             anchors.fill: parent
-            hoverEnabled: true
-            onPressed: wasOpen = button.controller.menuOpenOrJustClosed()
-            onClicked: {
-                if (wasOpen) {
-                    button.controller.closeMenu();
-                } else {
-                    button.controller.openMenu();
+            mainText: i18n("Click here to begin")
+            location: Plasmoid.location
+            active: !button.controller.menuOpen
+
+            MouseArea {
+                id: mouseArea
+
+                property bool wasOpen: false
+
+                anchors.fill: parent
+                hoverEnabled: true
+                onPressed: wasOpen = button.controller.menuOpenOrJustClosed()
+                onClicked: {
+                    if (wasOpen) {
+                        button.controller.closeMenu();
+                    } else {
+                        button.controller.openMenu();
+                    }
                 }
             }
         }

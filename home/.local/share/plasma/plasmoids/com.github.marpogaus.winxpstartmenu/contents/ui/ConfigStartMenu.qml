@@ -24,8 +24,8 @@ KCM.SimpleKCM {
     property alias cfg_highlightNewPrograms: highlightNewPrograms.checked
     property var cfg_hiddenPlaces: []
     property var cfg_menuPlaces: []
-    property bool cfg_dragAndDrop
-    property bool cfg_scrollPrograms
+    property alias cfg_dragAndDrop: dragAndDrop.checked
+    property alias cfg_scrollPrograms: scrollPrograms.checked
     property alias cfg_classicSmallIcons: classicSmallIcons.checked
     property alias cfg_classicShowRun: classicShowRun.checked
     property alias cfg_classicShowLogOff: classicShowLogOff.checked
@@ -270,15 +270,13 @@ KCM.SimpleKCM {
             Kirigami.FormData.isSection: true
         }
         QQC2.CheckBox {
+            id: dragAndDrop
             Kirigami.FormData.label: i18n("Both menus:")
             text: i18n("Enable dragging and dropping")
-            checked: page.cfg_dragAndDrop
-            onToggled: page.cfg_dragAndDrop = checked
         }
         QQC2.CheckBox {
+            id: scrollPrograms
             text: i18n("Scroll Programs")
-            checked: page.cfg_scrollPrograms
-            onToggled: page.cfg_scrollPrograms = checked
         }
     }
 }
